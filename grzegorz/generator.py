@@ -14,6 +14,7 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 from .word import Word, readfile, writefile
+from functools import partial
 import re
 import json
 from tqdm import tqdm
@@ -90,7 +91,7 @@ INTERESTING_DIFFERENCES = [
 def createpairs(infile, outfile, nooptimise, ignore_stress):
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
-    words = list(map(word_with_delimited_ipa, words))
+    words = list(map(partial(word_with_delimited_ipa, ignore_stress=ignore_stress), words))
     minpairs = []
     if ignore_stress:
         print("Okay, syllable stress will be ignored")
@@ -104,7 +105,7 @@ def createpairs(infile, outfile, nooptimise, ignore_stress):
             w2 = words[j]
             if w1.ipa == w2.ipa or len(w1.ipa) != len(w2.ipa):
                 continue
-            diffs = differences(w1, w2, ignore_stress)
+            diffs = differences(w1, w2)
             if diffs == 1:
                 minpairs.append((w1, w2))
     if not nooptimise:
@@ -117,13 +118,12 @@ def createpairs(infile, outfile, nooptimise, ignore_stress):
 ### Helper functions ###
 
 # Return the same word, except its IPA is delimited
-def word_with_delimited_ipa(word):
-    new_ipa = delimit_into_sounds(word.ipa)
+def word_with_delimited_ipa(word, ignore_stress):
+    new_ipa = delimit_into_sounds(word.ipa, ignore_stress)
     return Word(word.text, new_ipa)
 
 # Return the number of differences between words
-def differences(word1, word2, ignore_stress):
-    regex = re.compile("[.ˈˌ]")
+def differences(word1, word2):
     ipa1 = word1.ipa
     ipa2 = word2.ipa
     if len(ipa1) != len(ipa2):
@@ -159,9 +159,11 @@ def interesting_pair(tuple):
         return None
 
 # Given the IPA pronunciaion of a word, return all the sounds in it
-def delimit_into_sounds(ipa):
+def delimit_into_sounds(ipa, ignore_stress):
     # Remove starting and ending '/'
     sounds = re.sub("/", "", ipa)
+    if ignore_stress:
+        sounds = re.sub("[.ˈˌ]", "", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [s for s in sounds if s]
     return sounds
