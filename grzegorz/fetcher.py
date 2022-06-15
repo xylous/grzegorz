@@ -2,6 +2,7 @@ from .word import Word, readfile, writefile
 from multiprocessing import Pool
 from functools import partial
 import json
+import tqdm
 
 # Given an input file containing a list of words separated
 def fetchpron(infile, outfile, language):
@@ -9,9 +10,16 @@ def fetchpron(infile, outfile, language):
 
     contents = readfile(infile)
     words = input_to_words(contents)
+    wds = []
+    numwords = len(words)
 
+    print("Fetching pronunciations for", numwords, language, "words...")
+    if numwords > 500:
+        print("If you cancel, all progress will be lost!")
     with Pool(numproc) as p:
-        wds = p.map(partial(Word.get_ipa, language=language), words)
+        for x in tqdm.tqdm(p.imap_unordered(partial(Word.get_ipa, language=language),
+            words), total=numwords):
+            wds.append(x)
 
     jsonlog = json.dumps([word.__dict__ for word in wds])
     writefile(outfile, jsonlog)

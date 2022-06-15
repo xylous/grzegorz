@@ -9,7 +9,6 @@ class Word:
 
     # Return a copy of the current file with foo
     def get_ipa(self, language):
-        print("Processing '", self.text, "'", sep="")
         parser = WiktionaryParser()
         parser.set_default_language(language)
         word = parser.fetch(self.text)
