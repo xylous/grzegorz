@@ -1,6 +1,7 @@
 from .word import Word, readfile, writefile
 import re
 import json
+from tqdm import tqdm
 
 # Pairs of sounds that are easy to mishear - thus, they're *interesting*
 interesting_differences = [
@@ -47,7 +48,7 @@ def createpairs(infile, outfile, nooptimise, ignore_stress):
     # the interesting ones because the function checking for differences might
     # miss things otherwise
     print('Generating all possible minimal pairs...')
-    for i in range(0,len(words)):
+    for i in tqdm(range(0,len(words))):
         w1 = words[i]
         for j in range(i+1,len(words)):
             w2 = words[j]

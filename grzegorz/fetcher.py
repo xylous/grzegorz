@@ -2,7 +2,7 @@ from .word import Word, readfile, writefile
 from multiprocessing import Pool
 from functools import partial
 import json
-import tqdm
+from tqdm import tqdm
 
 # Given an input file containing a list of words separated
 def fetchpron(infile, outfile, language):
@@ -17,7 +17,7 @@ def fetchpron(infile, outfile, language):
     if numwords > 500:
         print("If you cancel, all progress will be lost!")
     with Pool(numproc) as p:
-        for x in tqdm.tqdm(p.imap_unordered(partial(Word.get_ipa, language=language),
+        for x in tqdm(p.imap_unordered(partial(Word.get_ipa, language=language),
             words), total=numwords):
             wds.append(x)
 
