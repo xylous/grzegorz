@@ -13,6 +13,82 @@ a long list of words manually? No, I had to incorporate a pronunciation scraper
 into this project. So practically, you give Grzegorz a list of words in plain
 text, every word on its own line, and then the minimal pair generator is ran.
 
+## Getting started
+
+### Requirements
+
+- python3
+- pip
+
+- wiktionaryparser
+- tqdm
+
+### Installation
+
+##### Manual
+
+Clone this repository, and run with python. Make sure you have all dependencies
+installled.
+
+```
+git clone https://github.com/xylous/grzegorz grzegorz
+cd grzegorz
+python3 -m grzegorz --help
+```
+
+### Usage
+
+There are two commands:
+
+- `fetchpron`, which takes a file containing words separated by newlines, and,
+    given the language you want your IPA pronunciations in, creates a JSON file
+    at the specified output location
+- `createpairs`, which takes the JSON file created before, and outputs the list
+    of minimal pairs it found at the specified location.
+
+    Note that, by default, it's optimised: it filters out pairs with "boring"
+    differences which are easy to tell apart by most people ('q' and 't', 't'
+    and 'd', 'e' and 'o' etc.). Give it the `--no-optimise` option to not curate
+    the list.
+
+    Secondly, syllable stress marks (`.`, `ˌ`, `ˈ`) are kept. You can use the
+    `--ignore-stress` to discard them when generating minimal pairs.
+
+So, how do you actually get the minimal pairs? You need to get the words from a
+frequency list, that's obvious. But note that `grzegorz` doesn't accept
+something like
+
+```
+1. the
+tea hjkl
+        bacon
+```
+
+Which it would not parse correctly. Very important: make sure there's NO
+whitespace before the words!
+
+Instead, the proper list would look like:
+
+```
+the
+tea
+bacon
+```
+
+So yes, you do have to make sure *all* words in the list are properly formatted.
+You can usually find one on the internet fairly easily, and then you can use a
+`sed` or an `awk` command to format, if it's not .
+
+Let's assume your list is at `wordlist.txt`, and that it's full of French words:
+
+```
+grzegorz fetchpron "french" wordlist.txt processed.json
+grzegorz createpairs processed.json minpairs.txt --ignore-stress
+```
+
+If you were to specify the wrong language, shame on you: you'll likely end up
+with the wrong pronunciations or none at all.
+
 ## Roadmap
 
 - [x] fetch pronunciations for words
