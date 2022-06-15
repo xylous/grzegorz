@@ -18,14 +18,43 @@ import re
 import json
 from tqdm import tqdm
 
+# The list of unicode characters that are used in IPA text and should be
+# delimited correctly
+IPA_CHARACTERS = ([
+    't͡ɕ',
+    't͡s',
+    'd͡ʐ',
+    'd͡z',
+    'd͡ʑ',
+    't͡ʂ',
+    't͡ɕ',
+    'ɡʲ',
+    'ʂ',
+    'ɛ',
+    'ɲ',
+    'ɕ',
+    'ɨ',
+    'ŋ',
+    'xʲ',
+    'ʐ',
+    'ʑ',
+    'ś',
+    'ɔ̃',
+    'ɔ',
+    'ɛ̃',
+])
+
 # Pairs of sounds that are easy to mishear - thus, they're *interesting*
-interesting_differences = [
+INTERESTING_DIFFERENCES = [
     # Consonants
     ('d͡ʐ', 'd͡ʑ'),
     ('d͡z', 'd͡ʑ'),
     ('d͡ʐ', 'd͡z'),
     ('d͡ʐ', 'ʂ'),
     ('d͡z', 'ʂ'),
+    ('d͡ʐ', 'j'),
+    ('d͡z', 'j'),
+    ('j', 'd͡ʑ'),
     ('ʂ', 'd͡ʑ'),
     ('ɡʲ', 'g'),
     ('ɲ', 'n'),
@@ -41,6 +70,9 @@ interesting_differences = [
     ('z', 'ʑ'),
     ('ʐ', 'ʑ'),
     ('z', 'ʐ'),
+    ('z', 'ʐ'),
+    ('ś', 's'),
+    ('ś', 's'),
 
     # Vowels
     ('ɛ̃', 'ɛ'),
@@ -90,6 +122,10 @@ def differences(word1, word2, ignore_stress):
     else:
         ipa1 = word1.ipa
         ipa2 = word2.ipa
+    ipa1 = delimit_into_sounds(ipa1)
+    ipa2 = delimit_into_sounds(ipa2)
+    if len(ipa1) != len(ipa2):
+        return 0
     count = sum(1 for a, b in zip(ipa1, ipa2) if a != b)
     return count
 
@@ -101,7 +137,7 @@ def format_tuple(tuple):
 # Two characters are interestingly different if they're sounds that are likely
 # to be confused
 def are_interestingly_different(ch1, ch2):
-    for diff in interesting_differences:
+    for diff in INTERESTING_DIFFERENCES:
         if ch1 in diff and ch2 in diff and ch1 != ch2:
             return True
     return False
@@ -110,10 +146,16 @@ def are_interestingly_different(ch1, ch2):
 # None
 def interesting_pair(tuple):
     word1, word2 = tuple
-    ipa1 = word1.ipa
-    ipa2 = word2.ipa
+    ipa1 = delimit_into_sounds(word1.ipa)
+    ipa2 = delimit_into_sounds(word2.ipa)
     for a, b in zip(ipa1, ipa2):
         if are_interestingly_different(a, b):
             return tuple
     else:
         return None
+
+# Given the IPA pronunciaion of a word, return all the sounds in it
+def delimit_into_sounds(ipa):
+    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", ipa)
+    sounds = [s for s in sounds if s]
+    return sounds
