@@ -11,17 +11,26 @@ def create_argparser():
     # 'fetchpron' subcommand
     parser_fetchpron = subparsers.add_parser('fetchpron',
             help='Fetch all IPA pronunciations for the words into a JSON file')
-    parser_fetchpron.add_argument('input', type=str,
+    parser_fetchpron.add_argument('input',
+            type=str,
             help='file containing the list of words')
-    parser_fetchpron.add_argument('output', type=str,
+    parser_fetchpron.add_argument('output',
+            type=str,
             help='file containing the list of words')
     # 'createpairs' subcommand
     parser_createpairs = subparsers.add_parser('createpairs',
             help='Create minimal pairs, given a JSON input file')
-    parser_createpairs.add_argument('input', type=str,
+    parser_createpairs.add_argument('input',
+            type=str,
             help='JSON file created by fetchpron')
-    parser_createpairs.add_argument('output', type=str,
+    parser_createpairs.add_argument('output',
+            type=str,
             help='JSON file created by fetchpron')
+    parser_createpairs.add_argument('--no-optimise',
+            action='store_true',
+            default=False,
+            dest="nooptimise",
+            help="generate all possible minimal pairs (default: optimise)")
     return parser
 
 def main():
@@ -36,10 +45,12 @@ def main():
         parser.print_help()
         return
 
+    nooptimise = args.nooptimise;
+
     match cmd:
         case 'fetchpron':
             fetchpron(infile, outfile)
         case 'createpairs':
-            createpairs(infile, outfile)
+            createpairs(infile, outfile, nooptimise)
 
 main()

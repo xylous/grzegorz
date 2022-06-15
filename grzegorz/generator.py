@@ -36,7 +36,7 @@ interesting_differences = [
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
 # a file `outfile` with all the minimal pairs found
-def createpairs(infile, outfile):
+def createpairs(infile, outfile, nooptimise):
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
     minpairs = []
@@ -53,11 +53,12 @@ def createpairs(infile, outfile):
             diffs = differences(w1, w2)
             if diffs == 1:
                 minpairs.append((w1, w2))
-    print('Filtering uninteresting pairs...')
-    interesting_pairs = [x for x in map(interesting_pair, minpairs) if x]
-    formatted = list(map(format_tuple, interesting_pairs))
+    if not nooptimise:
+        print('Filtering uninteresting pairs...')
+        minpairs = [x for x in map(interesting_pair, minpairs) if x]
+    formatted = list(map(format_tuple, minpairs))
     writefile(outfile, '\n'.join(str(x) for x in formatted))
-    print('Done! Generated', len(interesting_pairs), 'minimal pairs')
+    print('Done! Generated', len(minpairs), 'minimal pairs')
 
 ### Helper functions ###
 
