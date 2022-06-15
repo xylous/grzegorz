@@ -7,6 +7,7 @@ class Word:
         self.text = text
         self.ipa = ipa
 
+    # Return a copy of the current file with foo
     def get_ipa(self):
         print("Processing '", self.text, "'", sep="")
         parser = WiktionaryParser()
@@ -14,14 +15,16 @@ class Word:
         # If we get no result, skip.
         try:
             pron = word[0]['pronunciations']
-            self.ipa = lastword(pron['text'][0])
+            self.ipa = last_word(pron['text'][0])
         except:
             self.ipa = ''
         return self
 
+    # Serialise this class to JSON
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
 
+    # Deserialise this class from JSON
     @staticmethod
     def fromJSON(json_dct):
         return Word(json_dct['text'], json_dct['ipa'])
@@ -34,14 +37,17 @@ class Word:
 
 ### Helper functions ###
 
-def lastword(str):
+# Return the last word in a string
+def last_word(str):
     words = str.split()
     return words[-1]
 
+# Return the contents of a file
 def readfile(path):
     f = open(path, 'r')
     return f.read()
 
+# Write `txt` to the given path
 def writefile(path, txt):
     f = open(path, 'w')
     f.write(txt)

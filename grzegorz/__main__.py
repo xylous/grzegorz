@@ -2,6 +2,7 @@ import argparse
 from .fetcher import fetchpron
 from .generator import createpairs
 
+# Why does it have to be this complicated?
 def create_argparser():
     parser = argparse.ArgumentParser(
             prog='grzegorz',
@@ -22,6 +23,7 @@ def create_argparser():
     parser_createpairs.add_argument('output', type=str,
             help='JSON file created by fetchpron')
     return parser
+
 def main():
     parser = create_argparser()
     args = parser.parse_args()

@@ -1,14 +1,13 @@
 from .word import Word, readfile, writefile
-
 from multiprocessing import Pool
-
 import json
 
+# Given an input file containing a list of words separated
 def fetchpron(infile, outfile):
     numproc = 20
 
     contents = readfile(infile)
-    words = list_to_words(contents)
+    words = input_to_words(contents)
 
     with Pool(numproc) as p:
         wds = p.map(Word.get_ipa, words)
@@ -18,8 +17,8 @@ def fetchpron(infile, outfile):
 
     print('Done!')
 
-def list_to_words(str):
+# Turn the read input into a list of `Word`s
+def input_to_words(strs):
     # Remove empty lines
-    words = [Word(x, '') for x in str.splitlines() if x]
+    words = [Word(x, '') for x in strs.splitlines() if x]
     return words
-
