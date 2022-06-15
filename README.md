@@ -13,25 +13,15 @@ a long list of words manually? No, I had to incorporate a pronunciation scraper
 into this project. So practically, you give Grzegorz a list of words in plain
 text, every word on its own line, and then the minimal pair generator is ran.
 
-<!--
-## Getting started
-
-### Requirements
-
-(What other software does this project depend on?)
-
-### Installation
-
-(How can anyone get this software running, provided they meet the requirements?)
-
-### Usage
-
-(How is this software used?)
-
 ## Roadmap
 
-(What ideas would I like to be implemented in the future?)
--->
+- [x] fetch pronunciations for words
+    - [x] in any language
+    - [x] display a status bar
+- [x] generate minimal pairs
+    - [x] optimise: look for interesting differences
+    - [x] optimise: ignore stressed syllables
+- [ ] Anki integration
 
 ## Contributing
 
