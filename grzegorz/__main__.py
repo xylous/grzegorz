@@ -2,8 +2,10 @@ from wiktionaryparser import WiktionaryParser
 from multiprocessing import Pool
 from os.path import exists
 
+import argparse
 import json
 
+# All we care about is the word's string and its IPA, its textual representation
 class Word:
     def __init__(self, text, ipa):
         self.text = text
@@ -65,8 +67,43 @@ def differences(word1, word2):
 def format_tuple(tuple):
     return '{} - {}'.format(tuple[0].text, tuple[1].text)
 
-def proc_files():
-    jsonstr = readfile("list.json")
+def create_argparser():
+    parser = argparse.ArgumentParser(
+            prog='grzegorz',
+            description='Generate minimal pairs from a list of words')
+    subparsers = parser.add_subparsers(dest='subparser_name')
+    # 'fetchpron' subcommand
+    parser_fetchpron = subparsers.add_parser('fetchpron',
+            help='Fetch all IPA pronunciations for the words into a JSON file')
+    parser_fetchpron.add_argument('input', type=str,
+            help='file containing the list of words')
+    parser_fetchpron.add_argument('output', type=str,
+            help='file containing the list of words')
+    # 'createpairs' subcommand
+    parser_createpairs = subparsers.add_parser('createpairs',
+            help='Create minimal pairs, given a JSON input file')
+    parser_createpairs.add_argument('input', type=str,
+            help='JSON file created by fetchpron')
+    parser_createpairs.add_argument('output', type=str,
+            help='JSON file created by fetchpron')
+    return parser
+
+def fetchpron(infile, outfile):
+    numproc = 20
+
+    contents = readfile(infile)
+    words = list_to_words(contents)
+
+    with Pool(numproc) as p:
+        wds = p.map(Word.get_ipa, words)
+
+    jsonlog = json.dumps([word.__dict__ for word in wds])
+    writefile(outfile, jsonlog)
+
+    print('Done!!!')
+
+def createpairs(infile, outfile):
+    jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
     minpairs = []
     for i in range(0,len(words)):
@@ -79,25 +116,21 @@ def proc_files():
             if diffs == 1:
                 minpairs.append((w1, w2))
     formatted = list(map(format_tuple, minpairs))
-    writefile("out.txt", '\n'.join(str(x) for x in formatted))
-    print('Done. Check out.txt')
+    writefile(outfile, '\n'.join(str(x) for x in formatted))
+    print('Done! Generated', len(minpairs), 'minimal pairs')
 
 def main():
-    if exists("list.json"):
-        proc_files()
-        return
+    parser = create_argparser()
+    args = parser.parse_args()
 
-    numproc = 20
+    cmd = args.subparser_name
+    infile = args.input
+    outfile = args.output
 
-    contents = readfile("list.txt")
-    words = list_to_words(contents)
-
-    with Pool(numproc) as p:
-        wds = p.map(Word.get_ipa, words)
-
-    jsonlog = json.dumps([word.__dict__ for word in wds])
-    writefile("list.json", jsonlog)
-
-    print('Done!!!')
+    match cmd:
+        case 'fetchpron':
+            fetchpron(infile, outfile)
+        case 'createpairs':
+            createpairs(infile, outfile)
 
 main()
