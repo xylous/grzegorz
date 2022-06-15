@@ -21,27 +21,29 @@ from tqdm import tqdm
 # The list of unicode characters that are used in IPA text and should be
 # delimited correctly
 IPA_CHARACTERS = ([
+    # Consonants
     't͡ɕ',
+    't͡ʂ',
     't͡s',
     'd͡ʐ',
-    'd͡z',
     'd͡ʑ',
-    't͡ʂ',
-    't͡ɕ',
-    'ɡʲ',
+    'd͡z',
     'ʂ',
-    'ɛ',
-    'ɲ',
     'ɕ',
-    'ɨ',
+    'ɲ',
     'ŋ',
+    'ɡʲ',
     'xʲ',
     'ʐ',
     'ʑ',
     'ś',
+
+    # Vowels
     'ɔ̃',
     'ɔ',
+    'ɛ',
     'ɛ̃',
+    'ɨ',
 ])
 
 # Pairs of sounds that are easy to mishear - thus, they're *interesting*
@@ -72,7 +74,7 @@ INTERESTING_DIFFERENCES = [
     ('z', 'ʐ'),
     ('z', 'ʐ'),
     ('ś', 's'),
-    ('ś', 's'),
+    ('ś', 'ʂ'),
 
     # Vowels
     ('ɛ̃', 'ɛ'),
@@ -88,6 +90,7 @@ INTERESTING_DIFFERENCES = [
 def createpairs(infile, outfile, nooptimise, ignore_stress):
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
+    words = list(map(word_with_delimited_ipa, words))
     minpairs = []
     if ignore_stress:
         print("Okay, syllable stress will be ignored")
@@ -113,17 +116,16 @@ def createpairs(infile, outfile, nooptimise, ignore_stress):
 
 ### Helper functions ###
 
+# Return the same word, except its IPA is delimited
+def word_with_delimited_ipa(word):
+    new_ipa = delimit_into_sounds(word.ipa)
+    return Word(word.text, new_ipa)
+
 # Return the number of differences between words
 def differences(word1, word2, ignore_stress):
     regex = re.compile("[.ˈˌ]")
-    if ignore_stress:
-        ipa1 = regex.sub("", word1.ipa)
-        ipa2 = regex.sub("", word2.ipa)
-    else:
-        ipa1 = word1.ipa
-        ipa2 = word2.ipa
-    ipa1 = delimit_into_sounds(ipa1)
-    ipa2 = delimit_into_sounds(ipa2)
+    ipa1 = word1.ipa
+    ipa2 = word2.ipa
     if len(ipa1) != len(ipa2):
         return 0
     count = sum(1 for a, b in zip(ipa1, ipa2) if a != b)
@@ -132,7 +134,9 @@ def differences(word1, word2, ignore_stress):
 # Format a tuple containing two words so that it's human-readable
 def format_tuple(tuple):
     w1, w2 = tuple
-    return '{} {} - {} {}'.format(w1.text, w1.ipa, w2.text, w2.ipa)
+    return '{} /{}/ - {} /{}/'.format(
+            w1.text, ''.join(w1.ipa),
+            w2.text, ''.join(w2.ipa))
 
 # Two characters are interestingly different if they're sounds that are likely
 # to be confused
@@ -146,8 +150,8 @@ def are_interestingly_different(ch1, ch2):
 # None
 def interesting_pair(tuple):
     word1, word2 = tuple
-    ipa1 = delimit_into_sounds(word1.ipa)
-    ipa2 = delimit_into_sounds(word2.ipa)
+    ipa1 = word1.ipa
+    ipa2 = word2.ipa
     for a, b in zip(ipa1, ipa2):
         if are_interestingly_different(a, b):
             return tuple
@@ -156,6 +160,8 @@ def interesting_pair(tuple):
 
 # Given the IPA pronunciaion of a word, return all the sounds in it
 def delimit_into_sounds(ipa):
-    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", ipa)
+    # Remove starting and ending '/'
+    sounds = re.sub("/", "", ipa)
+    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [s for s in sounds if s]
     return sounds
