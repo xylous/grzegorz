@@ -11,6 +11,9 @@ def create_argparser():
     # 'fetchpron' subcommand
     parser_fetchpron = subparsers.add_parser('fetchpron',
             help='Fetch all IPA pronunciations for the words into a JSON file')
+    parser_fetchpron.add_argument('language',
+            type=str,
+            help="the language you want pronunciation for")
     parser_fetchpron.add_argument('input',
             type=str,
             help='file containing the list of words')
@@ -50,13 +53,16 @@ def main():
         parser.print_help()
         return
 
-    nooptimise = args.nooptimise;
-    ignore_stress = args.ignore_stress;
-
     match cmd:
         case 'fetchpron':
-            fetchpron(infile, outfile)
+            language = args.language
+            if not language:
+                print('Invalid language')
+                return
+            fetchpron(infile, outfile, language)
         case 'createpairs':
+            nooptimise = args.nooptimise;
+            ignore_stress = args.ignore_stress;
             createpairs(infile, outfile, nooptimise, ignore_stress)
 
 main()

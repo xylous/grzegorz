@@ -8,10 +8,11 @@ class Word:
         self.ipa = ipa
 
     # Return a copy of the current file with foo
-    def get_ipa(self):
+    def get_ipa(self, language):
         print("Processing '", self.text, "'", sep="")
         parser = WiktionaryParser()
-        word = parser.fetch(self.text, 'polish')
+        parser.set_default_language(language)
+        word = parser.fetch(self.text)
         # If we get no result, skip.
         try:
             pron = word[0]['pronunciations']
