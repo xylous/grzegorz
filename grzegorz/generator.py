@@ -1,4 +1,5 @@
 from .word import Word, readfile, writefile
+import re
 import json
 
 # Pairs of sounds that are easy to mishear - thus, they're *interesting*
@@ -36,7 +37,7 @@ interesting_differences = [
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
 # a file `outfile` with all the minimal pairs found
-def createpairs(infile, outfile, nooptimise):
+def createpairs(infile, outfile, nooptimise, ignore_stress):
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
     minpairs = []
@@ -50,7 +51,7 @@ def createpairs(infile, outfile, nooptimise):
             w2 = words[j]
             if w1.ipa == w2.ipa or len(w1.ipa) != len(w2.ipa):
                 continue
-            diffs = differences(w1, w2)
+            diffs = differences(w1, w2, ignore_stress)
             if diffs == 1:
                 minpairs.append((w1, w2))
     if not nooptimise:
@@ -63,9 +64,14 @@ def createpairs(infile, outfile, nooptimise):
 ### Helper functions ###
 
 # Return the number of differences between words
-def differences(word1, word2):
-    ipa1 = word1.ipa
-    ipa2 = word2.ipa
+def differences(word1, word2, ignore_stress):
+    regex = re.compile("[.ˈˌ]")
+    if ignore_stress:
+        ipa1 = regex.sub("", word1.ipa)
+        ipa2 = regex.sub("", word2.ipa)
+    else:
+        ipa1 = word1.ipa
+        ipa2 = word2.ipa
     count = sum(1 for a, b in zip(ipa1, ipa2) if a != b)
     return count
 

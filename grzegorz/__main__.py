@@ -31,6 +31,11 @@ def create_argparser():
             default=False,
             dest="nooptimise",
             help="generate all possible minimal pairs (default: optimise)")
+    parser_createpairs.add_argument('--ignore-stress',
+            action='store_true',
+            default=False,
+            dest="ignore_stress",
+            help="ignore syllable stress in IPA text (default: don't)")
     return parser
 
 def main():
@@ -46,11 +51,12 @@ def main():
         return
 
     nooptimise = args.nooptimise;
+    ignore_stress = args.ignore_stress;
 
     match cmd:
         case 'fetchpron':
             fetchpron(infile, outfile)
         case 'createpairs':
-            createpairs(infile, outfile, nooptimise)
+            createpairs(infile, outfile, nooptimise, ignore_stress)
 
 main()
