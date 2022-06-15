@@ -123,9 +123,13 @@ def main():
     parser = create_argparser()
     args = parser.parse_args()
 
-    cmd = args.subparser_name
-    infile = args.input
-    outfile = args.output
+    try:
+        cmd = args.subparser_name
+        infile = args.input
+        outfile = args.output
+    except:
+        parser.print_help()
+        return
 
     match cmd:
         case 'fetchpron':
