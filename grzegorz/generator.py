@@ -41,6 +41,8 @@ def createpairs(infile, outfile, nooptimise, ignore_stress):
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
     minpairs = []
+    if ignore_stress:
+        print("Okay, syllable stress will be ignored")
     # NOTE: we must first generate all possibilities and only then filter out
     # the interesting ones because the function checking for differences might
     # miss things otherwise
