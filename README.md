@@ -72,7 +72,7 @@ There are three commands:
     the list.
 
     Secondly, syllable stress marks (`.`, `ˌ`, `ˈ`) are kept. You can use the
-    `--ignore-stress` to discard them when generating minimal pairs.
+    `--ignore-stress` flag to discard them when generating minimal pairs.
 
 - `makedeck`, which takes the output file of `generate` and creates an Anki
     deck package (`./grzegorz-anki-deck.apkg`) which you can import from inside
