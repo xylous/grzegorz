@@ -17,11 +17,16 @@ text, every word on its own line, and then the minimal pair generator is ran.
 
 ### Requirements
 
+For building:
+
 - python3
 - pip
 
+For running (install with `pip`):
+
 - wiktionaryparser
 - tqdm
+- genanki
 
 ### Installation
 
@@ -43,6 +48,7 @@ There are two commands:
 - `fetchpron`, which takes a file containing words separated by newlines, and,
     given the language you want your IPA pronunciations in, creates a JSON file
     at the specified output location
+
 - `createpairs`, which takes the JSON file created before, and outputs the list
     of minimal pairs it found at the specified location.
 
@@ -53,6 +59,10 @@ There are two commands:
 
     Secondly, syllable stress marks (`.`, `ˌ`, `ˈ`) are kept. You can use the
     `--ignore-stress` to discard them when generating minimal pairs.
+
+- `ankideck`, which takes the output file of `createpairs` and creates an Anki
+    deck package (`./grzegorz-anki-deck.apkg`) which you can import from inside
+    Anki
 
 So, how do you actually get the minimal pairs? You need to get the words from a
 frequency list, that's obvious. But note that `grzegorz` doesn't accept
@@ -86,8 +96,20 @@ grzegorz fetchpron "french" wordlist.txt processed.json
 grzegorz createpairs processed.json minpairs.txt --ignore-stress
 ```
 
-If you were to specify the wrong language, shame on you: you'll likely end up
-with the wrong pronunciations or none at all.
+If you were to specify the wrong fetch language, shame on you: you'll likely end
+up with the wrong pronunciations or none at all.
+
+Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
+the current directory, no matter where the input file is located):
+
+```
+grzegorz ankideck minpairs.txt
+```
+
+After that, open Anki, click on `Files` in the top left corner, then `Import`,
+and then find the package and load it. A new deck, "grzegorz's minimal pairs",
+should pop up. You can rename it, you can move it, you can do anything with it.
+You also have control over its options, i.e. how often you review it and whatnot.
 
 ## Roadmap
 
@@ -97,7 +119,10 @@ with the wrong pronunciations or none at all.
 - [x] generate minimal pairs
     - [x] optimise: look for interesting differences
     - [x] optimise: ignore stressed syllables
-- [ ] Anki integration
+- [x] Anki integration
+    - [x] create Anki flashcards from the generated minimal pairs
+    - [x] export a deck containing the created flashcards
+    - [ ] add pronunciations for every flashcard
 
 ## Contributing
 
