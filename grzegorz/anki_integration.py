@@ -46,3 +46,18 @@ def parse_input_file(path):
     lines = readfile(path).splitlines()
     minpairs = list(map(line_to_minpair, lines))
     return minpairs
+
+def minpair_to_anki_note(minpair):
+    word1, word2 = minpair
+    note = genanki.Note(
+        model=grzegorz_minpair_model,
+        fields=[
+            word1.text,
+            '',
+            word1.ipa,
+            word2.text,
+            '',
+            word2.ipa,
+        ]
+    )
+    return note
