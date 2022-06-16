@@ -36,6 +36,14 @@ grzegorz_minpair_model = genanki.Model(
     """,
 )
 
+def ankideck(infile):
+    minpairs = parse_input_file(infile)
+    notes = list(map(minpair_to_anki_note, minpairs))
+    deck = notes_to_deck(notes)
+    export_deck(deck)
+
+### HELPER FUNCTIONS ###
+
 def line_to_minpair(line):
     line = line.split()
     word1 = Word(line[0], line[1])

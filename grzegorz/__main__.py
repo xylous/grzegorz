@@ -16,6 +16,7 @@
 import argparse
 from .fetcher import fetchpron
 from .generator import createpairs
+from .anki_integration import ankideck
 
 # Why does it have to be this complicated?
 def create_argparser():
@@ -54,6 +55,11 @@ def create_argparser():
             default=False,
             dest="ignore_stress",
             help="ignore syllable stress in IPA text (default: don't)")
+    parser_createpairs = subparsers.add_parser('ankideck',
+            help='Create an Anki deck package containing all minimal pairs, WITHOUT audio')
+    parser_createpairs.add_argument('input',
+            type=str,
+            help="Output file of 'createpairs'")
     return parser
 
 def main():
@@ -63,21 +69,24 @@ def main():
     try:
         cmd = args.subparser_name
         infile = args.input
-        outfile = args.output
     except:
         parser.print_help()
         return
 
     match cmd:
         case 'fetchpron':
+            outfile = args.output
             language = args.language
             if not language:
                 print('Invalid language')
                 return
             fetchpron(infile, outfile, language)
         case 'createpairs':
+            outfile = args.output
             nooptimise = args.nooptimise;
             ignore_stress = args.ignore_stress;
             createpairs(infile, outfile, nooptimise, ignore_stress)
+        case 'ankideck':
+            ankideck(infile)
 
 main()
