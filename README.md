@@ -109,11 +109,13 @@ So yes, you do have to make sure *all* words in the list are properly formatted.
 You can usually find one on the internet fairly easily, and then you can use a
 `sed` or an `awk` command to format, if it's not.
 
-Let's assume your list is at `wordlist.txt`, and that it's full of French words:
+Let's assume your list is at `wordlist.txt`, and that it's full of French words,
+and let's assume you didn't leave the installation directory (or else python
+won't find the `grzegorz` module):
 
 ```
-grzegorz fetchpron "french" wordlist.txt processed.json
-grzegorz createpairs processed.json minpairs.txt --ignore-stress
+python3 -m grzegorz fetchpron "french" wordlist.txt processed.json
+python3 -m grzegorz createpairs processed.json minpairs.txt --ignore-stress
 ```
 
 If you were to specify the wrong fetch language, shame on you: you'll likely end
@@ -123,7 +125,7 @@ Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
 the current directory, no matter where the input file is located):
 
 ```
-grzegorz ankideck minpairs.txt
+python3 -m grzegorz ankideck minpairs.txt
 ```
 
 After that, open Anki, click on `Files` in the top left corner, then `Import`,
