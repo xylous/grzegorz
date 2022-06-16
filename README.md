@@ -65,24 +65,30 @@ There are two commands:
     Anki
 
 So, how do you actually get the minimal pairs? You need to get the words from a
-frequency list, that's obvious. But note that `grzegorz` doesn't accept
-something like
+frequency list, that's obvious. I found [hermitdave's FrequencyWords
+repository](https://github.com/hermitdave/FrequencyWords/tree/master/content/2016),
+which contains word lists for a bunch of languages, but you could find other
+lists elsewhere.
+
+Note that `grzegorz` doesn't work with something like
 
 ```
 1. the
 tea hjkl
         bacon
+...
 ```
 
-Which it would not parse correctly. Very important: make sure there's NO
-whitespace before the words!
+Which it would not parse correctly. It won't even emit an error if the format is
+wrong! Also, make sure there's no whitespace before or after the words.
 
-Instead, the proper list would look like:
+The proper list would look like:
 
 ```
 the
 tea
 bacon
+...
 ```
 
 So yes, you do have to make sure *all* words in the list are properly formatted.
