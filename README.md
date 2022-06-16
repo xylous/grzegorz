@@ -93,7 +93,7 @@ bacon
 
 So yes, you do have to make sure *all* words in the list are properly formatted.
 You can usually find one on the internet fairly easily, and then you can use a
-`sed` or an `awk` command to format, if it's not .
+`sed` or an `awk` command to format, if it's not.
 
 Let's assume your list is at `wordlist.txt`, and that it's full of French words:
 
