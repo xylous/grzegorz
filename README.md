@@ -57,13 +57,13 @@ python3 -m grzegorz --help
 
 ### Usage
 
-There are two commands:
+There are three commands:
 
-- `fetchpron`, which takes a file containing words separated by newlines, and,
+- `fetchipa`, which takes a file containing words separated by newlines, and,
     given the language you want your IPA pronunciations in, creates a JSON file
     at the specified output location
 
-- `createpairs`, which takes the JSON file created before, and outputs the list
+- `generate`, which takes the JSON file created before, and outputs the list
     of minimal pairs it found at the specified location.
 
     Note that, by default, it's optimised: it filters out pairs with "boring"
@@ -74,7 +74,7 @@ There are two commands:
     Secondly, syllable stress marks (`.`, `ˌ`, `ˈ`) are kept. You can use the
     `--ignore-stress` to discard them when generating minimal pairs.
 
-- `ankideck`, which takes the output file of `createpairs` and creates an Anki
+- `makedeck`, which takes the output file of `generate` and creates an Anki
     deck package (`./grzegorz-anki-deck.apkg`) which you can import from inside
     Anki
 
@@ -114,8 +114,8 @@ and let's assume you didn't leave the installation directory (or else python
 won't find the `grzegorz` module):
 
 ```
-python3 -m grzegorz fetchpron "french" wordlist.txt processed.json
-python3 -m grzegorz createpairs processed.json minpairs.txt --ignore-stress
+python3 -m grzegorz fetchipa "french" wordlist.txt processed.json
+python3 -m grzegorz generate processed.json minpairs.txt --ignore-stress
 ```
 
 If you were to specify the wrong fetch language, shame on you: you'll likely end
@@ -125,7 +125,7 @@ Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
 the current directory, no matter where the input file is located):
 
 ```
-python3 -m grzegorz ankideck minpairs.txt
+python3 -m grzegorz makedeck minpairs.txt
 ```
 
 After that, open Anki, click on `Files` in the top left corner, then `Import`,
