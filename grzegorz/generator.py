@@ -140,7 +140,7 @@ INTERESTING_DIFFERENCES = [
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
 # a file `outfile` with all the minimal pairs found
-def createpairs(infile, outfile, nooptimise, ignore_stress):
+def generate(infile, outfile, nooptimise, ignore_stress):
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.fromJSON)
     words = list(map(partial(word_with_delimited_ipa, ignore_stress=ignore_stress), words))

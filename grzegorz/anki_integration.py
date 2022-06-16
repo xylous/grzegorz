@@ -51,7 +51,7 @@ grzegorz_minpair_model = genanki.Model(
     """,
 )
 
-def ankideck(infile):
+def makedeck(infile):
     minpairs = parse_input_file(infile)
     notes = list(map(minpair_to_anki_note, minpairs))
     deck = notes_to_deck(notes)

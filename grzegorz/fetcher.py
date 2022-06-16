@@ -20,7 +20,7 @@ import json
 from tqdm import tqdm
 
 # Given an input file containing a list of words separated
-def fetchpron(infile, outfile, language):
+def fetchipa(infile, outfile, language):
     numproc = 20
 
     contents = readfile(infile)
