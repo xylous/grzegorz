@@ -52,6 +52,8 @@ IPA_CHARACTERS = ([
     'ø',
     'ə',
     'ɑ',
+    'œ',
+    'æ',
 
     # Nasal vowels
     'ɑ̃',
@@ -107,7 +109,10 @@ INTERESTING_DIFFERENCES = [
     ('ś', 'ʂ'),
 
     # Vowels
+    ('ɑ', 'a'),
     ('ɛ̃', 'ɛ'),
+    ('e', 'ɛ'),
+    ('ɛ:', 'ɛ'),
     ('ɨ', 'i'),
     ('i', 'e'),
     ('ɔ', 'o'),
@@ -119,8 +124,12 @@ INTERESTING_DIFFERENCES = [
     ('œ̃', 'ɑ̃'),
     ('œ̃', 'ɛ̃'),
     ('œ̃', 'ɔ̃'),
+    ('œ̃', 'œ'),
+    ('ɔ', 'œ'),
+    ('o', 'œ'),
     ('ɑ̃', 'ɛ̃'),
-    ('ə', 'a'),
+    ('ə', 'ɛ'),
+    ('ə', 'ɛ̃'),
     ('ə', 'a'),
     ('u', 'y'),
     ('ɥ', 'y'),
@@ -207,6 +216,6 @@ def delimit_into_sounds(ipa, ignore_stress):
     sounds = re.sub("/", "", ipa)
     if ignore_stress:
         sounds = re.sub("[.ˈˌ]", "", sounds)
-    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
+    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[:]?", sounds)
     sounds = [s for s in sounds if s]
     return sounds
