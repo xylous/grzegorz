@@ -16,9 +16,9 @@
 from .word import Word, readfile
 import genanki
 
+# The model used for the flashcards is rather simple
 grzegorz_minpair_model = genanki.Model(
-    # Randomly generated Model ID.
-    1958583115,
+    1958583115, # Randomly generated Model ID. Needs to be hardcoded!
     'Grzegorz Minimal Pairs',
     fields=[
         {'name': 'Word 1 text'},
@@ -59,17 +59,21 @@ def ankideck(infile):
 
 ### HELPER FUNCTIONS ###
 
+# Convert a line of `createpairs`'s output back into a minimal pair
 def line_to_minpair(line):
     line = line.split()
     word1 = Word(line[0], line[1])
     word2 = Word(line[-2], line[-1])
     return (word1, word2)
 
+# Convert `craetepairs`'s output file into a list of minimal pairs
 def parse_input_file(path):
     lines = readfile(path).splitlines()
     minpairs = list(map(line_to_minpair, lines))
     return minpairs
 
+# Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
+# as its model.
 def minpair_to_anki_note(minpair):
     word1, word2 = minpair
     note = genanki.Note(
@@ -85,6 +89,7 @@ def minpair_to_anki_note(minpair):
     )
     return note
 
+# Add a list of notes into a deck called "grzegorz's minimal pairs"
 def notes_to_deck(notes):
     deck = genanki.Deck(
         1597757363,
@@ -94,6 +99,7 @@ def notes_to_deck(notes):
         deck.add_note(note)
     return deck
 
+# Package the given deck and write it to a file
 def export_deck(deck):
     outfile = 'grzegorz-anki-deck.apkg'
     genanki.Package(deck).write_to_file(outfile)
