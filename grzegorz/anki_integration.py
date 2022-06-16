@@ -61,3 +61,17 @@ def minpair_to_anki_note(minpair):
         ]
     )
     return note
+
+def notes_to_deck(notes):
+    deck = genanki.Deck(
+        1597757363,
+        "grzegorz's minimal pairs",
+    )
+    for note in notes:
+        deck.add_note(note)
+    return deck
+
+def export_deck(deck):
+    outfile = 'grzegorz-anki-deck.apkg'
+    genanki.Package(deck).write_to_file(outfile)
+    print('Done! Now import', outfile, 'in your Anki')
