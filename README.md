@@ -1,17 +1,31 @@
 # grzegorz
 
-Grzegorz - a minimal pair generator.
+`grzegorz` - a minimal pair generator.
 
-> "That name is a hack to make the speaker bite themself"
-- a wise discord user
+What's it useful for? Consider that you're learning a new (real) language: like
+any sane person, you want to learn the phonetics, both to be able to hear words
+and to be able to speak (Tip: if you learn to it at the beginning of your
+journey, you won't have to struggle fixing bad pronunciation habits later on).
+But, in order to learn the sounds, you have to be able to differentiate between
+them. You won't get far if you keep messing up your `ou`s and `u`s in French.
 
-~~Maybe deciding to start learning Polish wasn't a good choice.~~ I spent an
-hour looking for a list of minimal pairs in Polish but in vain, I found nothing.
-And so it struck me: I can just get a frequency list, slam it into a minimal
-pair generator, and create my own list! But getting the pronunciations for such
-a long list of words manually? No, I had to incorporate a pronunciation scraper
-into this project. So practically, you give Grzegorz a list of words in plain
-text, every word on its own line, and then the minimal pair generator is ran.
+Enter: minimal pairs - pairs of words that differ by only *one* sound. Think:
+bit - pit (english), rue - roux (french) etc. When you test yourself, you're
+given the pronunciation of a word and then you have to check if you've got it
+right. After a few tests, your ability to *know* what sound you heard increases,
+even outside of said tests.
+
+### No, but: simply, why?
+
+~~Maybe deciding to start learning Polish wasn't a good choice.~~
+
+I spent an hour looking for a list of minimal pairs in Polish but in vain, I
+found nothing. And so it struck me: I can just get a frequency list, slam it
+into a minimal pair generator, and create my own list! But getting the
+pronunciations for such a long list of words manually? No, I had to incorporate
+a pronunciation scraper into this project. So practically, you give `grzegorz` a
+list of words in plain text, every word on its own line, and then the minimal
+pair generator is ran.
 
 ## Getting started
 
