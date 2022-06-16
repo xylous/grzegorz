@@ -35,3 +35,14 @@ grzegorz_minpair_model = genanki.Model(
 }
     """,
 )
+
+def line_to_minpair(line):
+    line = line.split()
+    word1 = Word(line[0], line[1])
+    word2 = Word(line[-2], line[-1])
+    return (word1, word2)
+
+def parse_input_file(path):
+    lines = readfile(path).splitlines()
+    minpairs = list(map(line_to_minpair, lines))
+    return minpairs
