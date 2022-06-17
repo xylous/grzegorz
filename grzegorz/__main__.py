@@ -27,10 +27,10 @@ def create_argparser():
     subparsers = parser.add_subparsers(dest='subparser_name')
     # 'wordlist' command
     parser_wordlist = subparsers.add_parser('wordlist',
-            help='Fetch the word list for')
+            help='Fetch the word list for a given language, containing a certain number of words')
     parser_wordlist.add_argument('language',
             type=str,
-            help='language of the words')
+            help='language of the wordlist')
     parser_wordlist.add_argument('numwords',
             type=int,
             help='number of words to keep')
@@ -77,11 +77,7 @@ def main():
     parser = create_argparser()
     args = parser.parse_args()
 
-    try:
-        cmd = args.subparser_name
-    except:
-        parser.print_help()
-        return
+    cmd = args.subparser_name
 
     match cmd:
         case 'wordlist':
@@ -102,5 +98,7 @@ def main():
         case 'makedeck':
             infile = args.infile
             makedeck(infile)
+        case _:
+            parser.print_help()
 
 main()
