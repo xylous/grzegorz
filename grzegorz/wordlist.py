@@ -76,6 +76,7 @@ def wordlist(lang, numwords, outfile):
     words_kept_slice = slice(0, numwords)
     raw_words = fetch_contents(link).splitlines()[words_kept_slice]
     raw_words = list(map(format_line, raw_words))
+    raw_words.insert(0, lang_name(lang))
     writefile(outfile, '\n'.join(raw_words))
     return
 
@@ -94,6 +95,14 @@ def lang_code(lang):
         if lang in pair:
             _, code = pair
             return code
+    return ''
+
+# Given a language, return its language code
+def lang_name(lang):
+    for pair in VALID_LANGUAGES:
+        if lang in pair:
+            name, _ = pair
+            return name
     return ''
 
 # Return the link to the wordlist for the given language
