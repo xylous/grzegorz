@@ -24,14 +24,14 @@ import re
 # delimited correctly
 IPA_CHARACTERS = ([
     # Consonants
-    't͡ɕ',
-    't͡ʂ',
-    't͡s',
-    't͡ʃ',
-    'd͡ʐ',
-    'd͡ʑ',
-    'd͡z',
-    'd͡ʒ',
+    't͡ɕ', 'tɕ',
+    't͡ʂ', 'tʂ',
+    't͡s', 'ts',
+    't͡ʃ', 'tʃ',
+    'd͡ʐ', 'dʐ',
+    'd͡ʑ', 'dʑ',
+    'd͡z', 'dz',
+    'd͡ʒ', 'dʒ',
     'ʂ',
     'ɕ',
     'ɲ',
@@ -77,6 +77,15 @@ IPA_CHARACTERS = ([
     'ɥ',
 ])
 
+# We only want to deal with transliterations of these sounds that *don't* have a
+# tie above them. This is the proper way to represent affricates.
+BAD_TRANSLITERATIONS = ['tɕ', 'tʂ', 'ts', 'tʃ', 'dʐ', 'dʑ', 'dz']
+
+def process_transliteration(sound: str):
+    if sound in BAD_TRANSLITERATIONS:
+        sound = sound[0] + "'͡'" + sound[1]
+    return sound
+
 # Hardcoding is a bad practice. And tiresome as well. Especially when you add a
 # new sound: you have to manually add so many pairs!
 def parse_differences_chain(diffs_chain):
@@ -91,7 +100,7 @@ def flatten(lst):
 
 INTERESTING_DIFFERENCES_CHAINS = [
     # Consonants
-    ['t͡ɕ', 't͡ʂ', 't͡s', 't͡ʃ', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'ʂ', 'ʒ', 'ʃ', 'ɕ'],
+    ['t͡ɕ', 't͡ʂ', 't͡s', 't͡ʃ', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'd͡ʒ', 'ʂ', 'ʒ', 'ʃ', 'ɕ'],
     ['n', 'ɲ', 'ŋ'],
     ['v', 'f'],
     ['x', 'h', 'xʲ', 'ç'],
@@ -101,7 +110,7 @@ INTERESTING_DIFFERENCES_CHAINS = [
 
     # Oral vowels (and semi-vowels)
     ['ɑ', 'a', 'ɐ', 'ə', 'ʌ'],
-    ['e', 'ɛ', 'ɛ:', 'ɪ'],
+    ['e', 'ɛ', 'ɛ:', 'ɪ', 'ɪ:'],
     ['ɨ', 'i', 'j', 'ɪ', 'ɪ:'],
     ['ɔ', 'o', 'ø', 'œ'],
     ['ɥ', 'j'],
@@ -200,5 +209,5 @@ def delimit_into_sounds(ipa, ignore_stress):
     if ignore_stress:
         sounds = re.sub("[.ˈˌ]", "", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[:]?", sounds)
-    sounds = [s for s in sounds if s]
+    sounds = [process_transliteration(s) for s in sounds if s]
     return sounds
