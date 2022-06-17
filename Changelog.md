@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.1 - 2022-06-17
+
+- rephrase paragraphs in README as to avoid ambiguity re: the word
+    'pronunciation'
+- fetchipa: change the message printed to console slightly, to avoid ambiguity
+
 ## v0.3.0 - 2022-06-17
 
 - add `wordlist`, `fullmake` commands
