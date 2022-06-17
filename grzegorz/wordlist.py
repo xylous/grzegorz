@@ -42,3 +42,10 @@ def lang_code(lang):
         if lang in pair:
             _, code = pair
             return code
+    return ''
+
+# Return the link to the wordlist for the given language
+def wordlist_link_for_lang(lang):
+    code = lang_code(lang)
+    link = RESOURCES_REPO_LINK + "/" + code + "/" + code + "_50k.txt"
+    return link
