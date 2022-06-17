@@ -47,6 +47,8 @@ IPA_CHARACTERS = ([
     'ɟ',
     'ɫ',
     'ʎ',
+    'ç',
+    'ɣ',
 
     # Oral vowels
     'ɔ',
@@ -57,6 +59,7 @@ IPA_CHARACTERS = ([
     'ɑ',
     'œ',
     'æ',
+    'ɐ',
     'ɤ',
 
     # Nasal vowels
@@ -104,6 +107,8 @@ INTERESTING_DIFFERENCES = [
     ('u', 'w'),
     ('x', 'h'),
     ('x', 'xʲ'),
+    ('x', 'ç'),
+    ('ç', 'xʲ'),
     ('z', 'ʑ'),
     ('ʐ', 'ʑ'),
     ('z', 'ʑ'),
@@ -122,6 +127,8 @@ INTERESTING_DIFFERENCES = [
 
     # Vowels
     ('ɑ', 'a'),
+    ('ɑ', 'ɐ'),
+    ('ɐ', 'a'),
     ('ɛ̃', 'ɛ'),
     ('e', 'ɛ'),
     ('ɛ:', 'ɛ'),
@@ -148,6 +155,9 @@ INTERESTING_DIFFERENCES = [
     ('ɥ', 'u'),
     ('ɥ', 'w'),
     ('ɥ', 'j'),
+    ('ɤ', 'u'),
+    ('ɤ', 'y'),
+    ('ɤ', 'ɥ'),
 ]
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
