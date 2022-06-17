@@ -41,6 +41,7 @@ For running (install with `pip`):
 - wiktionaryparser
 - tqdm
 - genanki
+- requests
 
 ### Installation
 
