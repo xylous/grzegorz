@@ -28,3 +28,19 @@ VALID_LANGUAGES = [
 
 # This is where all the lists are fetched from
 RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2016'
+
+# We only accept languages that are on the list
+def valid_lang(lang):
+    return lang in VALID_LANGUAGES
+
+# Given a language, return its language code
+def lang_code(lang):
+    code = ''
+    match lang:
+        case 'english':
+            code = 'en'
+        case 'french':
+            code = 'fr'
+        case 'polish':
+            code = 'pl'
+    return code
