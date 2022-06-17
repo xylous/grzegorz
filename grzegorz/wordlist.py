@@ -19,11 +19,11 @@ from .word import writefile
 # List of languages for which word lists can be fetched
 VALID_LANGUAGES = [
     # Germanic languages
-    'english',
+    ('english', 'en'),
     # Romance languages
-    'french',
+    ('french', 'fr'),
     # Slavic languages
-    'polish',
+    ('polish', 'pl'),
 ]
 
 # This is where all the lists are fetched from
@@ -31,16 +31,14 @@ RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWor
 
 # We only accept languages that are on the list
 def valid_lang(lang):
-    return lang in VALID_LANGUAGES
+    for pair in VALID_LANGUAGES:
+        if lang in pair:
+            return True
+    return False
 
 # Given a language, return its language code
 def lang_code(lang):
-    code = ''
-    match lang:
-        case 'english':
-            code = 'en'
-        case 'french':
-            code = 'fr'
-        case 'polish':
-            code = 'pl'
-    return code
+    for pair in VALID_LANGUAGES:
+        if lang in pair:
+            _, code = pair
+            return code
