@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 - 2022-06-17
+
+- add `wordlist`, `fullmake` commands
+- fix README-related issues
+- add "Importing in Anki" section to README
+
 ## v0.2.0 - 2022-06-16
 
 - minimal pair generation:
