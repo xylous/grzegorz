@@ -29,6 +29,22 @@ VALID_LANGUAGES = [
 # This is where all the lists are fetched from
 RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2016'
 
+# Fetch a word list of `numwords` and put it into `outfile` for the given
+# language, if it's valid
+# NOTE: the language name should be all lowercase
+def wordlist(lang, numwords, outfile):
+    if not valid_lang(lang):
+        print(lang, "? I can't fetch a wordlist for that", sep='')
+        return
+    link = wordlist_link_for_lang(lang)
+    words_kept_slice = slice(0, numwords)
+    raw_words = fetch_contents(link).splitlines()[words_kept_slice]
+    raw_words = list(map(format_line, raw_words))
+    writefile(outfile, '\n'.join(raw_words))
+    return
+
+### HELPER FUNCTIONS ###
+
 # We only accept languages that are on the list
 def valid_lang(lang):
     for pair in VALID_LANGUAGES:
