@@ -115,7 +115,7 @@ python3 -m grzegorz generate french-ipas.json minpairs.txt --ignore-stress
 ```
 
 If you were to specify the wrong wordlist language, shame on you: you'll likely end
-up with the wrong pronunciations or none at all.
+up with the wrong IPA spellings or, worse, none at all.
 
 Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
 the current directory, no matter where the input file is located):
@@ -147,7 +147,7 @@ often you review it and whatnot.
 - [ ] Anki integration
     - [x] create Anki flashcards from the generated minimal pairs
     - [x] export a deck containing the created flashcards
-    - [ ] add pronunciations for every flashcard
+    - [ ] add audio pronunciations for every flashcard
 
 ## Contributing
 
