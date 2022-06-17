@@ -20,10 +20,46 @@ from .word import writefile
 VALID_LANGUAGES = [
     # Germanic languages
     ('english', 'en'),
+    ('german', 'de'),
+    ('norwegian', 'no'),
+    ('swedish', 'sv'),
+    ('danish', 'da'),
+    ('dutch', 'nl'),
     # Romance languages
     ('french', 'fr'),
+    ('spanish', 'es'),
+    ('italian', 'it'),
+    ('portugese', 'pt'),
+    ('portugese-brazil', 'pt_br'),
+    ('romanian', 'ro'),
     # Slavic languages
     ('polish', 'pl'),
+    ('ukrainian', 'uk'),
+    ('russian', 'ru'),
+    ('bulgarian', 'bg'),
+    ('serbian', 'se'),
+    ('croatian', 'hr'),
+    ('slovenian', 'sl'),
+    ('czech', 'cs'),
+    ('slovakian', 'sk'),
+    # Finno-ugric languages
+    ('hungarian', 'hu'),
+    ('finnish', 'fi'),
+    ('estonian', 'et'),
+    # Constructed languages
+    ('esperanto', 'eo'),
+    # Other
+    ('basque', 'eu'),
+    ('albanian', 'sq'),
+    ('greek', 'el'),
+    ('arabic', 'ar'),
+    ('georgian', 'ka'),
+    ('armenian', 'hy'),
+    ('persian', 'fa'),
+    ('hindi', 'hi'),
+    ('tamil', 'ta'),
+    ('chinese', 'zh'),
+    ('japanese', 'ja'),
 ]
 
 # This is where all the lists are fetched from
