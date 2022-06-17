@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.3.2 - 2022-06-17
+
+- fix crash when fetching IPA for certain words
+- fix: remove transcription marks ('/', '[' and ']') from IPA spellings when
+    fetching them
+- fix: transliterate all affricates with a tie (IPA: `'͡'`)
+- refactor: precompute "interesting differences" instead of hardcoding them
+- parse sounds common to the English IPA
+- add "interesting differences" for sounds common to the English IPA
+
 ## v0.3.1 - 2022-06-17
 
 - rephrase paragraphs in README as to avoid ambiguity re: the word
