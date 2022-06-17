@@ -18,6 +18,7 @@ from .fetcher import fetchipa
 from .generator import generate
 from .anki_integration import makedeck
 from .wordlist import wordlist
+from os import remove
 
 # Why does it have to be this complicated?
 def create_argparser():
@@ -25,6 +26,18 @@ def create_argparser():
             prog='grzegorz',
             description='Generate minimal pairs from a list of words')
     subparsers = parser.add_subparsers(dest='subparser_name')
+    parser_fullmake = subparsers.add_parser('fullmake',
+            help='Build an Anki deck for a language automatically')
+    parser_fullmake.add_argument('language',
+            type=str)
+    parser_fullmake.add_argument('numwords',
+            type=int,
+            help='number of words to sample')
+    parser_fullmake.add_argument('--clean',
+            dest="clean",
+            action="store_true",
+            default=False,
+            help='remove temporary files after building the deck')
     # 'wordlist' command
     parser_wordlist = subparsers.add_parser('wordlist',
             help='Fetch the word list for a given language, containing a certain number of words')
@@ -73,6 +86,25 @@ def create_argparser():
             help="Output file of 'generate'")
     return parser
 
+def fullmake(language, numwords, clean):
+    nooptimise = 0
+    ignore_stress = 1
+
+    wordlist_file = language + "-wordlist.txt"
+    ipa_json = language + "-ipa.json"
+    minpairs_file = language + "-minpairs.txt"
+
+    wordlist(language, numwords, wordlist_file)
+    fetchipa(wordlist_file, ipa_json)
+    generate(ipa_json, minpairs_file, nooptimise, ignore_stress)
+    makedeck(minpairs_file)
+
+    if clean:
+        print("Removing temporary files...")
+        remove(wordlist_file)
+        remove(ipa_json)
+        remove(minpairs_file)
+
 def main():
     parser = create_argparser()
     args = parser.parse_args()
@@ -80,6 +112,11 @@ def main():
     cmd = args.subparser_name
 
     match cmd:
+        case 'fullmake':
+            clean = args.clean
+            numwords = args.numwords
+            language = args.language.lower()
+            fullmake(language, numwords, clean)
         case 'wordlist':
             outfile = args.outfile
             numwords = args.numwords
