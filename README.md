@@ -137,13 +137,12 @@ often you review it and whatnot.
 
 ## Roadmap
 
-- [x] fetch pronunciations for words
-    - [x] in any language
-    - [x] display a status bar
+- [x] fetch a wordlist of most used words in a given language
+- [x] fetch the IPAs for a given wordlist
 - [x] generate minimal pairs
     - [x] optimise: look for interesting differences
     - [x] optimise: ignore stressed syllables
-- [x] Anki integration
+- [ ] Anki integration
     - [x] create Anki flashcards from the generated minimal pairs
     - [x] export a deck containing the created flashcards
     - [ ] add pronunciations for every flashcard
