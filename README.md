@@ -70,6 +70,19 @@ the number of words to sample (the higher the sample, the more possible minimal
 pairs found, although the runtime is longer), and, optionally, if it should
 remove the files it made when running (`--clean` option).
 
+So if you wanted to sample the 5000 most common Polish words (like me), you'd
+do:
+
+```
+python3 -m grzegorz fullmake "Polish" 5000
+```
+
+Check the "[Importing into Anki](#importing-into-anki)" section for information
+on how you can use the deck in Anki-proper.
+
+But if you want to manually go through the processes of creating a minimal pair
+deck, then read ahead.
+
 #### Manual
 
 There are four commands, each corresponding to a single stage in the creation
