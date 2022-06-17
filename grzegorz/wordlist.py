@@ -69,6 +69,7 @@ RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWor
 # language, if it's valid
 # NOTE: the language name should be all lowercase
 def wordlist(lang, numwords, outfile):
+    language = lang_name(lang)
     if not valid_lang(lang):
         print(lang, "? I can't fetch a wordlist for that", sep='')
         return
@@ -76,8 +77,9 @@ def wordlist(lang, numwords, outfile):
     words_kept_slice = slice(0, numwords)
     raw_words = fetch_contents(link).splitlines()[words_kept_slice]
     raw_words = list(map(format_line, raw_words))
-    raw_words.insert(0, lang_name(lang))
+    raw_words.insert(0, language)
     writefile(outfile, '\n'.join(raw_words))
+    print("Fetched", numwords, language, "words into", outfile)
     return
 
 ### HELPER FUNCTIONS ###
