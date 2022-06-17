@@ -49,3 +49,8 @@ def wordlist_link_for_lang(lang):
     code = lang_code(lang)
     link = RESOURCES_REPO_LINK + "/" + code + "/" + code + "_50k.txt"
     return link
+
+# Return the string containing the webpage at `link`
+def fetch_contents(link):
+    res = requests.get(link)
+    return res.text
