@@ -26,9 +26,9 @@ class Word:
     def get_ipa(self, language):
         parser = WiktionaryParser()
         parser.set_default_language(language)
-        word = parser.fetch(self.text)
         # If we get no result, skip.
         try:
+            word = parser.fetch(self.text)
             pron = word[0]['pronunciations']
             self.ipa = last_word(pron['text'][0])
         except:

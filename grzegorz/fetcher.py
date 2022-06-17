@@ -40,8 +40,6 @@ def fetchipa(infile, outfile):
     jsonlog = json.dumps([word.__dict__ for word in wds])
     writefile(outfile, jsonlog)
 
-    print('Done!')
-
 # Turn the read input into a list of `Word`s
 def input_to_words(strs):
     # Remove empty lines
