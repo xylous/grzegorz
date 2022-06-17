@@ -40,9 +40,6 @@ def create_argparser():
     # 'fetchipa' subcommand
     parser_fetchipa = subparsers.add_parser('fetchipa',
             help='Fetch all IPA pronunciations for the words into a JSON file')
-    parser_fetchipa.add_argument('language',
-            type=str,
-            help="the language you want pronunciation for")
     parser_fetchipa.add_argument('infile',
             type=str,
             help='file containing the list of words')
@@ -95,11 +92,7 @@ def main():
         case 'fetchipa':
             infile = args.infile
             outfile = args.outfile
-            language = args.language
-            if not language:
-                print('Invalid language')
-                return
-            fetchipa(infile, outfile, language)
+            fetchipa(infile, outfile)
         case 'generate':
             infile = args.infile
             outfile = args.outfile
