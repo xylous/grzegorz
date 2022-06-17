@@ -18,6 +18,7 @@ from functools import partial
 import re
 import json
 from tqdm import tqdm
+from itertools import chain, combinations
 
 # The list of unicode characters that are used in IPA text and should be
 # delimited correctly
@@ -70,95 +71,50 @@ IPA_CHARACTERS = ([
 
     # Semi-vowels
     'ɥ',
-    #'j',
-    #'w',
 ])
 
-# Pairs of sounds that are easy to mishear - thus, they're *interesting*
-INTERESTING_DIFFERENCES = [
-    # Consonants
-    ('d͡ʐ', 'd͡ʑ'),
-    ('d͡z', 'd͡ʑ'),
-    ('d͡ʐ', 'd͡z'),
-    ('d͡ʐ', 'ʂ'),
-    ('d͡z', 'ʂ'),
-    ('d͡ʐ', 'j'),
-    ('d͡z', 'j'),
-    ('ʃ', 'ʒ'),
-    ('d͡z', 'ʒ'),
-    ('ʒ', 'd͡ʑ'),
-    ('d͡ʐ', 'ʒ'),
-    ('d͡z', 'ʃ'),
-    ('ʃ', 'd͡ʑ'),
-    ('d͡ʐ', 'ʃ'),
-    ('j', 'ʃ'),
-    ('j', 'd͡ʑ'),
-    ('ʂ', 'd͡ʑ'),
-    ('ɲ', 'n'),
-    ('ɲ', 'ŋ'),
-    ('ŋ', 'n'),
-    ('t͡ɕ', 'ʃ'),
-    ('ʃ', 't͡ʂ'),
-    ('t͡s', 'ʃ'),
-    ('t͡ɕ', 't͡s'),
-    ('t͡ɕ', 't͡ʂ'),
-    ('t͡s', 't͡ʂ'),
-    ('v', 'f'),
-    ('u', 'w'),
-    ('x', 'h'),
-    ('x', 'xʲ'),
-    ('x', 'ç'),
-    ('ç', 'xʲ'),
-    ('z', 'ʑ'),
-    ('ʐ', 'ʑ'),
-    ('z', 'ʑ'),
-    ('z', 'ʐ'),
-    ('z', 's'),
-    ('ś', 's'),
-    ('ś', 'ʂ'),
-    ('ʎ', 'ɫ'),
-    ('l', 'ɫ'),
-    ('ʎ', 'l'),
-    ('ɟ', 'j'),
-    ('ɟ', 'g'),
-    ('ɟ', 'ɡʲ'),
-    ('ɡʲ', 'g'),
-    ('ɡʲ', 'j'),
+# Hardcoding is a bad practice. And tiresome as well. Especially when you add a
+# new sound: you have to manually add so many pairs!
+def parse_differences_chain(diffs_chain):
+    s = list(diffs_chain)
+    # range(2, 2+1) returns all tuples that are exactly 2 in length - exactly
+    # what we need
+    pairs = chain.from_iterable(combinations(s, r) for r in range(2, 2+1))
+    return list(pairs)
 
-    # Vowels
-    ('ɑ', 'a'),
-    ('ɑ', 'ɐ'),
-    ('ɐ', 'a'),
-    ('ɛ̃', 'ɛ'),
-    ('e', 'ɛ'),
-    ('ɛ:', 'ɛ'),
-    ('ɨ', 'i'),
-    ('i', 'e'),
-    ('ɔ', 'o'),
-    ('ɔ', 'ø'),
-    ('o', 'ø'),
-    ('ɔ̃', 'ɔ'),
-    ('e', 'ɛ'),
-    ('ɛ̃', 'ɔ̃'),
-    ('œ̃', 'ɑ̃'),
-    ('œ̃', 'ɛ̃'),
-    ('œ̃', 'ɔ̃'),
-    ('œ̃', 'œ'),
-    ('ɔ', 'œ'),
-    ('o', 'œ'),
-    ('ɑ̃', 'ɛ̃'),
-    ('ə', 'ɛ'),
-    ('ə', 'ɛ̃'),
-    ('ə', 'a'),
-    ('u', 'y'),
-    ('ɥ', 'y'),
-    ('ɥ', 'u'),
-    ('ɥ', 'w'),
-    ('ɥ', 'j'),
-    ('ɤ', 'u'),
-    ('ɤ', 'y'),
-    ('ɤ', 'ɥ'),
+def flatten(lst):
+    return set(chain(*lst))
+
+INTERESTING_DIFFERENCES_CHAINS = [
+    # Consonants
+    ['t͡ɕ', 't͡ʂ', 't͡s', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'ʂ', 'ʒ', 'ʃ', 'ɕ'],
+    ['n', 'ɲ', 'ŋ'],
+    ['v', 'f'],
+    ['x', 'h', 'xʲ', 'ç'],
+    ['z', 'ʑ', 'ʐ', 's', 'ś', 'ʂ'],
+    ['ʎ', 'ɫ', 'l'],
+    ['ɟ', 'j', 'g', 'ɡʲ', 'g'],
+
+    # Oral vowels (and semi-vowels)
+    ['ɑ', 'a', 'ɐ', 'ə'],
+    ['e', 'ɛ', 'ɛ:'],
+    ['ɨ', 'i', 'j'],
+    ['ɔ', 'o', 'ø', 'œ'],
+    ['ɥ', 'j'],
+    ['ɥ', 'u', 'ɤ', 'y', 'w'],
+    ['i', 'e'],
+
+    # Nasal vowels
+    ['ɛ̃', 'ɛ'],
+    ['ɛ̃', 'ə'],
+    ['ɔ̃', 'ɔ'],
+    ['œ̃', 'œ', 'ɔ'],
+    ['ɛ̃', 'ɔ̃', 'œ̃', 'ɑ̃'],
 ]
+
+INTERESTING_DIFFERENCES = flatten(list(map(
+            parse_differences_chain,
+            INTERESTING_DIFFERENCES_CHAINS)))
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
 # a file `outfile` with all the minimal pairs found
