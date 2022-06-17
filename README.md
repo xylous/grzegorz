@@ -57,14 +57,36 @@ python3 -m grzegorz --help
 
 ### Usage
 
-There are three commands:
+If you want an to get an Anki deck full of minimal pairs without having to
+bother too much with boring details, use `fullmake`:
 
-- `fetchipa`, which takes a file containing words separated by newlines, and,
-    given the language you want your IPA pronunciations in, creates a JSON file
-    at the specified output location
+```
+python3 -m grzegorz fullmake <language> <numwords> [--clean]
+```
 
-- `generate`, which takes the JSON file created before, and outputs the list
-    of minimal pairs it found at the specified location.
+In other words, you tell it what language you want your minimal pairs in, and
+the number of words to sample (the higher the sample, the more possible minimal
+pairs found, although the runtime is longer), and, optionally, if it should
+remove the files it made when running (`--clean` option).
+
+#### Manual
+
+There are four commands, each corresponding to a single stage in the creation
+process:
+
+- `wordlist <language> <numwords> <output-file>`. The source for the wordlist is
+    a frequency list based on movie subtitle occurences (check
+    [hermitdave's FrequencyWords
+    repository](https://github.com/hermitdave/FrequencyWords/tree/master/content/2016)).
+    Please *don't* edit the wordlist file, as it will most likely result in errors.
+
+- `fetchipa <wordlist> <output-file>`, which takes the output of `wordlist` and
+    creates a JSON file where all words are paired with their IPA spelling,
+    which is fetched from Wiktionary.
+
+- `generate <ipa-json> <output-file> [--no-optimise | --ignore-stress]`, which
+    takes the JSON file created before, and outputs the list of minimal pairs it
+    found.
 
     Note that, by default, it's optimised: it filters out pairs with "boring"
     differences which are easy to tell apart by most people ('q' and 't', 't'
@@ -74,51 +96,23 @@ There are three commands:
     Secondly, syllable stress marks (`.`, `ˌ`, `ˈ`) are kept. You can use the
     `--ignore-stress` flag to discard them when generating minimal pairs.
 
-- `makedeck`, which takes the output file of `generate` and creates an Anki
-    deck package (`./grzegorz-anki-deck.apkg`) which you can import from inside
-    Anki
+- `makedeck <minpairs-list>`, which takes the output file of `generate` and
+    creates an Anki deck package (`./grzegorz-anki-deck.apkg`) which you can
+    import from inside Anki
 
-So, how do you actually get the minimal pairs? You need to get the words from a
-frequency list, that's obvious. I found [hermitdave's FrequencyWords
-repository](https://github.com/hermitdave/FrequencyWords/tree/master/content/2016),
-which contains word lists for a bunch of languages, but you could find other
-lists elsewhere.
+##### Concrete example
 
-Note that `grzegorz` doesn't work with something like
-
-```
-1. the
-tea hjkl
-        bacon
-...
-```
-
-Which it would not parse correctly. It won't even emit an error if the format is
-wrong! Also, make sure there's no whitespace before or after the words.
-
-The proper list would look like:
-
-```
-the
-tea
-bacon
-...
-```
-
-So yes, you do have to make sure *all* words in the list are properly formatted.
-You can usually find one on the internet fairly easily, and then you can use a
-`sed` or an `awk` command to format, if it's not.
-
-Let's assume your list is at `wordlist.txt`, and that it's full of French words,
+Let's assume you want to make a deck full of minimal pairs in French.
 and let's assume you didn't leave the installation directory (or else python
 won't find the `grzegorz` module):
 
 ```
-python3 -m grzegorz fetchipa "french" wordlist.txt processed.json
-python3 -m grzegorz generate processed.json minpairs.txt --ignore-stress
+python3 -m grzegorz wordlist "french" 5000 wordlist.txt
+python3 -m grzegorz fetchipa french-wordlist.txt french-ipas.json
+python3 -m grzegorz generate french-ipas.json minpairs.txt --ignore-stress
 ```
 
-If you were to specify the wrong fetch language, shame on you: you'll likely end
+If you were to specify the wrong wordlist language, shame on you: you'll likely end
 up with the wrong pronunciations or none at all.
 
 Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
@@ -128,10 +122,18 @@ the current directory, no matter where the input file is located):
 python3 -m grzegorz makedeck minpairs.txt
 ```
 
-After that, open Anki, click on `Files` in the top left corner, then `Import`,
-and then find the package and load it. A new deck, "grzegorz's minimal pairs",
-should pop up. You can rename it, you can move it, you can do anything with it.
-You also have control over its options, i.e. how often you review it and whatnot.
+## Importing into Anki
+
+NOTE: the flashcards made don't have any audio, not because of a lack of
+interest, but because of a lack of free (as in beer) APIs or libraries that can
+(legally) furnish audio pronunciations. Forvo's API is paid! You must therefore
+add it yourself, but it won't take a lot of time.
+
+After you've created a deck package, open Anki, click on `Files` in the top left
+corner, then `Import`, and then find the file and load it. A new deck,
+"grzegorz's minimal pairs", should pop up. You can rename it, you can move it,
+you can do anything with it. You also have control over its options, i.e. how
+often you review it and whatnot.
 
 ## Roadmap
 
