@@ -88,7 +88,7 @@ def create_argparser():
 
 def fullmake(language, numwords, clean):
     nooptimise = 0
-    ignore_stress = 1
+    ignore_stress = 0
 
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
