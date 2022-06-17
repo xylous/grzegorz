@@ -29,7 +29,7 @@ def fetchipa(infile, outfile):
     wds = []
     numwords = len(words)
 
-    print("Fetching pronunciations for", numwords, language, "words...")
+    print("Fetching IPA spellings for", numwords, language, "words...")
     if numwords > 500:
         print("If you cancel, all progress will be lost!")
     with Pool(numproc) as p:
