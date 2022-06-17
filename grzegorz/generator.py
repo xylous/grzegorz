@@ -214,6 +214,7 @@ def interesting_pair(tuple):
 def delimit_into_sounds(ipa, ignore_stress):
     # Remove starting and ending '/'
     sounds = re.sub("/", "", ipa)
+    sounds = re.sub("[\\[\\]]", "", ipa)
     if ignore_stress:
         sounds = re.sub("[.ˈˌ]", "", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[:]?", sounds)
