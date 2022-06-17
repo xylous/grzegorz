@@ -17,6 +17,7 @@ import argparse
 from .fetcher import fetchipa
 from .generator import generate
 from .anki_integration import makedeck
+from .wordlist import wordlist
 
 # Why does it have to be this complicated?
 def create_argparser():
@@ -24,6 +25,18 @@ def create_argparser():
             prog='grzegorz',
             description='Generate minimal pairs from a list of words')
     subparsers = parser.add_subparsers(dest='subparser_name')
+    # 'wordlist' command
+    parser_createpairs = subparsers.add_parser('wordlist',
+            help='Fetch the word list for')
+    parser_createpairs.add_argument('language',
+            type=str,
+            help='language of the words')
+    parser_createpairs.add_argument('numwords',
+            type=int,
+            help='number of words to keep')
+    parser_createpairs.add_argument('outfile',
+            type=str,
+            help='path where the wordlist should be stored')
     # 'fetchipa' subcommand
     parser_fetchpron = subparsers.add_parser('fetchipa',
             help='Fetch all IPA pronunciations for the words into a JSON file')
@@ -69,13 +82,18 @@ def main():
 
     try:
         cmd = args.subparser_name
-        infile = args.infile
     except:
         parser.print_help()
         return
 
     match cmd:
+        case 'wordlist':
+            outfile = args.outfile
+            numwords = args.numwords
+            language = args.language.lower()
+            wordlist(language, numwords, outfile)
         case 'fetchipa':
+            infile = args.infile
             outfile = args.outfile
             language = args.language
             if not language:
@@ -83,11 +101,13 @@ def main():
                 return
             fetchipa(infile, outfile, language)
         case 'generate':
+            infile = args.infile
             outfile = args.outfile
             nooptimise = args.nooptimise;
             ignore_stress = args.ignore_stress;
             generate(infile, outfile, nooptimise, ignore_stress)
         case 'makedeck':
+            infile = args.infile
             makedeck(infile)
 
 main()
