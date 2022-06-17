@@ -15,10 +15,10 @@
 
 from .word import Word, readfile, writefile
 from functools import partial
-import re
 import json
 from tqdm import tqdm
 from itertools import chain, combinations
+import re
 
 # The list of unicode characters that are used in IPA text and should be
 # delimited correctly
@@ -191,7 +191,7 @@ def interesting_pair(tuple):
 # Given the IPA pronunciaion of a word, return all the sounds in it
 def delimit_into_sounds(ipa, ignore_stress):
     # Remove starting and ending '/'
-    sounds = re.sub(r"[/\[\]]", "", ipa)
+    sounds = ipa
     if ignore_stress:
         sounds = re.sub("[.ˈˌ]", "", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[:]?", sounds)

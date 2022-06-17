@@ -15,6 +15,7 @@
 
 from wiktionaryparser import WiktionaryParser
 import json
+import re
 
 # All we care about is the word's string and its IPA, its textual representation
 class Word:
@@ -33,6 +34,8 @@ class Word:
             self.ipa = last_word(pron['text'][0])
         except:
             self.ipa = ''
+        # Remove leading and trailing `/`, `[` and `]`
+        self.ipa = re.sub(r"[/\[\]]", "", self.ipa)
         return self
 
     # Serialise this class to JSON
