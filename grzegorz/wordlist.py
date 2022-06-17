@@ -54,3 +54,9 @@ def wordlist_link_for_lang(lang):
 def fetch_contents(link):
     res = requests.get(link)
     return res.text
+
+# The format of the list we fetched is not perfect: we need to choose only the
+# first word on every line
+def format_line(line):
+    first_word = line.split()[0]
+    return first_word
