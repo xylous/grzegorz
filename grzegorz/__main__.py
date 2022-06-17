@@ -26,52 +26,52 @@ def create_argparser():
             description='Generate minimal pairs from a list of words')
     subparsers = parser.add_subparsers(dest='subparser_name')
     # 'wordlist' command
-    parser_createpairs = subparsers.add_parser('wordlist',
+    parser_wordlist = subparsers.add_parser('wordlist',
             help='Fetch the word list for')
-    parser_createpairs.add_argument('language',
+    parser_wordlist.add_argument('language',
             type=str,
             help='language of the words')
-    parser_createpairs.add_argument('numwords',
+    parser_wordlist.add_argument('numwords',
             type=int,
             help='number of words to keep')
-    parser_createpairs.add_argument('outfile',
+    parser_wordlist.add_argument('outfile',
             type=str,
             help='path where the wordlist should be stored')
     # 'fetchipa' subcommand
-    parser_fetchpron = subparsers.add_parser('fetchipa',
+    parser_fetchipa = subparsers.add_parser('fetchipa',
             help='Fetch all IPA pronunciations for the words into a JSON file')
-    parser_fetchpron.add_argument('language',
+    parser_fetchipa.add_argument('language',
             type=str,
             help="the language you want pronunciation for")
-    parser_fetchpron.add_argument('infile',
+    parser_fetchipa.add_argument('infile',
             type=str,
             help='file containing the list of words')
-    parser_fetchpron.add_argument('outfile',
+    parser_fetchipa.add_argument('outfile',
             type=str,
             help='output file (JSON)')
     # 'generate' subcommand
-    parser_createpairs = subparsers.add_parser('generate',
+    parser_generate = subparsers.add_parser('generate',
             help='Create minimal pairs, given a JSON input file')
-    parser_createpairs.add_argument('infile',
+    parser_generate.add_argument('infile',
             type=str,
             help='JSON file created by fetchipa')
-    parser_createpairs.add_argument('outfile',
+    parser_generate.add_argument('outfile',
             type=str,
             help='path where the created minimal pairs will be stored')
-    parser_createpairs.add_argument('--no-optimise',
+    parser_generate.add_argument('--no-optimise',
             action='store_true',
             default=False,
             dest="nooptimise",
             help="generate all possible minimal pairs (default: optimise)")
-    parser_createpairs.add_argument('--ignore-stress',
+    parser_generate.add_argument('--ignore-stress',
             action='store_true',
             default=False,
             dest="ignore_stress",
             help="ignore syllable stress in IPA text (default: don't)")
     # 'makedeck' subcommand
-    parser_createpairs = subparsers.add_parser('makedeck',
+    parser_makedeck = subparsers.add_parser('makedeck',
             help='Create an Anki deck package containing all minimal pairs')
-    parser_createpairs.add_argument('infile',
+    parser_makedeck.add_argument('infile',
             type=str,
             help="Output file of 'generate'")
     return parser
