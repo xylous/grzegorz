@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.4 - 2022-06-18
+
+- fix: use `ː` instead of `:` to mark punctuation; I was misled, colons are
+    *not* used in the IPA
+    - fix: all possible `:` (colons) will be transformed into `ː`
+
 ## v0.3.3 - 2022-06-18
 
 - fix: add the proper tie character to IPAs
@@ -8,7 +14,7 @@
 ## v0.3.2 - 2022-06-17
 
 - fix crash when fetching IPA for certain words
-- fix: remove transcription marks ('/', '[' and ']') from IPA spellings when
+- fix: remove transcription marks (`/`, `[` and `]`) from IPA spellings when
     fetching them
 - fix: transliterate all affricates with a tie (IPA: `'͡'`)
 - refactor: precompute "interesting differences" instead of hardcoding them
