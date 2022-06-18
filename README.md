@@ -3,12 +3,21 @@
 `grzegorz` - a minimal pair generator. For a detailed history of the project,
 check the [Changelog](./Changelog.md)
 
-What's it useful for? Consider that you're learning a new (real) language: like
-any beginner, you want to learn the phonetics, both to be able to hear words and
-to be able to speak (Tip: if you learn to it at the beginning of your journey,
-you won't have to struggle fixing bad pronunciation habits later on). But, in
-order to learn the sounds, you have to be able to differentiate between them.
-You won't get far if you keep messing up your `ou`s and `u`s in French.
+If you already know about minimal pairs, or are just interested in linguistics,
+you can use this project as learning material.
+
+If use Anki to learn languages, you can use `grzegorz` to make an Anki deck full
+of minimal pairs, helping you learn the sounds of your target language faster.
+Check the [Usage](#usage) section!
+
+But if you're not sure what minimal pairs are and what they're used for:
+
+Consider that you're learning a new (real) language: like any beginner, you want
+to learn the phonetics, both to be able to hear words and to be able to speak
+(Tip: if you learn to it at the beginning of your journey, you won't have to
+struggle fixing bad pronunciation habits later on). But, in order to learn the
+sounds, you have to be able to differentiate between them. You won't get far if
+you keep messing up your `ou`s and `u`s in French.
 
 Enter: minimal pairs - pairs of words that differ by only *one* sound. Think:
 bit - pit (english), rue - roux (french) etc. When you test yourself, you're
