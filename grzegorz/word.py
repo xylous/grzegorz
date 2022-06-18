@@ -29,13 +29,16 @@ class Word:
         parser.set_default_language(language)
         # If we get no result, skip.
         try:
-            word = parser.fetch(self.text)
-            pron = word[0]['pronunciations']
-            self.ipa = last_word(pron['text'][0])
+            ipa = last_word(parser.fetch(self.text)[0]['pronunciations']['text'][0])
+            # Remove leading and trailing `/`, `[` and `]`
+            ipa = re.sub(r"[/\[\]]", "", ipa)
+            # Not all words have their IPAs on wiktionary, but they might have a
+            # "Rhymes" section (try German wordlists). If we did fetch a rhyme,
+            # don't add it as a valid IPA
+            if not ipa[0] == '-':
+                self.ipa = ipa
         except:
             self.ipa = ''
-        # Remove leading and trailing `/`, `[` and `]`
-        self.ipa = re.sub(r"[/\[\]]", "", self.ipa)
         return self
 
     # Serialise this class to JSON
