@@ -210,6 +210,9 @@ def delimit_into_sounds(ipa, ignore_stress):
     sounds = ipa
     if ignore_stress:
         sounds = re.sub("[.ˈˌ]", "", sounds)
+    # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
+    # fooled: they're not the same character! We use `ː`.
+    sounds = re.sub(":", "ː", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[ː]?", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
     return sounds
