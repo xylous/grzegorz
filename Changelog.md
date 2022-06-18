@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.6 - 2022-06-18
+
+- add more long vowel sounds to the generator
+- add guard for running main()
+- setup.cfg: export a command, `grzegorz`
+
 ## v0.3.5 - 2022-06-18
 
 - upload project to PyPi; update installation instructions
