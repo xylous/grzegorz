@@ -33,13 +33,20 @@ For building:
 pip install grzegorz
 ```
 
+Make sure the pip installation directory (default: `${HOME}/.local/bin`) is on
+your `${PATH}`. If not, add it (to your `.bashrc` or `.zshrc` preferably):
+
+```
+export PATH="${HOME}/.local/bin:${PATH}"
+```
+
 ### Usage
 
 If you want an to get an Anki deck full of minimal pairs without having to
 bother too much with boring details, use `fullmake`:
 
 ```
-python3 -m grzegorz fullmake <language> <numwords> [--clean]
+grzegorz fullmake <language> <numwords> [--clean]
 ```
 
 In other words, you tell it what language you want your minimal pairs in, and
@@ -51,7 +58,7 @@ So if you wanted to sample the 5000 most common Polish words (like me), you'd
 do:
 
 ```
-python3 -m grzegorz fullmake "Polish" 5000
+grzegorz fullmake "Polish" 5000
 ```
 
 Check the "[Importing into Anki](#importing-into-anki)" section for information
@@ -98,9 +105,9 @@ and let's assume you didn't leave the installation directory (or else python
 won't find the `grzegorz` module):
 
 ```
-python3 -m grzegorz wordlist "french" 5000 wordlist.txt
-python3 -m grzegorz fetchipa french-wordlist.txt french-ipas.json
-python3 -m grzegorz generate french-ipas.json minpairs.txt --ignore-stress
+grzegorz wordlist "french" 5000 wordlist.txt
+grzegorz fetchipa french-wordlist.txt french-ipas.json
+grzegorz generate french-ipas.json minpairs.txt --ignore-stress
 ```
 
 If you were to specify the wrong wordlist language, shame on you: you'll likely end
@@ -110,7 +117,7 @@ Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
 the current directory, no matter where the input file is located):
 
 ```
-python3 -m grzegorz makedeck minpairs.txt
+grzegorz makedeck minpairs.txt
 ```
 
 ## Importing into Anki
