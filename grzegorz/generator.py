@@ -79,11 +79,13 @@ IPA_CHARACTERS = ([
 
 # We only want to deal with transliterations of these sounds that *don't* have a
 # tie above them. This is the proper way to represent affricates.
-BAD_TRANSLITERATIONS = ['tɕ', 'tʂ', 'ts', 'tʃ', 'dʐ', 'dʑ', 'dz']
+BAD_TRANSLITERATIONS = ['tɕ', 'tʂ', 'ts', 'tʃ', 'dʐ', 'dʑ', 'dz', 'dʒ']
 
+# Return the given sound, except, if it's badly transliterated, modify it
 def process_transliteration(sound: str):
     if sound in BAD_TRANSLITERATIONS:
-        sound = sound[0] + "'͡'" + sound[1]
+        # evil unicode hack
+        sound = sound[0] + 't͡ɕ'[1] + sound[1]
     return sound
 
 # Hardcoding is a bad practice. And tiresome as well. Especially when you add a
