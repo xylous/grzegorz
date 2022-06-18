@@ -25,14 +25,14 @@ For building:
 - python3
 - pip
 
-For running (install with `pip`):
-
-- wiktionaryparser
-- tqdm
-- genanki
-- requests
-
 ### Installation
+
+#### With pip
+
+```
+pip install grzegorz
+python3 -m grzegorz --help
+```
 
 ##### Manual
 
@@ -44,6 +44,10 @@ git clone https://github.com/xylous/grzegorz grzegorz
 cd grzegorz
 python3 -m grzegorz --help
 ```
+
+Note that, if you install manually, every command from now on assumes that
+you're in the same directory that you installed `grzegorz` in, otherwise
+`python3` might not find the module.
 
 ### Usage
 
