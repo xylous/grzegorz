@@ -112,13 +112,13 @@ INTERESTING_DIFFERENCES_CHAINS = [
 
     # Oral vowels (and semi-vowels)
     ['ɑ', 'a', 'ɐ', 'ə', 'ʌ'],
-    ['e', 'ɛ', 'ɛ:', 'ɪ', 'ɪ:'],
-    ['ɨ', 'i', 'j', 'ɪ', 'ɪ:'],
+    ['e', 'ɛ', 'ɛː', 'ɪ', 'ɪː'],
+    ['ɨ', 'i', 'j', 'ɪ', 'ɪː'],
     ['ɔ', 'o', 'ø', 'œ'],
     ['ɥ', 'j'],
     ['ɥ', 'u', 'ɤ', 'y', 'w'],
     ['i', 'e'],
-    ['ɑː', 'ɔː', 'uː', 'ɛ:', 'ɪ:'],
+    ['ɑː', 'ɔː', 'uː', 'ɛː', 'ɪː'],
 
     # Nasal vowels
     ['ɛ̃', 'ɛ'],
@@ -210,6 +210,6 @@ def delimit_into_sounds(ipa, ignore_stress):
     sounds = ipa
     if ignore_stress:
         sounds = re.sub("[.ˈˌ]", "", sounds)
-    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[:]?", sounds)
+    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[ː]?", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
     return sounds
