@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.3 - 2022-06-18
+
+- fix: add the proper tie character to IPAs
+- fix: look only for IPAs when fetching from Wiktionary; ignore rhymes
+
 ## v0.3.2 - 2022-06-17
 
 - fix crash when fetching IPA for certain words
@@ -18,6 +23,7 @@
 
 ## v0.3.0 - 2022-06-17
 
+- rename subcommands
 - add `wordlist`, `fullmake` commands
 - fix README-related issues
 - add "Importing in Anki" section to README

@@ -1,6 +1,7 @@
 # grzegorz
 
-`grzegorz` - a minimal pair generator.
+`grzegorz` - a minimal pair generator. For a detailed history of the project,
+check the [Changelog](./Changelog.md)
 
 What's it useful for? Consider that you're learning a new (real) language: like
 any beginner, you want to learn the phonetics, both to be able to hear words and
