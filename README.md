@@ -27,8 +27,6 @@ For building:
 
 ### Installation
 
-#### With pip
-
 ```
 pip install grzegorz
 ```
@@ -150,7 +148,11 @@ often you review it and whatnot.
 Pull requests are welcome. For major changes, please open an issue first to
 discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+But, honestly, the greatest contribution you can make is to add IPA spellings to
+words on the [English Wiktionary](https://en.wiktionary.org), which is the
+source for all the IPA spellings that `grzegorz` uses. The more IPA spellings
+there are, the higher the number of words that can be used, the more
+possibilities for minimal pairs.
 
 ## License
 
