@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.5 - 2022-06-18
+
+- upload project to PyPi; update installation instructions
+
 ## v0.3.4 - 2022-06-18
 
 - fix: use `ː` instead of `:` to mark punctuation; I was misled, colons are

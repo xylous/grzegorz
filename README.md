@@ -31,23 +31,7 @@ For building:
 
 ```
 pip install grzegorz
-python3 -m grzegorz --help
 ```
-
-##### Manual
-
-Clone this repository, and run with python. Make sure you have all dependencies
-installled.
-
-```
-git clone https://github.com/xylous/grzegorz grzegorz
-cd grzegorz
-python3 -m grzegorz --help
-```
-
-Note that, if you install manually, every command from now on assumes that
-you're in the same directory that you installed `grzegorz` in, otherwise
-`python3` might not find the module.
 
 ### Usage
 
