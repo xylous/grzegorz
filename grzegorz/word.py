@@ -18,12 +18,12 @@ import re
 
 # All we care about is the word's string and its IPA, its textual representation
 class Word:
-    def __init__(self, text, ipa):
+    def __init__(self, text: str, ipa: str):
         self.text = text
         self.ipa = ipa
 
     # Return a copy of the current file with foo
-    def get_ipa(self, language):
+    def get_ipa(self, language: str):
         parser = WiktionaryParser()
         parser.set_default_language(language)
         # If we get no result, skip.
@@ -59,17 +59,17 @@ class Word:
 ### Helper functions ###
 
 # Find the first IPA spelling in the given string
-def parse_ipa_pronunciation(str):
-    return re.findall(r"[/\[].*?[/\]]", str)[0]
+def parse_ipa_pronunciation(ipa_str: str):
+    return re.findall(r"[/\[].*?[/\]]", ipa_str)[0]
 
 # Return the contents of a file
-def readfile(path):
+def readfile(path: str):
     f = open(path, 'r')
     return f.read()
 
 # Write `txt` to the given path
-def writefile(path, txt):
+def writefile(path: str, text: str):
     f = open(path, 'w')
-    f.write(txt)
+    f.write(text)
     f.close()
     return

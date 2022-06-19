@@ -20,12 +20,12 @@ import json
 from tqdm import tqdm
 
 # Given an input file containing a list of words separated
-def fetchipa(infile, outfile):
+def fetchipa(infile: str, outfile: str):
     numproc = 20
 
     contents = readfile(infile).splitlines()
     language = contents.pop(0)
-    words = input_to_words(contents)
+    words = [Word(line, '') for line in contents if line]
     wds = []
     numwords = len(words)
 
@@ -39,9 +39,3 @@ def fetchipa(infile, outfile):
 
     jsonlog = json.dumps([Word.obj_dict(word) for word in wds])
     writefile(outfile, jsonlog)
-
-# Turn the read input into a list of `Word`s
-def input_to_words(strs):
-    # Remove empty lines
-    words = [Word(x, '') for x in strs if x]
-    return words

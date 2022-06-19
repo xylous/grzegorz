@@ -51,7 +51,7 @@ grzegorz_minpair_model = genanki.Model(
     """,
 )
 
-def makedeck(infile):
+def makedeck(infile: str):
     minpairs = parse_input_file(infile)
     notes = list(map(minpair_to_anki_note, minpairs))
     deck = notes_to_deck(notes)
@@ -60,21 +60,21 @@ def makedeck(infile):
 ### HELPER FUNCTIONS ###
 
 # Convert a line of `createpairs`'s output back into a minimal pair
-def line_to_minpair(line):
-    line = line.split()
-    word1 = Word(line[0], line[1])
-    word2 = Word(line[-2], line[-1])
+def line_to_minpair(line: str):
+    words = line.split()
+    word1 = Word(words[0], words[1])
+    word2 = Word(words[-2], words[-1])
     return (word1, word2)
 
 # Convert `craetepairs`'s output file into a list of minimal pairs
-def parse_input_file(path):
+def parse_input_file(path: str):
     lines = readfile(path).splitlines()
     minpairs = list(map(line_to_minpair, lines))
     return minpairs
 
 # Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
 # as its model.
-def minpair_to_anki_note(minpair):
+def minpair_to_anki_note(minpair: tuple):
     word1, word2 = minpair
     note = genanki.Note(
         model=grzegorz_minpair_model,
@@ -90,7 +90,7 @@ def minpair_to_anki_note(minpair):
     return note
 
 # Add a list of notes into a deck called "grzegorz's minimal pairs"
-def notes_to_deck(notes):
+def notes_to_deck(notes: list[genanki.Note]):
     deck = genanki.Deck(
         1597757363,
         "grzegorz's minimal pairs",
@@ -100,7 +100,7 @@ def notes_to_deck(notes):
     return deck
 
 # Package the given deck and write it to a file
-def export_deck(deck):
+def export_deck(deck: genanki.Deck):
     outfile = 'grzegorz-anki-deck.apkg'
     genanki.Package(deck).write_to_file(outfile)
     print('Done! Now import', outfile, 'in your Anki')

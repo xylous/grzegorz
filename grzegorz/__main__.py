@@ -26,6 +26,8 @@ def create_argparser():
             prog='grzegorz',
             description='Generate minimal pairs from a list of words')
     subparsers = parser.add_subparsers(dest='subparser_name')
+
+    # 'fullmake' command
     parser_fullmake = subparsers.add_parser('fullmake',
             help='Build an Anki deck for a language automatically')
     parser_fullmake.add_argument('language',
@@ -38,6 +40,7 @@ def create_argparser():
             action="store_true",
             default=False,
             help='remove temporary files after building the deck')
+
     # 'wordlist' command
     parser_wordlist = subparsers.add_parser('wordlist',
             help='Fetch the word list for a given language, containing a certain number of words')
@@ -50,6 +53,7 @@ def create_argparser():
     parser_wordlist.add_argument('outfile',
             type=str,
             help='path where the wordlist should be stored')
+
     # 'fetchipa' subcommand
     parser_fetchipa = subparsers.add_parser('fetchipa',
             help='Fetch all IPA pronunciations for the words into a JSON file')
@@ -59,6 +63,7 @@ def create_argparser():
     parser_fetchipa.add_argument('outfile',
             type=str,
             help='output file (JSON)')
+
     # 'generate' subcommand
     parser_generate = subparsers.add_parser('generate',
             help='Create minimal pairs, given a JSON input file')
@@ -78,6 +83,7 @@ def create_argparser():
             default=False,
             dest="ignore_stress",
             help="ignore syllable stress in IPA text (default: don't)")
+
     # 'makedeck' subcommand
     parser_makedeck = subparsers.add_parser('makedeck',
             help='Create an Anki deck package containing all minimal pairs')
@@ -86,9 +92,9 @@ def create_argparser():
             help="Output file of 'generate'")
     return parser
 
-def fullmake(language, numwords, clean):
-    nooptimise = 0
-    ignore_stress = 0
+def fullmake(language: str, numwords: int, clean: bool):
+    nooptimise = False
+    ignore_stress = False
 
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
