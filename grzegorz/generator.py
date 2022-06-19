@@ -22,7 +22,12 @@ import re
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
 # a file `outfile` with all the minimal pairs found
-def generate(infile: str, outfile: str, nooptimise: bool, ignore_stress: bool):
+def generate(
+    infile: str,
+    outfile: str,
+    nooptimise: bool,
+    ignore_stress: bool
+) -> None:
     jsonstr = readfile(infile)
     words = json.loads(jsonstr, object_hook=Word.from_dict)
     words = list(map(partial(word_with_delimited_ipa, ignore_stress=ignore_stress), words))
@@ -52,12 +57,12 @@ def generate(infile: str, outfile: str, nooptimise: bool, ignore_stress: bool):
 ### Helper functions ###
 
 # Return the same word, except its IPA is delimited
-def word_with_delimited_ipa(word: Word, ignore_stress: bool):
+def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
     word.sounds = delimit_into_sounds(word.ipa, ignore_stress)
     return word
 
 # Return the number of differences between two word's sounds
-def differences(word1: Word, word2: Word):
+def differences(word1: Word, word2: Word) -> int:
     sound1 = word1.sounds
     sound2 = word2.sounds
     if len(sound1) != len(sound2):
@@ -66,7 +71,7 @@ def differences(word1: Word, word2: Word):
     return count
 
 # Two sounds are interestingly different if they are likely to be confused
-def are_interestingly_different(s1: str, s2: str):
+def are_interestingly_different(s1: str, s2: str) -> bool:
     for diff in INTERESTING_DIFFERENCES:
         if s1 in diff and s2 in diff and s1 != s2:
             return True
@@ -74,7 +79,7 @@ def are_interestingly_different(s1: str, s2: str):
 
 # If the given pair has an interesting difference, return it. Otherwise, return
 # None
-def interesting_pair(minpair: MinPair):
+def interesting_pair(minpair: MinPair) -> MinPair|None:
     ipa1 = minpair.first.ipa
     ipa2 = minpair.last.ipa
     for a, b in zip(ipa1, ipa2):
@@ -84,7 +89,7 @@ def interesting_pair(minpair: MinPair):
         return None
 
 # Given the IPA pronunciaion of a word, return all the sounds in it
-def delimit_into_sounds(ipa: str, ignore_stress: bool):
+def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
     # Remove starting and ending '/'
     sounds = ipa
     if ignore_stress:
@@ -97,7 +102,7 @@ def delimit_into_sounds(ipa: str, ignore_stress: bool):
     return sounds
 
 # Return the given sound, except, if it's badly transliterated, modify it
-def process_transliteration(sound: str):
+def process_transliteration(sound: str) -> str:
     if sound in BAD_TRANSLITERATIONS:
         # evil unicode hack
         sound = sound[0] + 't͡ɕ'[1] + sound[1]
@@ -105,7 +110,7 @@ def process_transliteration(sound: str):
 
 # Hardcoding is a bad practice. And tiresome as well. Especially when you add a
 # new sound: you have to manually add so many pairs!
-def parse_differences_chain(diffs_chain: list[str]):
+def parse_differences_chain(diffs_chain: list[str]) -> list[tuple[str]]:
     s = list(diffs_chain)
     # range(2, 2+1) returns all tuples that are exactly 2 in length - exactly
     # what we need
@@ -113,7 +118,7 @@ def parse_differences_chain(diffs_chain: list[str]):
     return list(pairs)
 
 # Return the set of all elements belonging to the sublists of the list
-def flatten(lst: list[list]):
+def flatten(lst: list[list]) -> set[list]:
     return set(chain(*lst))
 
 ### CONSTANTS ###

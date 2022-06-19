@@ -18,12 +18,12 @@ import re
 
 # All we care about is the word's string and its IPA, its textual representation
 class Word:
-    def __init__(self, text: str, ipa: str):
+    def __init__(self, text: str, ipa: str) -> None:
         self.text = text
         self.ipa = ipa
         self.sounds = []
 
-    def set_sounds(self, sounds: list[str]):
+    def set_sounds(self, sounds: list[str]) -> None:
         self.sounds = sounds
 
     # Return a copy of the current file with foo
@@ -60,18 +60,18 @@ class Word:
 
     # Deserialise this class from JSON
     @staticmethod
-    def from_dict(dict):
+    def from_dict(dict) -> 'Word':
         return Word(dict['text'], dict['ipa'])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Word text:%s ipa%s>" % (self.text, self.ipa)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "(%s %s)" % (self.text, self.ipa)
 
 # Two words in a pair. Voilà c'est tout.
 class MinPair:
-    def __init__(self, first, last):
+    def __init__(self, first, last) -> None:
         self.first = first;
         self.last = last;
         # The IPA pronunciations given to this class aren't going to be pure
@@ -83,7 +83,7 @@ class MinPair:
 
     # Return this class as a dictionary
     @staticmethod
-    def obj_dict(obj):
+    def obj_dict(obj: 'MinPair'):
         dict = obj.__dict__;
         dict['first'] = Word.obj_dict(dict['first']);
         dict['last'] = Word.obj_dict(dict['last']);
@@ -91,7 +91,7 @@ class MinPair:
 
     # Construct this class from a dictionary
     @staticmethod
-    def from_dict(dict):
+    def from_dict(dict) -> 'MinPair':
         word1 = Word.from_dict(dict['first'])
         word2 = Word.from_dict(dict['last'])
         return MinPair(word1, word2)
@@ -99,16 +99,16 @@ class MinPair:
 ### Helper functions ###
 
 # Find the first IPA spelling in the given string
-def parse_ipa_pronunciation(ipa_str: str):
+def parse_ipa_pronunciation(ipa_str: str) -> str:
     return re.findall(r"[/\[].*?[/\]]", ipa_str)[0]
 
 # Return the contents of a file
-def readfile(path: str):
+def readfile(path: str) -> str:
     f = open(path, 'r')
     return f.read()
 
 # Write `txt` to the given path
-def writefile(path: str, text: str):
+def writefile(path: str, text: str) -> None:
     f = open(path, 'w')
     f.write(text)
     f.close()

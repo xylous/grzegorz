@@ -15,6 +15,7 @@
 
 from .word import MinPair, readfile
 import genanki
+from genanki import Note, Deck
 import json
 
 # The model used for the flashcards is rather simple
@@ -52,7 +53,7 @@ grzegorz_minpair_model = genanki.Model(
     """,
 )
 
-def makedeck(infile: str):
+def makedeck(infile: str) -> None:
     json_str = readfile(infile)
     dict = json.loads(json_str)
     minpairs = list(map(MinPair.from_dict, dict))
@@ -64,7 +65,7 @@ def makedeck(infile: str):
 
 # Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
 # as its model.
-def minpair_to_anki_note(minpair: MinPair):
+def minpair_to_anki_note(minpair: MinPair) -> Note:
     first = minpair.first
     last = minpair.last
     note = genanki.Note(
@@ -81,7 +82,7 @@ def minpair_to_anki_note(minpair: MinPair):
     return note
 
 # Add a list of notes into a deck called "grzegorz's minimal pairs"
-def notes_to_deck(notes: list[genanki.Note]):
+def notes_to_deck(notes: list[Note]) -> Deck:
     deck = genanki.Deck(
         1597757363,
         "grzegorz's minimal pairs",
@@ -91,7 +92,7 @@ def notes_to_deck(notes: list[genanki.Note]):
     return deck
 
 # Package the given deck and write it to a file
-def export_deck(deck: genanki.Deck):
+def export_deck(deck: Deck) -> None:
     outfile = 'grzegorz-anki-deck.apkg'
     genanki.Package(deck).write_to_file(outfile)
     print('Done! Now import', outfile, 'in your Anki')

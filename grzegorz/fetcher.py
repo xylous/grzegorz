@@ -20,7 +20,7 @@ import json
 from tqdm import tqdm
 
 # Given an input file containing a list of words separated
-def fetchipa(infile: str, outfile: str):
+def fetchipa(infile: str, outfile: str) -> None:
     numproc = 20
 
     contents = readfile(infile).splitlines()

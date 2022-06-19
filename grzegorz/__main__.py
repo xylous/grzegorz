@@ -21,7 +21,7 @@ from .wordlist import wordlist
 from os import remove
 
 # Why does it have to be this complicated?
-def create_argparser():
+def create_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
             prog='grzegorz',
             description='Generate minimal pairs from a list of words')
@@ -92,7 +92,7 @@ def create_argparser():
             help="Output file of 'generate'")
     return parser
 
-def fullmake(language: str, numwords: int, clean: bool):
+def fullmake(language: str, numwords: int, clean: bool) -> None:
     nooptimise = False
     ignore_stress = False
 
@@ -111,7 +111,7 @@ def fullmake(language: str, numwords: int, clean: bool):
         remove(ipa_json)
         remove(minpairs_file)
 
-def main():
+def main() -> None:
     parser = create_argparser()
     args = parser.parse_args()
 
