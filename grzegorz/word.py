@@ -21,6 +21,10 @@ class Word:
     def __init__(self, text: str, ipa: str):
         self.text = text
         self.ipa = ipa
+        self.sounds = []
+
+    def set_sounds(self, sounds: list[str]):
+        self.sounds = sounds
 
     # Return a copy of the current file with foo
     def get_ipa(self, language: str):
@@ -43,7 +47,16 @@ class Word:
     # Return this class as a dictionary
     @staticmethod
     def obj_dict(word):
-        return word.__dict__
+        dict = word.__dict__
+        # this might fail since the dictionary is mutated, and the same Word
+        # might be converted more than one time
+        try:
+            # We don't need to know about the sounds of the word; those can be
+            # computed
+            dict.pop('sounds')
+        except:
+            pass
+        return dict
 
     # Deserialise this class from JSON
     @staticmethod

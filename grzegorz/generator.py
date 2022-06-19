@@ -37,7 +37,7 @@ def generate(infile: str, outfile: str, nooptimise: bool, ignore_stress: bool):
         w1 = words[i]
         for j in range(i+1,len(words)):
             w2 = words[j]
-            if w1.ipa == w2.ipa or len(w1.ipa) != len(w2.ipa):
+            if w1.sounds == w2.sounds or len(w1.sounds) != len(w2.sounds):
                 continue
             diffs = differences(w1, w2)
             if diffs == 1:
@@ -53,16 +53,16 @@ def generate(infile: str, outfile: str, nooptimise: bool, ignore_stress: bool):
 
 # Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word, ignore_stress: bool):
-    new_ipa = delimit_into_sounds(word.ipa, ignore_stress)
-    return Word(word.text, new_ipa)
+    word.sounds = delimit_into_sounds(word.ipa, ignore_stress)
+    return word
 
-# Return the number of differences between words
+# Return the number of differences between two word's sounds
 def differences(word1: Word, word2: Word):
-    ipa1 = word1.ipa
-    ipa2 = word2.ipa
-    if len(ipa1) != len(ipa2):
+    sound1 = word1.sounds
+    sound2 = word2.sounds
+    if len(sound1) != len(sound2):
         return 0
-    count = sum(1 for a, b in zip(ipa1, ipa2) if a != b)
+    count = sum(1 for a, b in zip(sound1, sound2) if a != b)
     return count
 
 # Two sounds are interestingly different if they are likely to be confused
