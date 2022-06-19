@@ -175,7 +175,7 @@ def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
     sounds = re.sub(":", "ː", sounds)
-    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[ː]?", sounds)
+    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
     if ignore_stress:
         sounds = strip_stress(sounds)
@@ -285,14 +285,13 @@ INTERESTING_DIFFERENCES_CHAINS = [
     ['ɟ', 'j', 'g', 'ɡʲ', 'g'],
 
     # Oral vowels (and semi-vowels)
-    ['ɑ', 'a', 'ɐ', 'ə', 'ʌ', 'aː', 'ɑː', 'æ'],
-    ['e', 'ɛ', 'e:', 'ɛː', 'ɪ', 'ɪː', 'iː', 'æ'],
-    ['ɨ', 'i', 'j', 'ɪ', 'ɪː'],
-    ['ɔ', 'o', 'ø', 'œ', 'øː', 'oː'],
+    ['ɑ', 'a', 'ɐ', 'ə', 'ʌ', 'æ'],
+    ['e', 'ɛ', 'ɪ', 'æ'],
+    ['ɨ', 'i', 'j', 'ɪ'],
+    ['ɔ', 'o', 'ø', 'œ'],
     ['ɥ', 'j'],
-    ['ɥ', 'u', 'ɤ', 'y', 'w', 'uː', 'yː'],
+    ['ɥ', 'u', 'ɤ', 'y', 'w'],
     ['i', 'e'],
-    ['ɑː', 'ɔː', 'uː', 'ɛː', 'ɪː'],
 
     # Nasal vowels
     ['ɛ̃', 'ɛ'],
