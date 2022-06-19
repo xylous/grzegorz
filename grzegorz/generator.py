@@ -172,13 +172,13 @@ def interesting_pair(minpair: MinPair) -> MinPair|None:
 def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
     # Remove starting and ending '/'
     sounds = ipa
-    if ignore_stress:
-        sounds = re.sub("[.ˈˌ]", "", sounds)
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
     sounds = re.sub(":", "ː", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])[ː]?", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
+    if ignore_stress:
+        sounds = strip_stress(sounds)
     return sounds
 
 # Return the given sound, except, if it's badly transliterated, modify it
@@ -258,6 +258,12 @@ IPA_CHARACTERS = [
 
     # Semi-vowels
     'ɥ',
+
+    # Punctuation-related
+    '.',
+    'ˈ',
+    'ˌ',
+    'ː',
 ]
 
 # We only want to deal with transliterations of these sounds that *don't* have a
