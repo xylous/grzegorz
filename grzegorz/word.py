@@ -29,7 +29,7 @@ class Word:
         parser.set_default_language(language)
         # If we get no result, skip.
         try:
-            ipa = last_word(parser.fetch(self.text)[0]['pronunciations']['text'][0])
+            ipa = parse_ipa_pronunciation(parser.fetch(self.text)[0]['pronunciations']['text'][0])
             # Remove leading and trailing `/`, `[` and `]`
             ipa = re.sub(r"[/\[\]]", "", ipa)
             # Not all words have their IPAs on wiktionary, but they might have a
@@ -58,10 +58,9 @@ class Word:
 
 ### Helper functions ###
 
-# Return the last word in a string
-def last_word(str):
-    words = str.split()
-    return words[-1]
+# Find the first IPA spelling in the given string
+def parse_ipa_pronunciation(str):
+    return re.findall(r"[/\[].*?[/\]]", str)[0]
 
 # Return the contents of a file
 def readfile(path):
