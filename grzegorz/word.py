@@ -14,7 +14,6 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 from wiktionaryparser import WiktionaryParser
-import json
 import re
 
 # All we care about is the word's string and its IPA, its textual representation
@@ -41,9 +40,10 @@ class Word:
             self.ipa = ''
         return self
 
-    # Serialise this class to JSON
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
+    # Return this class as a dictionary
+    @staticmethod
+    def obj_dict(word):
+        return word.__dict__
 
     # Deserialise this class from JSON
     @staticmethod

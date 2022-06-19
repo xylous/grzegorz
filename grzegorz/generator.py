@@ -20,6 +20,31 @@ from tqdm import tqdm
 from itertools import chain, combinations
 import re
 
+# Two words in a pair. Voilà c'est tout.
+class MinPair:
+    def __init__(self, first, last):
+        self.first = first;
+        self.last = last;
+        # The IPA pronunciations given to this class aren't going to be pure
+        # strings, rather arrays of sounds...
+        #
+        # ...smells like someone's cooking spaghetti in here.
+        self.first.ipa = ''.join(first.ipa)
+        self.last.ipa = ''.join(last.ipa)
+
+    # Return this class as a dictionary
+    @staticmethod
+    def obj_dict(obj):
+        dict = obj.__dict__;
+        dict['first'] = Word.obj_dict(dict['first']);
+        dict['last'] = Word.obj_dict(dict['last']);
+        return dict
+
+    # Deserialise this class from JSON
+    @staticmethod
+    def fromJSON(json_dct):
+        return MinPair(json_dct['first'], json_dct['last'])
+
 # The list of unicode characters that are used in IPA text and should be
 # delimited correctly
 IPA_CHARACTERS = ([
@@ -153,12 +178,12 @@ def generate(infile, outfile, nooptimise, ignore_stress):
                 continue
             diffs = differences(w1, w2)
             if diffs == 1:
-                minpairs.append((w1, w2))
+                minpairs.append(MinPair(w1, w2))
     if not nooptimise:
         print('Filtering uninteresting pairs...')
         minpairs = [x for x in map(interesting_pair, minpairs) if x]
-    formatted = list(map(format_tuple, minpairs))
-    writefile(outfile, '\n'.join(str(x) for x in formatted))
+    json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
+    writefile(outfile, json_out)
     print('Done! Generated', len(minpairs), 'minimal pairs')
 
 ### Helper functions ###
@@ -177,30 +202,21 @@ def differences(word1, word2):
     count = sum(1 for a, b in zip(ipa1, ipa2) if a != b)
     return count
 
-# Format a tuple containing two words so that it's human-readable
-def format_tuple(tuple):
-    w1, w2 = tuple
-    return '{} /{}/ - {} /{}/'.format(
-            w1.text, ''.join(w1.ipa),
-            w2.text, ''.join(w2.ipa))
-
-# Two characters are interestingly different if they're sounds that are likely
-# to be confused
-def are_interestingly_different(ch1, ch2):
+# Two sounds are interestingly different if they are likely to be confused
+def are_interestingly_different(s1, s2):
     for diff in INTERESTING_DIFFERENCES:
-        if ch1 in diff and ch2 in diff and ch1 != ch2:
+        if s1 in diff and s2 in diff and s1 != s2:
             return True
     return False
 
 # If the given pair has an interesting difference, return it. Otherwise, return
 # None
-def interesting_pair(tuple):
-    word1, word2 = tuple
-    ipa1 = word1.ipa
-    ipa2 = word2.ipa
+def interesting_pair(minpair):
+    ipa1 = minpair.first.ipa
+    ipa2 = minpair.last.ipa
     for a, b in zip(ipa1, ipa2):
         if are_interestingly_different(a, b):
-            return tuple
+            return minpair
     else:
         return None
 

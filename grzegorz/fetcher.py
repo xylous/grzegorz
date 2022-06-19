@@ -37,7 +37,7 @@ def fetchipa(infile, outfile):
             words), total=numwords):
             wds.append(x)
 
-    jsonlog = json.dumps([word.__dict__ for word in wds])
+    jsonlog = json.dumps([Word.obj_dict(word) for word in wds])
     writefile(outfile, jsonlog)
 
 # Turn the read input into a list of `Word`s
