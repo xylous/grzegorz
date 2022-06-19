@@ -98,7 +98,7 @@ def fullmake(language: str, numwords: int, clean: bool):
 
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
-    minpairs_file = language + "-minpairs.txt"
+    minpairs_file = language + "-minpairs.json"
 
     wordlist(language, numwords, wordlist_file)
     fetchipa(wordlist_file, ipa_json)
