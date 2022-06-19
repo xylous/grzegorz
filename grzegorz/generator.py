@@ -43,7 +43,7 @@ def generate(
         for j in range(i+1,len(words)):
             w2 = words[j]
             pair = MinPair(w1, w2)
-            if phoneme_contrast(pair, nooptimise):
+            if phoneme_contrast(pair, nooptimise) or chroneme_contrast(pair):
                 minpairs.append(pair)
     json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
     writefile(outfile, json_out)
@@ -66,6 +66,52 @@ def phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
         if nooptimise or interesting_pair(pair):
             return True
     return False
+
+# A chroneme is a (theoretical) unit of sound that can distinguish the same
+# sound by their duration. In other words, check if the given pair has a
+# short-long sound length contrast, such as `pala` and `palla` in Italian
+def chroneme_contrast(pair: MinPair) -> bool:
+    first = pair.first
+    last = pair.last
+    if len(first.sounds) == len(last.sounds):
+        return False
+
+    len_shortest = min(len(first.sounds), len(last.sounds))
+    if similarities(first, last, 1) == len_shortest:
+        return True
+
+    return False
+
+# Count the number of similarities between two words' sounds. Every non-common
+# sound is removed
+def similarities(word1: Word, word2: Word, max_len_diff) -> int:
+    sound1 = word1.sounds
+    sound2 = word2.sounds
+    count = 0
+
+    # Always assume sound1 is longer than sound2
+    if len(sound2) > len(sound1):
+        tmp = sound1
+        sound1 = sound2
+        sound2 = tmp
+
+    # Skip pairs that exceed the maximum length difference
+    if abs(len(sound1) - len(sound2)) > max_len_diff:
+        return -1
+
+    for i in range(0, len(sound1)):
+        s1 = sound1[i]
+        s2 = sound2[i]
+        if s1 == s2:
+            count += 1
+        else:
+            sound1.pop(i)
+
+        # We might exceed the limit
+        if i + 1 == len(sound1):
+            break
+
+    return count
 
 # Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
