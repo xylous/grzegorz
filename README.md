@@ -90,8 +90,8 @@ process:
     which is fetched from Wiktionary.
 
 - `generate <ipa-json> <output-file> [--no-optimise | --ignore-stress]`, which
-    takes the JSON file created before, and outputs the list of minimal pairs it
-    found.
+    takes the JSON file created by `fetchipa`, and outputs the list of minimal
+    pairs it found, in JSON format as well.
 
     Note that, by default, it's optimised: it filters out pairs with "boring"
     differences which are easy to tell apart by most people ('q' and 't', 't'
@@ -114,7 +114,7 @@ won't find the `grzegorz` module):
 ```
 grzegorz wordlist "french" 5000 wordlist.txt
 grzegorz fetchipa french-wordlist.txt french-ipas.json
-grzegorz generate french-ipas.json minpairs.txt --ignore-stress
+grzegorz generate french-ipas.json minpairs.json --ignore-stress
 ```
 
 If you were to specify the wrong wordlist language, shame on you: you'll likely end
