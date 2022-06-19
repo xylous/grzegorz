@@ -92,23 +92,34 @@ def has_chroneme_contrast(pair: MinPair) -> bool:
         sounds1 = sounds2
         sounds2 = tmp
 
+    num_same_sounds = 0
+    seen_chroneme = False
     i = 0
     j = 0
-    # If we encounter a doubled sound or a `ː` (NOT `:`), we found a chroneme
-    # contrast
     while(i < len(sounds1) and j < len(sounds2)):
         s1 = sounds1[i]
         s2 = sounds2[j]
         try:
-            ns1 = sounds1[i+1]
+            sn1 = sounds1[i+1]
+            sn2 = sounds2[j+1]
         except:
-            ns1 = ''
-        if s1 == s2 == ns1 or (s1 == s2 and ns1 == 'ː'):
-            return True
+            sn1 = ''
+            sn2 = ''
+        # If we encounter a `ː`, or some characters are doubled, then we've
+        # encountered a chroneme
+        if s1 == s2 == sn1 != sn2 or (sn1 == s2 and sn1 == 'ː'):
+            seen_chroneme = True
         elif s1 != s2:
             i += 1
+            num_same_sounds -= 1
         i += 1
         j += 1
+        num_same_sounds += 1
+
+    # We need the words to differ only by one single sound and to know that
+    # there's a chroneme contrast between the words
+    if seen_chroneme and num_same_sounds == len(sounds2):
+        return True
 
     return False
 
@@ -131,7 +142,7 @@ def has_stress_contrast(pair: MinPair) -> bool:
 
 # Remove stress marks from a list of sounds
 def strip_stress(sounds: list[str]) -> list[str]:
-    return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ', '']]
+    return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ', '̯', '']]
 
 # Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
