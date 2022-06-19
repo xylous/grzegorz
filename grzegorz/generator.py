@@ -42,19 +42,30 @@ def generate(
         w1 = words[i]
         for j in range(i+1,len(words)):
             w2 = words[j]
-            if w1.sounds == w2.sounds or len(w1.sounds) != len(w2.sounds):
-                continue
-            diffs = differences(w1, w2)
-            if diffs == 1:
-                minpairs.append(MinPair(w1, w2))
-    if not nooptimise:
-        print('Filtering uninteresting pairs...')
-        minpairs = [x for x in map(interesting_pair, minpairs) if x]
+            pair = MinPair(w1, w2)
+            if phoneme_contrast(pair, nooptimise):
+                minpairs.append(pair)
     json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
     writefile(outfile, json_out)
     print('Done! Generated', len(minpairs), 'minimal pairs')
 
 ### Helper functions ###
+
+# A phoneme contrast occurs when the words in a pair are of equal length and
+# have at least one difference. If `nooptimise` is False, then, additionally, it
+# must have an interesting difference. If the above conditions are met, return
+# True, otherwise False.
+def phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
+    first = pair.first
+    last = pair.last
+
+    if len(first.sounds) == len(first.sounds):
+        return False
+
+    if differences(first, last) == 1:
+        if nooptimise or interesting_pair(pair):
+            return True
+    return False
 
 # Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
