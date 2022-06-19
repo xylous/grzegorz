@@ -56,6 +56,31 @@ class Word:
     def __str__(self):
         return "(%s %s)" % (self.text, self.ipa)
 
+# Two words in a pair. Voilà c'est tout.
+class MinPair:
+    def __init__(self, first, last):
+        self.first = first;
+        self.last = last;
+        # The IPA pronunciations given to this class aren't going to be pure
+        # strings, rather arrays of sounds...
+        #
+        # ...smells like someone's cooking spaghetti in here.
+        self.first.ipa = ''.join(first.ipa)
+        self.last.ipa = ''.join(last.ipa)
+
+    # Return this class as a dictionary
+    @staticmethod
+    def obj_dict(obj):
+        dict = obj.__dict__;
+        dict['first'] = Word.obj_dict(dict['first']);
+        dict['last'] = Word.obj_dict(dict['last']);
+        return dict
+
+    # Deserialise this class from JSON
+    @staticmethod
+    def fromJSON(json_dct):
+        return MinPair(json_dct['first'], json_dct['last'])
+
 ### Helper functions ###
 
 # Find the first IPA spelling in the given string

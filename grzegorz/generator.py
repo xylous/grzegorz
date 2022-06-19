@@ -13,37 +13,12 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from .word import Word, readfile, writefile
+from .word import Word, MinPair, readfile, writefile
 from functools import partial
 import json
 from tqdm import tqdm
 from itertools import chain, combinations
 import re
-
-# Two words in a pair. Voilà c'est tout.
-class MinPair:
-    def __init__(self, first, last):
-        self.first = first;
-        self.last = last;
-        # The IPA pronunciations given to this class aren't going to be pure
-        # strings, rather arrays of sounds...
-        #
-        # ...smells like someone's cooking spaghetti in here.
-        self.first.ipa = ''.join(first.ipa)
-        self.last.ipa = ''.join(last.ipa)
-
-    # Return this class as a dictionary
-    @staticmethod
-    def obj_dict(obj):
-        dict = obj.__dict__;
-        dict['first'] = Word.obj_dict(dict['first']);
-        dict['last'] = Word.obj_dict(dict['last']);
-        return dict
-
-    # Deserialise this class from JSON
-    @staticmethod
-    def fromJSON(json_dct):
-        return MinPair(json_dct['first'], json_dct['last'])
 
 # Given the path to a file containing JSON data about serialised `Word`s, create
 # a file `outfile` with all the minimal pairs found
