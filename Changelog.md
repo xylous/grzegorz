@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.0 - 2022-06-19
+
+- generator: look for phoneme, chroneme, or syllable stress-related differences
+    in minimal pairs
+- expand chains of phoneme differences
+- parse and use `ː` character for chroneme contrasts, not phoneme contrasts
+
 ## v0.3.7 - 2022-06-19
 
 - change `generate`: write output as JSON
