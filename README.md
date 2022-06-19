@@ -20,10 +20,10 @@ sounds, you have to be able to differentiate between them. You won't get far if
 you keep messing up your `ou`s and `u`s in French.
 
 Enter: minimal pairs - pairs of words that differ by only *one* sound. Think:
-bit - pit (english), rue - roux (french) etc. When you test yourself, you're
-given the pronunciation of a word and then you have to check if you've got it
-right. After a few tests, your ability to *know* what sound you heard increases,
-even outside of said tests.
+bit - pit (english), rue - roux (french) etc. Or, more abstractly, when you test
+yourself, a sound is played and then you have to choose between two very
+similarly spelled words. After a few tests, your ability to *know* what sound
+you heard increases, even outside of said tests.
 
 ## Getting started
 
