@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.7 - 2022-06-19
+
+- change `generate`: write output as JSON
+- fix: use regex to find IPA when fetching them
+- refactor code: add types
+
 ## v0.3.6 - 2022-06-18
 
 - add more long vowel sounds to the generator
