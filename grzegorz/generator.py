@@ -78,45 +78,39 @@ def has_phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
 def has_chroneme_contrast(pair: MinPair) -> bool:
     first = pair.first
     last = pair.last
-    if len(first.sounds) == len(last.sounds):
+    sounds1 = strip_stress(first.sounds)
+    sounds2 = strip_stress(last.sounds)
+
+    # Not a chroneme if they're the same length, or if the length differs by
+    # more than one sound: it's not a minimal pair
+    if len(sounds1) == len(sounds2) or abs(len(sounds1) - len(sounds2)) > 1:
         return False
 
-    len_shortest = min(len(first.sounds), len(last.sounds))
-    if similarities(first, last, 1) == len_shortest:
-        return True
+    # Swap, as to have the longer string in sounds1
+    if len(sounds2) > len(sounds1):
+        tmp = sounds1
+        sounds1 = sounds2
+        sounds2 = tmp
+
+    i = 0
+    j = 0
+    # If we encounter a doubled sound or a `ː` (NOT `:`), we found a chroneme
+    # contrast
+    while(i < len(sounds1) and j < len(sounds2)):
+        s1 = sounds1[i]
+        s2 = sounds2[j]
+        try:
+            ns1 = sounds1[i+1]
+        except:
+            ns1 = ''
+        if s1 == s2 == ns1 or (s1 == s2 and ns1 == 'ː'):
+            return True
+        elif s1 != s2:
+            i += 1
+        i += 1
+        j += 1
 
     return False
-
-# Count the number of similarities between two words' sounds. Every non-common
-# sound is removed
-def similarities(word1: Word, word2: Word, max_len_diff) -> int:
-    sound1 = word1.sounds
-    sound2 = word2.sounds
-    count = 0
-
-    # Always assume sound1 is longer than sound2
-    if len(sound2) > len(sound1):
-        tmp = sound1
-        sound1 = sound2
-        sound2 = tmp
-
-    # Skip pairs that exceed the maximum length difference
-    if abs(len(sound1) - len(sound2)) > max_len_diff:
-        return -1
-
-    for i in range(0, len(sound1)):
-        s1 = sound1[i]
-        s2 = sound2[i]
-        if s1 == s2:
-            count += 1
-        else:
-            sound1.pop(i)
-
-        # We might exceed the limit
-        if i >= len(sound1):
-            return count
-
-    return count
 
 # Multiple words might have almost the same IPA transcription, but the stress
 # falls on different syllables.
@@ -137,7 +131,7 @@ def has_stress_contrast(pair: MinPair) -> bool:
 
 # Remove stress marks from a list of sounds
 def strip_stress(sounds: list[str]) -> list[str]:
-    return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ']]
+    return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ', '']]
 
 # Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
