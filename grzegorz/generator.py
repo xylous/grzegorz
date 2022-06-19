@@ -43,6 +43,9 @@ def generate(
         for j in range(i+1,len(words)):
             w2 = words[j]
             pair = MinPair(w1, w2)
+            # Skip empty entries
+            if not w1.sounds or not w2.sounds:
+                continue
             if (has_phoneme_contrast(pair, nooptimise)
                     or has_chroneme_contrast(pair)
                     or has_stress_contrast(pair)):
@@ -61,11 +64,11 @@ def has_phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
     first = pair.first
     last = pair.last
 
-    if len(first.sounds) == len(first.sounds):
+    if len(first.sounds) != len(last.sounds):
         return False
 
     if differences(first, last) == 1:
-        if nooptimise or interesting_pair(pair):
+        if nooptimise or is_interesting_pair(pair):
             return True
     return False
 
@@ -110,8 +113,8 @@ def similarities(word1: Word, word2: Word, max_len_diff) -> int:
             sound1.pop(i)
 
         # We might exceed the limit
-        if i + 1 == len(sound1):
-            break
+        if i >= len(sound1):
+            return count
 
     return count
 
@@ -159,14 +162,13 @@ def are_interestingly_different(s1: str, s2: str) -> bool:
 
 # If the given pair has an interesting difference, return it. Otherwise, return
 # None
-def interesting_pair(minpair: MinPair) -> MinPair|None:
-    ipa1 = minpair.first.ipa
-    ipa2 = minpair.last.ipa
-    for a, b in zip(ipa1, ipa2):
+def is_interesting_pair(minpair: MinPair) -> bool:
+    sounds1 = minpair.first.sounds
+    sounds2 = minpair.last.sounds
+    for a, b in zip(sounds1, sounds2):
         if are_interestingly_different(a, b):
-            return minpair
-    else:
-        return None
+            return True
+    return False
 
 # Given the IPA pronunciaion of a word, return all the sounds in it
 def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
@@ -174,6 +176,7 @@ def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
     sounds = ipa
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
+    sounds = re.sub('̯', '', sounds)
     sounds = re.sub(":", "ː", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
@@ -264,6 +267,7 @@ IPA_CHARACTERS = [
     'ˈ',
     'ˌ',
     'ː',
+    '̯',
 ]
 
 # We only want to deal with transliterations of these sounds that *don't* have a
