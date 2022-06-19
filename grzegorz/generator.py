@@ -24,7 +24,7 @@ import re
 # a file `outfile` with all the minimal pairs found
 def generate(infile: str, outfile: str, nooptimise: bool, ignore_stress: bool):
     jsonstr = readfile(infile)
-    words = json.loads(jsonstr, object_hook=Word.fromJSON)
+    words = json.loads(jsonstr, object_hook=Word.from_dict)
     words = list(map(partial(word_with_delimited_ipa, ignore_stress=ignore_stress), words))
     minpairs = []
     if ignore_stress:

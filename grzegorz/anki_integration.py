@@ -13,8 +13,9 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from .word import Word, readfile
+from .word import MinPair, readfile
 import genanki
+import json
 
 # The model used for the flashcards is rather simple
 grzegorz_minpair_model = genanki.Model(
@@ -52,39 +53,29 @@ grzegorz_minpair_model = genanki.Model(
 )
 
 def makedeck(infile: str):
-    minpairs = parse_input_file(infile)
+    json_str = readfile(infile)
+    dict = json.loads(json_str)
+    minpairs = list(map(MinPair.from_dict, dict))
     notes = list(map(minpair_to_anki_note, minpairs))
     deck = notes_to_deck(notes)
     export_deck(deck)
 
 ### HELPER FUNCTIONS ###
 
-# Convert a line of `createpairs`'s output back into a minimal pair
-def line_to_minpair(line: str):
-    words = line.split()
-    word1 = Word(words[0], words[1])
-    word2 = Word(words[-2], words[-1])
-    return (word1, word2)
-
-# Convert `craetepairs`'s output file into a list of minimal pairs
-def parse_input_file(path: str):
-    lines = readfile(path).splitlines()
-    minpairs = list(map(line_to_minpair, lines))
-    return minpairs
-
 # Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
 # as its model.
-def minpair_to_anki_note(minpair: tuple):
-    word1, word2 = minpair
+def minpair_to_anki_note(minpair: MinPair):
+    first = minpair.first
+    last = minpair.last
     note = genanki.Note(
         model=grzegorz_minpair_model,
         fields=[
-            word1.text,
+            first.text,
             '',
-            word1.ipa,
-            word2.text,
+            first.ipa,
+            last.text,
             '',
-            word2.ipa,
+            last.ipa,
         ]
     )
     return note
