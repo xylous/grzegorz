@@ -47,8 +47,8 @@ class Word:
 
     # Deserialise this class from JSON
     @staticmethod
-    def fromJSON(json_dct):
-        return Word(json_dct['text'], json_dct['ipa'])
+    def from_dict(dict):
+        return Word(dict['text'], dict['ipa'])
 
     def __repr__(self):
         return "<Word text:%s ipa%s>" % (self.text, self.ipa)
@@ -76,10 +76,12 @@ class MinPair:
         dict['last'] = Word.obj_dict(dict['last']);
         return dict
 
-    # Deserialise this class from JSON
+    # Construct this class from a dictionary
     @staticmethod
-    def fromJSON(json_dct):
-        return MinPair(json_dct['first'], json_dct['last'])
+    def from_dict(dict):
+        word1 = Word.from_dict(dict['first'])
+        word2 = Word.from_dict(dict['last'])
+        return MinPair(word1, word2)
 
 ### Helper functions ###
 
