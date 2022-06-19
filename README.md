@@ -147,6 +147,9 @@ often you review it and whatnot.
 - [x] generate minimal pairs
     - [x] optimise: look for interesting differences
     - [x] optimise: ignore stressed syllables
+    - [x] look for phoneme contrasts
+    - [x] look for chroneme differences
+    - [x] look for syllable stress differences
 - [ ] Anki integration
     - [x] create Anki flashcards from the generated minimal pairs
     - [x] export a deck containing the created flashcards
