@@ -43,7 +43,7 @@ def generate(
         for j in range(i+1,len(words)):
             w2 = words[j]
             pair = MinPair(w1, w2)
-            if phoneme_contrast(pair, nooptimise) or chroneme_contrast(pair):
+            if phoneme_contrast(pair, nooptimise) or chroneme_contrast(pair) or stress_contrast(pair):
                 minpairs.append(pair)
     json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
     writefile(outfile, json_out)
@@ -112,6 +112,27 @@ def similarities(word1: Word, word2: Word, max_len_diff) -> int:
             break
 
     return count
+
+# Multiple words might have almost the same IPA transcription, but the stress
+# falls on different syllables.
+#
+# If the stressless sounds of both words are the same and the words' IPAs are
+# different, then return True (i.e., it is a stress contrast)
+#
+# Concretely: /poˈte/ and /ˈpote/ (Greek) both get de-stressed to /pote/, and so
+# they form a minimal pair based on a stress contrast
+def stress_contrast(pair: MinPair) -> bool:
+    sounds1 = pair.first.sounds
+    sounds2 = pair.last.sounds
+
+    if strip_stress(sounds1) == strip_stress(sounds2):
+        return True
+
+    return False
+
+# Remove stress marks from a list of sounds
+def strip_stress(sounds: list[str]) -> list[str]:
+    return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ']]
 
 # Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
