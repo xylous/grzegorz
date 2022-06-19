@@ -43,7 +43,9 @@ def generate(
         for j in range(i+1,len(words)):
             w2 = words[j]
             pair = MinPair(w1, w2)
-            if phoneme_contrast(pair, nooptimise) or chroneme_contrast(pair) or stress_contrast(pair):
+            if (has_phoneme_contrast(pair, nooptimise)
+                    or has_chroneme_contrast(pair)
+                    or has_stress_contrast(pair)):
                 minpairs.append(pair)
     json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
     writefile(outfile, json_out)
@@ -55,7 +57,7 @@ def generate(
 # have at least one difference. If `nooptimise` is False, then, additionally, it
 # must have an interesting difference. If the above conditions are met, return
 # True, otherwise False.
-def phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
+def has_phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
     first = pair.first
     last = pair.last
 
@@ -70,7 +72,7 @@ def phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
 # A chroneme is a (theoretical) unit of sound that can distinguish the same
 # sound by their duration. In other words, check if the given pair has a
 # short-long sound length contrast, such as `pala` and `palla` in Italian
-def chroneme_contrast(pair: MinPair) -> bool:
+def has_chroneme_contrast(pair: MinPair) -> bool:
     first = pair.first
     last = pair.last
     if len(first.sounds) == len(last.sounds):
@@ -121,7 +123,7 @@ def similarities(word1: Word, word2: Word, max_len_diff) -> int:
 #
 # Concretely: /poˈte/ and /ˈpote/ (Greek) both get de-stressed to /pote/, and so
 # they form a minimal pair based on a stress contrast
-def stress_contrast(pair: MinPair) -> bool:
+def has_stress_contrast(pair: MinPair) -> bool:
     sounds1 = pair.first.sounds
     sounds2 = pair.last.sounds
 
