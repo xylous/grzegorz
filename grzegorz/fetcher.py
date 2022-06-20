@@ -37,5 +37,8 @@ def fetchipa(infile: str, outfile: str) -> None:
             words), total=numwords):
             wds.append(x)
 
+    # Don't keep entries with no IPA pronunciation
+    wds = [w for w in wds if w.ipa]
+
     jsonlog = json.dumps([Word.obj_dict(word) for word in wds])
     writefile(outfile, jsonlog)
