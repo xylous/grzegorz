@@ -46,9 +46,10 @@ def generate(
             # Skip empty entries
             if not w1.sounds or not w2.sounds:
                 continue
+            # A minimal pair is kept if it has an interesting difference.
             if (has_phoneme_contrast(pair, nooptimise)
                     or has_chroneme_contrast(pair)
-                    or has_stress_contrast(pair)):
+                    or (not ignore_stress and has_stress_contrast(pair))):
                 minpairs.append(pair)
     json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
     writefile(outfile, json_out)
@@ -135,8 +136,14 @@ def has_stress_contrast(pair: MinPair) -> bool:
     sounds1 = pair.first.sounds
     sounds2 = pair.last.sounds
 
-    if strip_stress(sounds1) == strip_stress(sounds2):
-        return True
+    try:
+        stress1 = sounds1.index("ˈ")
+        stress2 = sounds2.index("ˈ")
+        if (stress1 != stress2
+                and strip_stress(sounds1) == strip_stress(sounds2)):
+            return True
+    except:
+        pass
 
     return False
 
