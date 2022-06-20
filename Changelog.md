@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.1 - 2022-06-20
+
+- fix phoneme, chroneme and stress contrast checkers (ALL had bugs!)
+- fetchipa: don't store words that have no IPA spelling
+
 ## v0.4.0 - 2022-06-19
 
 - generator: look for phoneme, chroneme, or syllable stress-related differences
