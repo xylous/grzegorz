@@ -98,8 +98,8 @@ process:
     Please *don't* edit the wordlist file, as it will most likely result in errors.
 
 - `fetchipa <wordlist> <output-file>`, which takes the output of `wordlist` and
-    creates a JSON file where all words are paired with their IPA spelling,
-    which is fetched from Wiktionary.
+    creates a JSON file where all words are paired with their International
+    Phonetic Alphabet spelling, which is fetched from Wiktionary.
 
 - `generate <ipa-json> <output-file> [--no-optimise | --ignore-stress]`, which
     takes the JSON file created by `fetchipa`, and outputs the list of minimal
@@ -129,8 +129,9 @@ grzegorz fetchipa french-wordlist.txt french-ipas.json
 grzegorz generate french-ipas.json minpairs.json --ignore-stress
 ```
 
-If you were to specify the wrong wordlist language, shame on you: you'll likely end
-up with the wrong IPA spellings or, worse, none at all.
+If you were to specify the wrong wordlist language, shame on you: you'll likely
+end up with the wrong International Phonetic Alphabet spellings or, worse, none
+at all.
 
 Then you could generate an Anki deck (output file: `grzegorz-anki-deck.apkg`, in
 the current directory, no matter where the input file is located):
@@ -155,7 +156,7 @@ often you review it and whatnot.
 ## Roadmap
 
 - [x] fetch a wordlist of most used words in a given language
-- [x] fetch the IPAs for a given wordlist
+- [x] fetch the International Phonetic Alphabet spelling for a given wordlist
 - [x] generate minimal pairs
     - [x] optimise: look for interesting differences
     - [x] optimise: ignore stressed syllables
@@ -172,11 +173,11 @@ often you review it and whatnot.
 Pull requests are welcome. For major changes, please open an issue first to
 discuss what you would like to change.
 
-But, honestly, the greatest contribution you can make is to add IPA spellings to
-words on the [English Wiktionary](https://en.wiktionary.org), which is the
-source for all the IPA spellings that `grzegorz` uses. The more IPA spellings
-there are, the higher the number of words that can be used, the more
-possibilities for minimal pairs.
+But, honestly, the greatest contribution you can make is to add International
+Phonetic Alphabet (IPA) spellings to words on the [English
+Wiktionary](https://en.wiktionary.org), which is the source for all the
+spellings that `grzegorz` uses. The more IPA spellings there are, the higher the
+number of words that can be used, the more possibilities for minimal pairs.
 
 ## License
 
