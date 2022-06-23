@@ -33,24 +33,119 @@ grzegorz_minpair_model = genanki.Model(
     templates=[
         {
             'name': 'Card 1',
-            'qfmt': 'What do you hear?<br>{{Word 1 audio}}<br>{{Word 1 text}} OR {{Word 2 text}}',
-            'afmt': '{{FrontSide}}<hr id=answer>{{Word 1 text}}<br>{{Word 1 IPA}}',
+            'qfmt':
+"""
+<i>What did you hear?</i>
+
+<br>
+
+{{Word 1 audio}}
+
+<br>
+
+<div class="minpair">
+<div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
+<div class="center"><i>or</i></div>
+<div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
+</div>
+""",
+            'afmt':
+"""
+<i>What did you hear?</i>
+
+<br>
+
+{{Word 1 audio}}
+
+<br>
+
+<div class="minpair">
+<div class="correct-word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
+<div class="center"><i>or</i></div>
+<div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
+</div>
+
+<hr id=answer>
+
+You heard: <div class="word">{{Word 1 text}}</div>
+""",
         },
         {
             'name': 'Card 2',
-            'qfmt': 'What do you hear?<br>{{Word 2 audio}}<br>{{Word 1 text}} OR {{Word 2 text}}',
-            'afmt': '{{FrontSide}}<hr id=answer>{{Word 2 text}}<br>{{Word 2 IPA}}',
+            'qfmt':
+"""
+<i>What did you hear?</i>
+
+<br>
+
+{{Word 2 audio}}
+
+<br>
+
+<div class="minpair">
+<div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
+<div class="center"><i>or</i></div>
+<div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
+</div>
+""",
+            'afmt':
+"""
+<i>What did you hear?</i>
+
+<br>
+
+{{Word 2 audio}}
+
+<br>
+
+<div class="minpair">
+<div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
+<div class="center"><i>or</i></div>
+<div class="correct-word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
+</div>
+
+<hr id=answer>
+
+You heard: <div class="word">{{Word 2 text}}</div>
+""",
         },
     ],
-    css="""
+    css=
+"""
 .card {
-  font-family: arial;
-  font-size: 20px;
-  text-align: center;
-  color: black;
-  background-color: white;
+    font-family: arial;
+    font-size: 20px;
+    text-align: center;
+    color: black;
+    background-color: white;
 }
-    """,
+
+.word {
+    text-align: center;
+    border: 3px outset red;
+    background: ;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.correct-word {
+    text-align: center;
+    border: 3px outset red;
+    background: darkgreen;
+    display: inline-block;
+}
+
+.minpair {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center {
+    display: inline;
+    padding: 10px;
+}
+""",
 )
 
 def makedeck(infile: str) -> None:
