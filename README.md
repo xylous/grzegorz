@@ -36,15 +36,27 @@ For building:
 
 ### Installation
 
-```
-pip install grzegorz
-```
-
 Make sure the pip installation directory (default: `${HOME}/.local/bin`) is on
 your `${PATH}`. If not, add it (to your `.bashrc` or `.zshrc` preferably):
 
 ```
 export PATH="${HOME}/.local/bin:${PATH}"
+```
+
+#### From PyPi
+
+```
+pip install grzegorz
+```
+
+#### From source
+
+Clone this repository and run pip:
+
+```
+git clone https://github.com/xylous/grzegorz grzegorz
+cd grzegorz
+pip install .
 ```
 
 ### Usage
