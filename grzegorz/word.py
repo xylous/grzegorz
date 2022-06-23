@@ -104,12 +104,11 @@ def parse_ipa_pronunciation(ipa_str: str) -> str:
 
 # Return the contents of a file
 def readfile(path: str) -> str:
-    f = open(path, 'r')
-    return f.read()
+    with open(path, 'r') as f:
+        return f.read()
 
 # Write `txt` to the given path
 def writefile(path: str, text: str) -> None:
-    f = open(path, 'w')
-    f.write(text)
-    f.close()
+    with open(path, 'r') as f:
+        f.write(text)
     return
