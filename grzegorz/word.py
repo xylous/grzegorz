@@ -61,7 +61,7 @@ class Word:
     # Deserialise this class from JSON
     @staticmethod
     def from_dict(dict) -> 'Word':
-        return Word(dict['text'], dict['ipa'])
+        return Word(dict['text'], '/' + dict['ipa'] + '/')
 
     def __repr__(self) -> str:
         return "<Word text:%s ipa%s>" % (self.text, self.ipa)
