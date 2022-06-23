@@ -103,7 +103,7 @@ def has_chroneme_contrast(pair: MinPair) -> bool:
         try:
             sn1 = sounds1[i+1]
             sn2 = sounds2[j+1]
-        except:
+        except IndexError:
             sn1 = ''
             sn2 = ''
         # If we encounter a `ː`, or some characters are doubled, then we've
@@ -142,7 +142,7 @@ def has_stress_contrast(pair: MinPair) -> bool:
         if (stress1 != stress2
                 and strip_stress(sounds1) == strip_stress(sounds2)):
             return True
-    except:
+    except ValueError:
         pass
 
     return False

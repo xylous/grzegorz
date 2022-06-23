@@ -40,7 +40,7 @@ class Word:
             # don't add it as a valid IPA
             if not ipa[0] == '-':
                 self.ipa = ipa
-        except:
+        except IndexError:
             self.ipa = ''
         return self
 
@@ -54,7 +54,7 @@ class Word:
             # We don't need to know about the sounds of the word; those can be
             # computed
             dict.pop('sounds')
-        except:
+        except KeyError:
             pass
         return dict
 
@@ -109,6 +109,6 @@ def readfile(path: str) -> str:
 
 # Write `txt` to the given path
 def writefile(path: str, text: str) -> None:
-    with open(path, 'r') as f:
+    with open(path, 'w') as f:
         f.write(text)
     return
