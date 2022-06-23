@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4.2 - 2022-06-23
+
+- fix: change required Python version to 3.10 so `match` is supported
+- fix: use `with` statement when handling file I/O
+- fix: try-except on specific errors, not any
+- README:
+    - add 'From source' installation instructions
+    - expand the IPA abbreviation to avoid ambiguity
+
 ## v0.4.1 - 2022-06-20
 
 - fix phoneme, chroneme and stress contrast checkers (ALL had bugs!)
