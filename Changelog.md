@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.3 - 2022-06-23
+
+- fix: when converting a dictionary to a `Word`, add slashes around its IPA, so
+    that Anki flashcards look neater
+- change aspect of the Anki flashcards
+
 ## v0.4.2 - 2022-06-23
 
 - fix: change required Python version to 3.10 so `match` is supported
