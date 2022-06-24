@@ -101,17 +101,23 @@ process:
     creates a JSON file where all words are paired with their International
     Phonetic Alphabet spelling, which is fetched from Wiktionary.
 
-- `generate <ipa-json> <output-file> [--no-optimise | --ignore-stress]`, which
-    takes the JSON file created by `fetchipa`, and outputs the list of minimal
-    pairs it found, in JSON format as well.
+- `generate <ipa-json> <output-file> [--no-optimise | --no-phonemes |
+    --keep-chronemes | --keep-stress]`, which takes the JSON file created by
+    `fetchipa`, and outputs the list of minimal pairs it found, in JSON format
+    as well.
 
     Note that, by default, it's optimised: it filters out pairs with "boring"
     differences which are easy to tell apart by most people ('q' and 't', 't'
     and 'd', 'e' and 'o' etc.). Give it the `--no-optimise` option to not curate
     the list.
 
-    Secondly, syllable stress marks (`.`, `ˌ`, `ˈ`) are kept. You can use the
-    `--ignore-stress` flag to discard them when generating minimal pairs.
+    If you would like to keep minimal pairs based on chroneme and syllable
+    stress differences, use the `--keep-chronemes` and `--keep-stress` options
+    respectively. They're not enabled by default since they're computationally
+    intensive.
+
+    In a similar fashion, you can use the `--no-phomenes` option to discard
+    minimal pairs containing a difference in sounds.
 
 - `makedeck <minpairs-list>`, which takes the output file of `generate` and
     creates an Anki deck package (`./grzegorz-anki-deck.apkg`) which you can
