@@ -41,26 +41,29 @@ class MinPairGenerator:
         minpairs = []
         if self.skip_stress:
             print("Generator: stress contrasts will be ignored")
-        # NOTE: we must first generate all possibilities and only then filter out
-        # the interesting ones because the function checking for differences might
-        # miss things otherwise
-        print('Generating all possible minimal pairs...')
+
         for i in tqdm(range(0,len(words))):
-            w1 = words[i]
             for j in range(i+1,len(words)):
-                w2 = words[j]
-                pair = MinPair(w1, w2)
-                # Skip empty entries
-                if not w1.sounds or not w2.sounds:
-                    continue
-                # A minimal pair is kept if it has an interesting difference.
-                if ((not self.skip_phonemes and has_phoneme_contrast(pair, self.optimise))
-                        or (not self.skip_chronemes and has_chroneme_contrast(pair))
-                        or (not self.skip_stress and has_stress_contrast(pair))):
+                pair = MinPair(words[i], words[j])
+                if self.check_minpair(pair):
                     minpairs.append(pair)
+
         json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
         writefile(outfile, json_out)
         print('Done! Generated', len(minpairs), 'minimal pairs')
+
+    # Return True if the given pair is a minimal pair as per our options/rules,
+    # and False otherwise
+    def check_minpair(self, pair: MinPair) -> bool:
+        # Skip empty entries
+        if not pair.first.sounds or not pair.last.sounds:
+            return False
+        # A minimal pair is kept if it has an interesting difference.
+        if ((not self.skip_phonemes and has_phoneme_contrast(pair, self.optimise))
+                or (not self.skip_chronemes and has_chroneme_contrast(pair))
+                or (not self.skip_stress and has_stress_contrast(pair))):
+            return True
+        return False
 
 ### Helper functions ###
 
