@@ -39,6 +39,14 @@ class MinPairGenerator:
         words = json.loads(jsonstr, object_hook=Word.from_dict)
         words = list(map(word_with_delimited_ipa, words))
         minpairs = []
+
+        if self.skip_phonemes and self.skip_chronemes and self.skip_stress:
+            print("Geneartor: skipping all contrasts means no minimal pairs will be generated; abort")
+            return
+        if self.skip_phonemes:
+            print("Generator: phoneme contrasts will be ignored")
+        if self.skip_chronemes:
+            print("Generator: chroneme contrasts will be ignored")
         if self.skip_stress:
             print("Generator: stress contrasts will be ignored")
 
