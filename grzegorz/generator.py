@@ -23,14 +23,14 @@ class MinPairGenerator:
     def __init__(
         self,
         optimise: bool,
-        skip_phonemes: bool,
-        skip_chronemes: bool,
-        skip_stress: bool,
+        keep_phonemes: bool,
+        keep_chronemes: bool,
+        keep_stress: bool,
     ) -> None:
         self.optimise = optimise
-        self.skip_phonemes = skip_phonemes
-        self.skip_chronemes = skip_chronemes
-        self.skip_stress = skip_stress
+        self.keep_phonemes = keep_phonemes
+        self.keep_chronemes = keep_chronemes
+        self.keep_stress = keep_stress
 
     # Given the path to a file containing JSON data about serialised `Word`s, create
     # a file `outfile` with all the minimal pairs found
@@ -40,15 +40,15 @@ class MinPairGenerator:
         words = list(map(word_with_delimited_ipa, words))
         minpairs = []
 
-        if self.skip_phonemes and self.skip_chronemes and self.skip_stress:
-            print("Geneartor: skipping all contrasts means no minimal pairs will be generated; abort")
+        if not self.keep_phonemes and not self.keep_chronemes and not self.keep_stress:
+            print("Generator: skipping all contrasts means no minimal pairs will be generated; abort")
             return
-        if self.skip_phonemes:
+        if not self.keep_phonemes:
             print("Generator: phoneme contrasts will be ignored")
-        if self.skip_chronemes:
-            print("Generator: chroneme contrasts will be ignored")
-        if self.skip_stress:
-            print("Generator: stress contrasts will be ignored")
+        if self.keep_chronemes:
+            print("Generator: chroneme contrasts will be kept")
+        if self.keep_stress:
+            print("Generator: syllable stress contrasts will be kept")
 
         for i in tqdm(range(0,len(words))):
             for j in range(i+1,len(words)):
@@ -67,9 +67,9 @@ class MinPairGenerator:
         if not pair.first.sounds or not pair.last.sounds:
             return False
         # A minimal pair is kept if it has an interesting difference.
-        if ((not self.skip_phonemes and has_phoneme_contrast(pair, self.optimise))
-                or (not self.skip_chronemes and has_chroneme_contrast(pair))
-                or (not self.skip_stress and has_stress_contrast(pair))):
+        if ((self.keep_phonemes and has_phoneme_contrast(pair, self.optimise))
+                or (self.keep_chronemes and has_chroneme_contrast(pair))
+                or (self.keep_stress and has_stress_contrast(pair))):
             return True
         return False
 

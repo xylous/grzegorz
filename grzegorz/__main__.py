@@ -78,21 +78,21 @@ def create_argparser() -> argparse.ArgumentParser:
             default=False,
             dest="nooptimise",
             help="generate all possible minimal pairs (default: optimise)")
-    parser_generate.add_argument('--skip-phonemes',
+    parser_generate.add_argument('--no-phonemes',
             action='store_true',
             default=False,
-            dest="skip_phonemes",
+            dest="no_phonemes",
             help="ignore minimal pairs containing a phoneme contrast")
-    parser_generate.add_argument('--skip-chronemes',
+    parser_generate.add_argument('--keep-chronemes',
             action='store_true',
             default=False,
-            dest="skip_chronemes",
-            help="ignore minimal pairs containing a chroneme contrast")
-    parser_generate.add_argument('--skip-stress',
+            dest="keep_chronemes",
+            help="keep minimal pairs containing a chroneme contrast (default: don't)")
+    parser_generate.add_argument('--keep-stress',
             action='store_true',
             default=False,
-            dest="skip_stress",
-            help="ignore minimal pairs containing a stress contrast")
+            dest="keep_stress",
+            help="keep minimal pairs with a difference in syllable stress (default: don't)")
 
     # 'makedeck' subcommand
     parser_makedeck = subparsers.add_parser('makedeck',
@@ -104,9 +104,9 @@ def create_argparser() -> argparse.ArgumentParser:
 
 def fullmake(language: str, numwords: int, clean: bool) -> None:
     optimise = True
-    skip_phonemes = False
-    skip_chronemes = False
-    skip_stress = False
+    keep_phonemes = True
+    keep_chronemes = False
+    keep_stress = False
 
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
@@ -114,7 +114,12 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
 
     wordlist(language, numwords, wordlist_file)
     fetchipa(wordlist_file, ipa_json)
-    g = MinPairGenerator(optimise, skip_phonemes, skip_chronemes, skip_stress)
+    g = MinPairGenerator(
+        optimise,
+        keep_phonemes,
+        keep_chronemes,
+        keep_stress,
+    )
     g.generate(ipa_json, minpairs_file)
     makedeck(minpairs_file)
 
@@ -149,14 +154,14 @@ def main() -> None:
             infile = args.infile
             outfile = args.outfile
             nooptimise = args.nooptimise;
-            skip_phonemes = args.skip_phonemes;
-            skip_chronemes = args.skip_chronemes;
-            skip_stress = args.skip_stress;
+            no_phonemes = args.no_phonemes;
+            keep_chronemes = args.keep_chronemes;
+            keep_stress = args.keep_stress;
             g = MinPairGenerator(
                 not nooptimise,
-                skip_phonemes,
-                skip_chronemes,
-                skip_stress
+                not no_phonemes,
+                keep_chronemes,
+                keep_stress
             )
             g.generate(infile, outfile)
         case 'makedeck':
