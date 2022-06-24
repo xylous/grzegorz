@@ -23,12 +23,14 @@ class MinPairGenerator:
     def __init__(
         self,
         optimise: bool,
+        skip_phonemes: bool,
+        skip_chronemes: bool,
         skip_stress: bool,
-        skip_phonemes: bool
     ) -> None:
         self.optimise = optimise
-        self.skip_stress = skip_stress
         self.skip_phonemes = skip_phonemes
+        self.skip_chronemes = skip_chronemes
+        self.skip_stress = skip_stress
 
     # Given the path to a file containing JSON data about serialised `Word`s, create
     # a file `outfile` with all the minimal pairs found
@@ -53,7 +55,7 @@ class MinPairGenerator:
                     continue
                 # A minimal pair is kept if it has an interesting difference.
                 if ((not self.skip_phonemes and has_phoneme_contrast(pair, self.optimise))
-                        or has_chroneme_contrast(pair)
+                        or (not self.skip_chronemes and has_chroneme_contrast(pair))
                         or (not self.skip_stress and has_stress_contrast(pair))):
                     minpairs.append(pair)
         json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
