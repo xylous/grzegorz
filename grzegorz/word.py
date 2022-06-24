@@ -74,12 +74,6 @@ class MinPair:
     def __init__(self, first, last) -> None:
         self.first = first;
         self.last = last;
-        # The IPA pronunciations given to this class aren't going to be pure
-        # strings, rather arrays of sounds...
-        #
-        # ...smells like someone's cooking spaghetti in here.
-        self.first.ipa = ''.join(first.ipa)
-        self.last.ipa = ''.join(last.ipa)
 
     # Return this class as a dictionary
     @staticmethod
