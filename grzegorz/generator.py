@@ -14,27 +14,25 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 from .word import Word, MinPair, readfile, writefile
-from functools import partial
 import json
 from tqdm import tqdm
 from itertools import chain, combinations
 import re
 
 class MinPairGenerator:
-    def __init__(self, optimise: bool, no_stress: bool) -> None:
+    def __init__(self, optimise: bool, skip_stress: bool) -> None:
         self.optimise = optimise
-        self.no_stress = no_stress
+        self.skip_stress = skip_stress
 
     # Given the path to a file containing JSON data about serialised `Word`s, create
     # a file `outfile` with all the minimal pairs found
     def generate(self, infile: str, outfile: str) -> None:
         jsonstr = readfile(infile)
         words = json.loads(jsonstr, object_hook=Word.from_dict)
-        words = list(map(partial(word_with_delimited_ipa,
-            ignore_stress=self.no_stress), words))
+        words = list(map(word_with_delimited_ipa, words))
         minpairs = []
-        if self.no_stress:
-            print("Okay, syllable stress will be ignored")
+        if self.skip_stress:
+            print("Generator: stress contrasts will be ignored")
         # NOTE: we must first generate all possibilities and only then filter out
         # the interesting ones because the function checking for differences might
         # miss things otherwise
@@ -48,9 +46,9 @@ class MinPairGenerator:
                 if not w1.sounds or not w2.sounds:
                     continue
                 # A minimal pair is kept if it has an interesting difference.
-                if (has_phoneme_contrast(pair, not self.optimise)
+                if (has_phoneme_contrast(pair, self.optimise)
                         or has_chroneme_contrast(pair)
-                        or (not self.no_stress and has_stress_contrast(pair))):
+                        or (not self.skip_stress and has_stress_contrast(pair))):
                     minpairs.append(pair)
         json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
         writefile(outfile, json_out)
@@ -62,7 +60,7 @@ class MinPairGenerator:
 # have at least one difference. If `nooptimise` is False, then, additionally, it
 # must have an interesting difference. If the above conditions are met, return
 # True, otherwise False.
-def has_phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
+def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
     first = pair.first
     last = pair.last
 
@@ -70,7 +68,7 @@ def has_phoneme_contrast(pair: MinPair, nooptimise: bool) -> bool:
         return False
 
     if differences(first, last) == 1:
-        if nooptimise or is_interesting_pair(pair):
+        if not optimise or is_interesting_pair(pair):
             return True
     return False
 
@@ -153,8 +151,8 @@ def strip_stress(sounds: list[str]) -> list[str]:
     return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ', '̯', '']]
 
 # Return the same word, except its IPA is delimited
-def word_with_delimited_ipa(word: Word, ignore_stress: bool) -> Word:
-    word.sounds = delimit_into_sounds(word.ipa, ignore_stress)
+def word_with_delimited_ipa(word: Word) -> Word:
+    word.sounds = delimit_into_sounds(word.ipa)
     return word
 
 # Return the number of differences between two word's sounds
@@ -184,7 +182,7 @@ def is_interesting_pair(minpair: MinPair) -> bool:
     return False
 
 # Given the IPA pronunciaion of a word, return all the sounds in it
-def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
+def delimit_into_sounds(ipa: str) -> list[str]:
     # Remove starting and ending '/'
     sounds = ipa
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
@@ -193,8 +191,6 @@ def delimit_into_sounds(ipa: str, ignore_stress: bool) -> list[str]:
     sounds = re.sub(":", "ː", sounds)
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
-    if ignore_stress:
-        sounds = strip_stress(sounds)
     return sounds
 
 # Return the given sound, except, if it's badly transliterated, modify it

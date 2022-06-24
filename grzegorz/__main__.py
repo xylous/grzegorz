@@ -78,11 +78,11 @@ def create_argparser() -> argparse.ArgumentParser:
             default=False,
             dest="nooptimise",
             help="generate all possible minimal pairs (default: optimise)")
-    parser_generate.add_argument('--ignore-stress',
+    parser_generate.add_argument('--skip-stress',
             action='store_true',
             default=False,
-            dest="ignore_stress",
-            help="ignore syllable stress in IPA text (default: don't)")
+            dest="skip_stress",
+            help="don't look for minimal pairs containing a stress contrast")
 
     # 'makedeck' subcommand
     parser_makedeck = subparsers.add_parser('makedeck',
@@ -137,8 +137,8 @@ def main() -> None:
             infile = args.infile
             outfile = args.outfile
             nooptimise = args.nooptimise;
-            ignore_stress = args.ignore_stress;
-            g = MinPairGenerator(not nooptimise, ignore_stress)
+            skip_stress = args.skip_stress;
+            g = MinPairGenerator(not nooptimise, skip_stress)
             g.generate(infile, outfile)
         case 'makedeck':
             infile = args.infile
