@@ -20,9 +20,15 @@ from itertools import chain, combinations
 import re
 
 class MinPairGenerator:
-    def __init__(self, optimise: bool, skip_stress: bool) -> None:
+    def __init__(
+        self,
+        optimise: bool,
+        skip_stress: bool,
+        skip_phonemes: bool
+    ) -> None:
         self.optimise = optimise
         self.skip_stress = skip_stress
+        self.skip_phonemes = skip_phonemes
 
     # Given the path to a file containing JSON data about serialised `Word`s, create
     # a file `outfile` with all the minimal pairs found
@@ -46,7 +52,7 @@ class MinPairGenerator:
                 if not w1.sounds or not w2.sounds:
                     continue
                 # A minimal pair is kept if it has an interesting difference.
-                if (has_phoneme_contrast(pair, self.optimise)
+                if ((not self.skip_phonemes and has_phoneme_contrast(pair, self.optimise))
                         or has_chroneme_contrast(pair)
                         or (not self.skip_stress and has_stress_contrast(pair))):
                     minpairs.append(pair)
