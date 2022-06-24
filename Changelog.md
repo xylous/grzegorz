@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.4 - 2022-06-24
+
+- `generate`:
+    - add `--no-phonemes`, `--keep-chronemes`, `--keep-stress` options
+    - remove `--ignore-stress` option
+    - refactor code structure
+
 ## v0.4.3 - 2022-06-23
 
 - fix: when converting a dictionary to a `Word`, add slashes around its IPA, so
