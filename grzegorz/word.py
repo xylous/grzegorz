@@ -71,7 +71,7 @@ class Word:
 
 # Two words in a pair. Voilà c'est tout.
 class MinPair:
-    def __init__(self, first, last) -> None:
+    def __init__(self, first: Word, last: Word) -> None:
         self.first = first;
         self.last = last;
 
