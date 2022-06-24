@@ -15,7 +15,7 @@
 
 import argparse
 from .fetcher import fetchipa
-from .generator import generate
+from .generator import MinPairGenerator
 from .anki_integration import makedeck
 from .wordlist import wordlist
 from os import remove
@@ -93,8 +93,8 @@ def create_argparser() -> argparse.ArgumentParser:
     return parser
 
 def fullmake(language: str, numwords: int, clean: bool) -> None:
-    nooptimise = False
-    ignore_stress = False
+    optimise = True
+    no_stress = False
 
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
@@ -102,7 +102,8 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
 
     wordlist(language, numwords, wordlist_file)
     fetchipa(wordlist_file, ipa_json)
-    generate(ipa_json, minpairs_file, nooptimise, ignore_stress)
+    g = MinPairGenerator(optimise, no_stress)
+    g.generate(ipa_json, minpairs_file)
     makedeck(minpairs_file)
 
     if clean:
@@ -137,7 +138,8 @@ def main() -> None:
             outfile = args.outfile
             nooptimise = args.nooptimise;
             ignore_stress = args.ignore_stress;
-            generate(infile, outfile, nooptimise, ignore_stress)
+            g = MinPairGenerator(not nooptimise, ignore_stress)
+            g.generate(infile, outfile)
         case 'makedeck':
             infile = args.infile
             makedeck(infile)

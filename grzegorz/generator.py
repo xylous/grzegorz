@@ -20,40 +20,41 @@ from tqdm import tqdm
 from itertools import chain, combinations
 import re
 
-# Given the path to a file containing JSON data about serialised `Word`s, create
-# a file `outfile` with all the minimal pairs found
-def generate(
-    infile: str,
-    outfile: str,
-    nooptimise: bool,
-    ignore_stress: bool
-) -> None:
-    jsonstr = readfile(infile)
-    words = json.loads(jsonstr, object_hook=Word.from_dict)
-    words = list(map(partial(word_with_delimited_ipa, ignore_stress=ignore_stress), words))
-    minpairs = []
-    if ignore_stress:
-        print("Okay, syllable stress will be ignored")
-    # NOTE: we must first generate all possibilities and only then filter out
-    # the interesting ones because the function checking for differences might
-    # miss things otherwise
-    print('Generating all possible minimal pairs...')
-    for i in tqdm(range(0,len(words))):
-        w1 = words[i]
-        for j in range(i+1,len(words)):
-            w2 = words[j]
-            pair = MinPair(w1, w2)
-            # Skip empty entries
-            if not w1.sounds or not w2.sounds:
-                continue
-            # A minimal pair is kept if it has an interesting difference.
-            if (has_phoneme_contrast(pair, nooptimise)
-                    or has_chroneme_contrast(pair)
-                    or (not ignore_stress and has_stress_contrast(pair))):
-                minpairs.append(pair)
-    json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
-    writefile(outfile, json_out)
-    print('Done! Generated', len(minpairs), 'minimal pairs')
+class MinPairGenerator:
+    def __init__(self, optimise: bool, no_stress: bool) -> None:
+        self.optimise = optimise
+        self.no_stress = no_stress
+
+    # Given the path to a file containing JSON data about serialised `Word`s, create
+    # a file `outfile` with all the minimal pairs found
+    def generate(self, infile: str, outfile: str) -> None:
+        jsonstr = readfile(infile)
+        words = json.loads(jsonstr, object_hook=Word.from_dict)
+        words = list(map(partial(word_with_delimited_ipa,
+            ignore_stress=self.no_stress), words))
+        minpairs = []
+        if self.no_stress:
+            print("Okay, syllable stress will be ignored")
+        # NOTE: we must first generate all possibilities and only then filter out
+        # the interesting ones because the function checking for differences might
+        # miss things otherwise
+        print('Generating all possible minimal pairs...')
+        for i in tqdm(range(0,len(words))):
+            w1 = words[i]
+            for j in range(i+1,len(words)):
+                w2 = words[j]
+                pair = MinPair(w1, w2)
+                # Skip empty entries
+                if not w1.sounds or not w2.sounds:
+                    continue
+                # A minimal pair is kept if it has an interesting difference.
+                if (has_phoneme_contrast(pair, not self.optimise)
+                        or has_chroneme_contrast(pair)
+                        or (not self.no_stress and has_stress_contrast(pair))):
+                    minpairs.append(pair)
+        json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
+        writefile(outfile, json_out)
+        print('Done! Generated', len(minpairs), 'minimal pairs')
 
 ### Helper functions ###
 
