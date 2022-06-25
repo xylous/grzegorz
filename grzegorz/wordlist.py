@@ -16,7 +16,7 @@
 import requests
 from .word import writefile
 
-# List of languages for which word lists can be fetched
+"""List of languages for which word lists can be fetched"""
 VALID_LANGUAGES = [
     # Germanic languages
     ('english', 'en'),
@@ -62,13 +62,15 @@ VALID_LANGUAGES = [
     ('japanese', 'ja'),
 ]
 
-# This is where all the lists are fetched from
+"""This is where all the lists are fetched from"""
 RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2016'
 
-# Fetch a word list of `numwords` and put it into `outfile` for the given
-# language, if it's valid
-# NOTE: the language name should be all lowercase
 def wordlist(lang, numwords, outfile):
+    """
+    Fetch a word list of `numwords` and put it into `outfile` for the given
+    language, if it's valid
+    NOTE: the language name should be all lowercase
+    """
     language = lang_name(lang)
     if not valid_lang(lang):
         print(lang, "? I can't fetch a wordlist for that", sep='')
@@ -84,42 +86,44 @@ def wordlist(lang, numwords, outfile):
 
 ### HELPER FUNCTIONS ###
 
-# We only accept languages that are on the list
 def valid_lang(lang):
+    """We only accept languages that are on the list"""
     for pair in VALID_LANGUAGES:
         if lang in pair:
             return True
     return False
 
-# Given a language, return its language code
 def lang_code(lang):
+    """Given a language, return its language code"""
     for pair in VALID_LANGUAGES:
         if lang in pair:
             _, code = pair
             return code
     return ''
 
-# Given a language, return its language code
 def lang_name(lang):
+    """Given a language, return its language fullname"""
     for pair in VALID_LANGUAGES:
         if lang in pair:
             name, _ = pair
             return name
     return ''
 
-# Return the link to the wordlist for the given language
 def wordlist_link_for_lang(lang):
+    """Return the link to the wordlist for the given language"""
     code = lang_code(lang)
     link = RESOURCES_REPO_LINK + "/" + code + "/" + code + "_50k.txt"
     return link
 
-# Return the string containing the webpage at `link`
 def fetch_contents(link):
+    """Return the string containing the webpage at `link`"""
     res = requests.get(link)
     return res.text
 
-# The format of the list we fetched is not perfect: we need to choose only the
-# first word on every line
 def format_line(line):
+    """
+    The format of the list we fetched is not perfect: we need to keep only the
+    first word on every line
+    """
     first_word = line.split()[0]
     return first_word

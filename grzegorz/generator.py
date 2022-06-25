@@ -32,9 +32,11 @@ class MinPairGenerator:
         self.keep_chronemes = keep_chronemes
         self.keep_stress = keep_stress
 
-    # Given the path to a file containing JSON data about serialised `Word`s, create
-    # a file `outfile` with all the minimal pairs found
     def generate(self, infile: str, outfile: str) -> None:
+        """
+        Given the path to a file containing JSON data about serialised `Word`s, create
+        a file `outfile` with all the minimal pairs found, in JSON format
+        """
         jsonstr = readfile(infile)
         words = json.loads(jsonstr, object_hook=Word.from_dict)
         words = list(map(word_with_delimited_ipa, words))
@@ -60,9 +62,11 @@ class MinPairGenerator:
         writefile(outfile, json_out)
         print('Done! Generated', len(minpairs), 'minimal pairs')
 
-    # Return True if the given pair is a minimal pair as per our options/rules,
-    # and False otherwise
     def check_minpair(self, pair: MinPair) -> bool:
+        """
+        Return True if the given pair is a minimal pair as per our options/rules,
+        and False otherwise
+        """
         # Skip empty entries
         if not pair.first.sounds or not pair.last.sounds:
             return False
@@ -73,11 +77,13 @@ class MinPairGenerator:
 
 ### Helper functions ###
 
-# A phoneme contrast occurs when the words in a pair are of equal length and
-# have at least one difference. If `nooptimise` is False, then, additionally, it
-# must have an interesting difference. If the above conditions are met, return
-# True, otherwise False.
 def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
+    """
+    A phoneme contrast occurs when the words in a pair are of equal length and
+    have at least one difference. If `nooptimise` is False, then, additionally, it
+    must have an interesting difference. If the above conditions are met, return
+    True, otherwise False.
+    """
     first = pair.first
     last = pair.last
 
@@ -87,10 +93,12 @@ def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
     return (differences(first, last) == 1
             and (not optimise or is_interesting_pair(pair)))
 
-# A chroneme is a (theoretical) unit of sound that can distinguish the same
-# sound by their duration. In other words, check if the given pair has a
-# short-long sound length contrast, such as `pala` and `palla` in Italian
 def has_chroneme_contrast(pair: MinPair) -> bool:
+    """
+    A chroneme is a (theoretical) unit of sound that can distinguish the same
+    sound by their duration. In other words, check if the given pair has a
+    short-long sound length contrast, such as `pala` and `palla` in Italian
+    """
     first = pair.first
     last = pair.last
     sounds1 = strip_stress(first.sounds)
@@ -133,15 +141,17 @@ def has_chroneme_contrast(pair: MinPair) -> bool:
     # there's a chroneme contrast between the words
     return seen_chroneme and num_same_sounds == len(sounds2)
 
-# Multiple words might have almost the same IPA transcription, but the stress
-# falls on different syllables.
-#
-# If the stressless sounds of both words are the same and the words' IPAs are
-# different, then return True (i.e., it is a stress contrast)
-#
-# Concretely: /poˈte/ and /ˈpote/ (Greek) both get de-stressed to /pote/, and so
-# they form a minimal pair based on a stress contrast
 def has_stress_contrast(pair: MinPair) -> bool:
+    """
+    Multiple words have almost the same IPA transcription, but the stress falls
+    on different syllables.
+
+    If the stressless sounds of both words are the same and the words' IPAs are
+    different, then return True (i.e., it is a stress contrast)
+
+    Concretely: /poˈte/ and /ˈpote/ (Greek) both get de-stressed to /pote/, and so
+    they form a minimal pair based on a stress contrast
+    """
     sounds1 = pair.first.sounds
     sounds2 = pair.last.sounds
 
@@ -156,17 +166,20 @@ def has_stress_contrast(pair: MinPair) -> bool:
 
     return False
 
-# Remove stress marks from a list of sounds
 def strip_stress(sounds: list[str]) -> list[str]:
+    """Remove stress marks from a list of sounds"""
     return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ', '̯', '']]
 
-# Return the same word, except its IPA is delimited
 def word_with_delimited_ipa(word: Word) -> Word:
+    """
+    Return the same word, except its `sounds` property is filled with all the
+    sounds of the IPA
+    """
     word.sounds = delimit_into_sounds(word.ipa)
     return word
 
-# Return the number of differences between two word's sounds
 def differences(word1: Word, word2: Word) -> int:
+    """Return the number of differences between two word's sounds"""
     sound1 = word1.sounds
     sound2 = word2.sounds
     if len(sound1) != len(sound2):
@@ -174,16 +187,21 @@ def differences(word1: Word, word2: Word) -> int:
     count = sum(1 for a, b in zip(sound1, sound2) if a != b)
     return count
 
-# Two sounds are interestingly different if they are likely to be confused
 def are_interestingly_different(s1: str, s2: str) -> bool:
+    """
+    Two sounds are interestingly different if they are likely to be
+    confused
+    """
     for diff in INTERESTING_DIFFERENCES:
         if s1 in diff and s2 in diff and s1 != s2:
             return True
     return False
 
-# If the given pair has an interesting difference, return it. Otherwise, return
-# None
 def is_interesting_pair(minpair: MinPair) -> bool:
+    """
+    If the given pair has an interesting difference, return True, otherwise
+    False
+    """
     sounds1 = minpair.first.sounds
     sounds2 = minpair.last.sounds
     for a, b in zip(sounds1, sounds2):
@@ -191,8 +209,8 @@ def is_interesting_pair(minpair: MinPair) -> bool:
             return True
     return False
 
-# Given the IPA pronunciaion of a word, return all the sounds in it
 def delimit_into_sounds(ipa: str) -> list[str]:
+    """Given the IPA pronunciaion of a word, return all the sounds in it"""
     # Remove starting and ending '/'
     sounds = ipa
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
@@ -204,30 +222,41 @@ def delimit_into_sounds(ipa: str) -> list[str]:
     sounds = [process_transliteration(s) for s in sounds if s]
     return sounds
 
-# Return the given sound, except, if it's badly transliterated, modify it
 def process_transliteration(sound: str) -> str:
+    """
+    Return the given sound, except, if it's badly transliterated, modify
+    it
+    """
     if sound in BAD_TRANSLITERATIONS:
         # evil unicode hack
         sound = sound[0] + 't͡ɕ'[1] + sound[1]
     return sound
 
-# Hardcoding is a bad practice. And tiresome as well. Especially when you add a
-# new sound: you have to manually add so many pairs!
 def parse_differences_chain(diffs_chain: list[str]) -> list[tuple[str]]:
+    """
+    Hardcoding is a bad practice. And tiresome as well. Especially when you add a
+    new sound: you have to manually add so many pairs!
+
+    Thus, we use chains of sounds: ['a', 'e', 'o'] returns the list of
+    interesting differences `('a', 'e')`, `('a', 'o')`, `('e', 'o')` so
+    basically all powersets of range two.
+    """
     s = list(diffs_chain)
     # range(2, 2+1) returns all tuples that are exactly 2 in length - exactly
     # what we need
     pairs = chain.from_iterable(combinations(s, r) for r in range(2, 2+1))
     return list(pairs)
 
-# Return the set of all elements belonging to the sublists of the list
 def flatten(lst: list[list]) -> set[list]:
+    """Return the set of all elements belonging to the sublists of the list"""
     return set(chain(*lst))
 
 ### CONSTANTS ###
 
-# The list of unicode characters that are used in IPA text and should be
-# delimited correctly
+"""
+The list of unicode characters that are used in IPA text and should be delimited
+correctly
+"""
 IPA_CHARACTERS = [
     # Consonants
     't͡ɕ', 'tɕ',
@@ -290,14 +319,19 @@ IPA_CHARACTERS = [
     '̯',
 ]
 
-# We only want to deal with transliterations of these sounds that *don't* have a
-# tie above them. This is the proper way to represent affricates.
+"""
+We only want to deal with transliterations of these sounds that *don't* have a
+tie above them. This is the proper way to represent affricates.
+"""
 BAD_TRANSLITERATIONS = ['tɕ', 'tʂ', 'ts', 'tʃ', 'dʐ', 'dʑ', 'dz', 'dʒ']
 
-# All sounds in a particular chain are hard to be distinguished from each other.
-# Therefore, they form pairs of "interesting differences", which are used to
-# filter out all other "boring" minimal pairs: for example, "i" and "l" are so
-# far away phonetically they're easily distinguishable by anyone!
+"""
+All sounds in a particular chain are hard to be distinguished from each other.
+
+Therefore, they form pairs of "interesting differences", which are used to
+filter out all other "boring" minimal pairs: for example, "i" and "l" are so
+far away phonetically they're easily distinguishable by anyone!
+"""
 INTERESTING_DIFFERENCES_CHAINS = [
     # Consonants
     ['t͡ɕ', 't͡ʂ', 't͡s', 't͡ʃ', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'd͡ʒ', 'ʂ', 'ʒ', 'ʃ', 'ɕ'],
@@ -325,7 +359,7 @@ INTERESTING_DIFFERENCES_CHAINS = [
     ['ɛ̃', 'ɔ̃', 'œ̃', 'ɑ̃'],
 ]
 
-# Precomputed constant, to avoid hardcoding everything.
+"""Precomputed constant, to avoid hardcoding everything."""
 INTERESTING_DIFFERENCES = flatten(list(
                             map(parse_differences_chain,
                                 INTERESTING_DIFFERENCES_CHAINS)))

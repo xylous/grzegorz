@@ -16,8 +16,10 @@
 from wiktionaryparser import WiktionaryParser
 import re
 
-# All we care about is the word's string and its IPA, its textual representation
 class Word:
+    """
+    All we care about is the word's text and its IPA
+    """
     def __init__(self, text: str, ipa: str) -> None:
         self.text = text
         self.ipa = ipa
@@ -26,8 +28,11 @@ class Word:
     def set_sounds(self, sounds: list[str]) -> None:
         self.sounds = sounds
 
-    # Return a copy of the current file with foo
     def get_ipa(self, language: str):
+        """
+        Look on the English Wiktionary for the IPA of the current word; if it
+        has one, then fill its `ipa` property, otherwise don't
+        """
         parser = WiktionaryParser()
         parser.set_default_language(language)
         # If we get no result, skip.
@@ -44,9 +49,9 @@ class Word:
             self.ipa = ''
         return self
 
-    # Return this class as a dictionary
     @staticmethod
     def obj_dict(word):
+        """Return this class as a dictionary"""
         dict = word.__dict__
         # this might fail since the dictionary is mutated, and the same Word
         # might be converted more than one time
@@ -58,9 +63,9 @@ class Word:
             pass
         return dict
 
-    # Deserialise this class from JSON
     @staticmethod
     def from_dict(dict) -> 'Word':
+        """Deserialise this class from JSON"""
         return Word(dict['text'], '/' + dict['ipa'] + '/')
 
     def __repr__(self) -> str:
@@ -69,39 +74,39 @@ class Word:
     def __str__(self) -> str:
         return "(%s %s)" % (self.text, self.ipa)
 
-# Two words in a pair. Voilà c'est tout.
 class MinPair:
+    """Two words in a pair. Voilà c'est tout."""
     def __init__(self, first: Word, last: Word) -> None:
         self.first = first;
         self.last = last;
 
-    # Return this class as a dictionary
     @staticmethod
     def obj_dict(obj: 'MinPair'):
+        """Return this class as a dictionary"""
         dict = obj.__dict__;
         dict['first'] = Word.obj_dict(dict['first']);
         dict['last'] = Word.obj_dict(dict['last']);
         return dict
 
-    # Construct this class from a dictionary
     @staticmethod
     def from_dict(dict) -> 'MinPair':
+        """Construct this class from a dictionary"""
         word1 = Word.from_dict(dict['first'])
         word2 = Word.from_dict(dict['last'])
         return MinPair(word1, word2)
 
 ### Helper functions ###
 
-# Find the first IPA spelling in the given string
 def parse_ipa_pronunciation(ipa_str: str) -> str:
+    """Find the first IPA spelling in the given string"""
     return re.findall(r"[/\[].*?[/\]]", ipa_str)[0]
 
-# Return the contents of a file
 def readfile(path: str) -> str:
+    """Return the contents of a file"""
     with open(path, 'r') as f:
         return f.read()
 
-# Write `txt` to the given path
 def writefile(path: str, text: str) -> None:
+    """Write `text` to the given path"""
     with open(path, 'w') as f:
         f.write(text)

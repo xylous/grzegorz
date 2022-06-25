@@ -103,6 +103,10 @@ def create_argparser() -> argparse.ArgumentParser:
     return parser
 
 def fullmake(language: str, numwords: int, clean: bool) -> None:
+    """
+    Practically: wrap all commands into one. If `clean` is True, then
+    temporary files created by this function are removed.
+    """
     optimise = True
     keep_phonemes = True
     keep_chronemes = False

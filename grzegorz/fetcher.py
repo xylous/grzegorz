@@ -19,8 +19,11 @@ from functools import partial
 import json
 from tqdm import tqdm
 
-# Given an input file containing a list of words separated
 def fetchipa(infile: str, outfile: str) -> None:
+    """
+    Given an input file containing a list of words separated, fetch the IPAs and
+    create a JSON file with their IPA spellings matched to their text
+    """
     numproc = 20
 
     contents = readfile(infile).splitlines()

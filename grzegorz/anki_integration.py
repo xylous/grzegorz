@@ -18,7 +18,7 @@ import genanki
 from genanki import Note, Deck
 import json
 
-# The model used for the flashcards is rather simple
+"""The model used for the flashcards is rather simple"""
 grzegorz_minpair_model = genanki.Model(
     1958583115, # Randomly generated Model ID. Needs to be hardcoded!
     'Grzegorz Minimal Pairs',
@@ -34,8 +34,7 @@ grzegorz_minpair_model = genanki.Model(
         {
             'name': 'Card 1',
             'qfmt':
-"""
-<i>What did you hear?</i>
+"""<i>What did you hear?</i>
 
 <br>
 
@@ -47,11 +46,9 @@ grzegorz_minpair_model = genanki.Model(
 <div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
 <div class="center"><i>or</i></div>
 <div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
-</div>
-""",
+</div>""",
             'afmt':
-"""
-<i>What did you hear?</i>
+"""<i>What did you hear?</i>
 
 <br>
 
@@ -67,14 +64,12 @@ grzegorz_minpair_model = genanki.Model(
 
 <hr id=answer>
 
-You heard: <div class="word">{{Word 1 text}}</div>
-""",
+You heard: <div class="word">{{Word 1 text}}</div>""",
         },
         {
             'name': 'Card 2',
             'qfmt':
-"""
-<i>What did you hear?</i>
+"""<i>What did you hear?</i>
 
 <br>
 
@@ -89,8 +84,7 @@ You heard: <div class="word">{{Word 1 text}}</div>
 </div>
 """,
             'afmt':
-"""
-<i>What did you hear?</i>
+"""<i>What did you hear?</i>
 
 <br>
 
@@ -106,13 +100,11 @@ You heard: <div class="word">{{Word 1 text}}</div>
 
 <hr id=answer>
 
-You heard: <div class="word">{{Word 2 text}}</div>
-""",
+You heard: <div class="word">{{Word 2 text}}</div>""",
         },
     ],
     css=
-"""
-.card {
+""".card {
     font-family: arial;
     font-size: 20px;
     text-align: center;
@@ -144,11 +136,11 @@ You heard: <div class="word">{{Word 2 text}}</div>
 .center {
     display: inline;
     padding: 10px;
-}
-""",
+}""",
 )
 
 def makedeck(infile: str) -> None:
+    """Create an Anki deck given a file full of minimal pairs"""
     json_str = readfile(infile)
     dict = json.loads(json_str)
     minpairs = list(map(MinPair.from_dict, dict))
@@ -158,9 +150,11 @@ def makedeck(infile: str) -> None:
 
 ### HELPER FUNCTIONS ###
 
-# Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
-# as its model.
 def minpair_to_anki_note(minpair: MinPair) -> Note:
+    """
+    Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
+    as its model.
+    """
     first = minpair.first
     last = minpair.last
     note = genanki.Note(
@@ -176,8 +170,10 @@ def minpair_to_anki_note(minpair: MinPair) -> Note:
     )
     return note
 
-# Add a list of notes into a deck called "grzegorz's minimal pairs"
 def notes_to_deck(notes: list[Note]) -> Deck:
+    """
+    Add a list of notes into a deck called "grzegorz's minimal pairs"
+    """
     deck = genanki.Deck(
         1597757363,
         "grzegorz's minimal pairs",
@@ -186,8 +182,8 @@ def notes_to_deck(notes: list[Note]) -> Deck:
         deck.add_note(note)
     return deck
 
-# Package the given deck and write it to a file
 def export_deck(deck: Deck) -> None:
+    """Package the given deck and write it to a file: grzegorz-anki-deck.apkg"""
     outfile = 'grzegorz-anki-deck.apkg'
     genanki.Package(deck).write_to_file(outfile)
     print('Done! Now import', outfile, 'in your Anki')
