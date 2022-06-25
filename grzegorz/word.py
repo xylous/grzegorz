@@ -68,12 +68,6 @@ class Word:
         """Deserialise this class from JSON"""
         return Word(dict['text'], '/' + dict['ipa'] + '/')
 
-    def __repr__(self) -> str:
-        return "<Word text:%s ipa%s>" % (self.text, self.ipa)
-
-    def __str__(self) -> str:
-        return "(%s %s)" % (self.text, self.ipa)
-
 class MinPair:
     """Two words in a pair. Voilà c'est tout."""
     def __init__(self, first: Word, last: Word) -> None:
