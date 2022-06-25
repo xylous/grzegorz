@@ -67,11 +67,9 @@ class MinPairGenerator:
         if not pair.first.sounds or not pair.last.sounds:
             return False
         # A minimal pair is kept if it has an interesting difference.
-        if ((self.keep_phonemes and has_phoneme_contrast(pair, self.optimise))
+        return ((self.keep_phonemes and has_phoneme_contrast(pair, self.optimise))
                 or (self.keep_chronemes and has_chroneme_contrast(pair))
-                or (self.keep_stress and has_stress_contrast(pair))):
-            return True
-        return False
+                or (self.keep_stress and has_stress_contrast(pair)))
 
 ### Helper functions ###
 
@@ -86,10 +84,8 @@ def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
     if len(first.sounds) != len(last.sounds):
         return False
 
-    if differences(first, last) == 1:
-        if not optimise or is_interesting_pair(pair):
-            return True
-    return False
+    return (differences(first, last) == 1
+            and (not optimise or is_interesting_pair(pair)))
 
 # A chroneme is a (theoretical) unit of sound that can distinguish the same
 # sound by their duration. In other words, check if the given pair has a
@@ -107,9 +103,7 @@ def has_chroneme_contrast(pair: MinPair) -> bool:
 
     # Swap, as to have the longer string in sounds1
     if len(sounds2) > len(sounds1):
-        tmp = sounds1
-        sounds1 = sounds2
-        sounds2 = tmp
+        sounds1, sounds2 = sounds2, sounds1
 
     num_same_sounds = 0
     seen_chroneme = False
@@ -137,10 +131,7 @@ def has_chroneme_contrast(pair: MinPair) -> bool:
 
     # We need the words to differ only by one single sound and to know that
     # there's a chroneme contrast between the words
-    if seen_chroneme and num_same_sounds == len(sounds2):
-        return True
-
-    return False
+    return seen_chroneme and num_same_sounds == len(sounds2)
 
 # Multiple words might have almost the same IPA transcription, but the stress
 # falls on different syllables.
@@ -206,8 +197,9 @@ def delimit_into_sounds(ipa: str) -> list[str]:
     sounds = ipa
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
-    sounds = re.sub('̯', '', sounds)
-    sounds = re.sub(":", "ː", sounds)
+    # Also: remove semivowel tie, as that can break things.
+    sounds = sounds.replace(":", "ː")
+    sounds = sounds.replace('̯', '')
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
     return sounds

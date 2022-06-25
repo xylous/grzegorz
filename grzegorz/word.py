@@ -38,7 +38,7 @@ class Word:
             # Not all words have their IPAs on wiktionary, but they might have a
             # "Rhymes" section (try German wordlists). If we did fetch a rhyme,
             # don't add it as a valid IPA
-            if not ipa[0] == '-':
+            if ipa[0] != '-':
                 self.ipa = ipa
         except IndexError:
             self.ipa = ''
@@ -105,4 +105,3 @@ def readfile(path: str) -> str:
 def writefile(path: str, text: str) -> None:
     with open(path, 'w') as f:
         f.write(text)
-    return
