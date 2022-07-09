@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.5 - 2022-07-09
+
+- `generate`: when optimising, keep `sj` and `zj` phoneme contrasts
+- refactor comments
+
 ## v0.4.4 - 2022-06-24
 
 - `generate`:
