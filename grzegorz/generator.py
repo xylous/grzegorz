@@ -285,6 +285,8 @@ IPA_CHARACTERS = [
     'ʎ',
     'ç',
     'ɣ',
+    'sʲ',
+    'zʲ',
 
     # Oral vowels
     'ɔ',
@@ -301,6 +303,8 @@ IPA_CHARACTERS = [
     'ɤ',
     'ɒ',
     'ʊ',
+    'ʉ',
+    'ɵ',
 
     # Nasal vowels
     'ɑ̃',
@@ -334,7 +338,8 @@ far away phonetically they're easily distinguishable by anyone!
 """
 INTERESTING_DIFFERENCES_CHAINS = [
     # Consonants
-    ['t͡ɕ', 't͡ʂ', 't͡s', 't͡ʃ', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'd͡ʒ', 'ʂ', 'ʒ', 'ʃ', 'ɕ'],
+    ['t͡ɕ', 't͡ʂ', 't͡s', 't͡ʃ', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'd͡ʒ',
+        'ʂ', 'ʒ', 'ʃ', 'ɕ', 'zʲ', 'sʲ'],
     ['n', 'ɲ', 'ŋ'],
     ['v', 'f'],
     ['x', 'h', 'xʲ', 'ç'],
@@ -346,9 +351,9 @@ INTERESTING_DIFFERENCES_CHAINS = [
     ['ɑ', 'a', 'ɐ', 'ə', 'ʌ', 'æ'],
     ['e', 'ɛ', 'ɪ', 'æ'],
     ['ɨ', 'i', 'j', 'ɪ'],
-    ['ɔ', 'o', 'ø', 'œ'],
+    ['ɔ', 'o', 'ø', 'œ', 'ɵ'],
     ['ɥ', 'j'],
-    ['ɥ', 'u', 'ɤ', 'y', 'w', 'ɒ', 'ʊ'],
+    ['ɥ', 'u', 'ɤ', 'y', 'w', 'ɒ', 'ʊ', 'ʉ'],
     ['i', 'e'],
 
     # Nasal vowels
