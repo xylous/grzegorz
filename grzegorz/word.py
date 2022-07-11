@@ -45,8 +45,8 @@ class Word:
             # don't add it as a valid IPA
             if ipa[0] != '-':
                 self.ipa = ipa
-        except IndexError:
-            self.ipa = ''
+        except (IndexError, AttributeError) as _:
+            pass
         return self
 
     @staticmethod
