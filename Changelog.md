@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.7 - 2022-07-11
+
+- fix `AttributeError` when running `fetchipa` for e.g. Greek
+
 ## v0.4.6 - 2022-07-11
 
 - fix `fetchipa`:
