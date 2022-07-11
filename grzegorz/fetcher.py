@@ -14,7 +14,7 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 from .word import Word, readfile, writefile
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from functools import partial
 import json
 from tqdm import tqdm
@@ -24,7 +24,9 @@ def fetchipa(infile: str, outfile: str) -> None:
     Given an input file containing a list of words separated, fetch the IPAs and
     create a JSON file with their IPA spellings matched to their text
     """
-    numproc = 20
+
+    # For speed reasons, we use parallelism
+    numproc = 10 * cpu_count()
 
     contents = readfile(infile).splitlines()
     language = contents.pop(0)
