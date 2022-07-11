@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.6 - 2022-07-11
+
+- fix `fetchipa`:
+    - don't hardcode the number of parallel processes
+    - fix `UnicodeEncodeError` when writing files
+
 ## v0.4.5 - 2022-07-09
 
 - `generate`: when optimising, keep `sj` and `zj` phoneme contrasts
