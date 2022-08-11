@@ -43,28 +43,21 @@ grzegorz_minpair_model = genanki.Model(
 <br>
 
 <div class="minpair">
-<div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
+<div id="corret-word" class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
 <div class="center"><i>or</i></div>
 <div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
 </div>""",
             'afmt':
-"""<i>What did you hear?</i>
-
-<br>
-
-{{Word 1 audio}}
-
-<br>
-
-<div class="minpair">
-<div class="correct-word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
-<div class="center"><i>or</i></div>
-<div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
-</div>
+"""{{FrontSide}}
 
 <hr id=answer>
 
-You heard: <div class="word">{{Word 1 text}}</div>""",
+You heard: <div class="word">{{Word 1 text}}</div>
+
+<script>
+    var elem = document.getElementById("correct-word");
+    elem.style.backgroundColor = '#26bf0b';
+</script>""",
         },
         {
             'name': 'Card 2',
@@ -80,27 +73,19 @@ You heard: <div class="word">{{Word 1 text}}</div>""",
 <div class="minpair">
 <div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
 <div class="center"><i>or</i></div>
-<div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
-</div>
-""",
+<div id="correct-word" class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
+</div>""",
             'afmt':
-"""<i>What did you hear?</i>
-
-<br>
-
-{{Word 2 audio}}
-
-<br>
-
-<div class="minpair">
-<div class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
-<div class="center"><i>or</i></div>
-<div class="correct-word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
-</div>
+"""{{FrontSide}}
 
 <hr id=answer>
 
-You heard: <div class="word">{{Word 2 text}}</div>""",
+You heard: <div class="word">{{Word 2 text}}</div>
+
+<script>
+    var elem = document.getElementById("correct-word");
+    elem.style.backgroundColor = '#26bf0b';
+</script>""",
         },
     ],
     css=
@@ -118,13 +103,6 @@ You heard: <div class="word">{{Word 2 text}}</div>""",
     background: ;
     display: inline-block;
     box-sizing: border-box;
-}
-
-.correct-word {
-    text-align: center;
-    border: 3px outset red;
-    background: darkgreen;
-    display: inline-block;
 }
 
 .minpair {
