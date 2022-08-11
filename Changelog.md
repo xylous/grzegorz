@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.8 - 2022-08-11
+
+- Anki flashcards:
+    - fix error that autoplayed audio on both the back and the front of the
+        cards
+    - change appearance of boxes containing words; use black (on light theme)
+        and white (on dark theme)
+
 ## v0.4.7 - 2022-07-11
 
 - fix `AttributeError` when running `fetchipa` for e.g. Greek
