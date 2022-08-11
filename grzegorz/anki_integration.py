@@ -99,10 +99,13 @@ You heard: <div class="word">{{Word 2 text}}</div>
 
 .word {
     text-align: center;
-    border: 3px outset red;
-    background: ;
+    border: 3px outset black;
     display: inline-block;
     box-sizing: border-box;
+}
+
+.nightMode .word {
+    border: 3px outset white;
 }
 
 .minpair {
