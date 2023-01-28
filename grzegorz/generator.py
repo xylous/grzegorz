@@ -175,7 +175,7 @@ def word_with_delimited_ipa(word: Word) -> Word:
     Return the same word, except its `sounds` property is filled with all the
     sounds of the IPA
     """
-    word.sounds = delimit_into_sounds(word.ipa)
+    word.sounds = parse_ipa(word.ipa)
     return word
 
 def differences(word1: Word, word2: Word) -> int:
@@ -209,19 +209,23 @@ def is_interesting_pair(minpair: MinPair) -> bool:
             return True
     return False
 
-def delimit_into_sounds(ipa: str) -> list[str]:
-    """Given the IPA pronunciaion of a word, return all the sounds in it"""
+def parse_ipa(ipa: str) -> list[str]:
+    """
+    Given the IPA pronunciaion of a word, return all the IPA characters in it
+    """
     # Remove starting and ending '/'
-    sounds = ipa
+    chars = ipa.replace("/", "")
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
-    # Also: remove semivowel tie, as that can break things.
-    sounds = sounds.replace(":", "ː")
-    sounds = sounds.replace('̯', '')
+    chars = chars.replace(":", "ː")
+    # Also, remove the diphthong tie, as that can break things.
+    chars = chars.replace('̯', '')
+
+    # Do the actual splitting
     IPA_CHARACTERS = IPA_SOUNDS + IPA_CHRONEMES + IPA_SYLLABLES
-    sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
-    sounds = [process_transliteration(s) for s in sounds if s]
-    return sounds
+    chars = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", chars)
+
+    return [process_transliteration(ch) for ch in chars if ch != ""]
 
 def peek(xs: list):
     """
