@@ -93,6 +93,21 @@ class MinPair:
         word2 = Word.from_dict(dict['last'])
         return MinPair(word1, word2)
 
+class Sound:
+    """ Aside from a mere noise, a sound can also be long or short """
+    def __init__(self, sound: str, long: bool):
+        self.sound = sound
+        self.long = long
+
+class Syllable:
+    """
+    A syllable is composed of one or several sounds and can have various types
+    of stress
+    """
+    def __init__(self, stress: str, sounds: list[Sound]):
+        self.stress = stress
+        self.contents = sounds
+
 ### Helper functions ###
 
 def parse_ipa_pronunciation(ipa_str: str) -> str:

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from word import Word, MinPair, readfile, writefile
+from word import Word, MinPair, Sound, Syllable, readfile, writefile
 import json
 from tqdm import tqdm
 from itertools import chain, combinations
@@ -209,10 +209,8 @@ def is_interesting_pair(minpair: MinPair) -> bool:
             return True
     return False
 
-def parse_ipa(ipa: str) -> list[str]:
-    """
-    Given the IPA pronunciaion of a word, return all the IPA characters in it
-    """
+def parse_ipa_characters(ipa: str) -> list[str]:
+    """ Given an IPA transliteration, return all the IPA characters in it """
     # Remove starting and ending '/'
     chars = ipa.replace("/", "")
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
@@ -226,6 +224,54 @@ def parse_ipa(ipa: str) -> list[str]:
     chars = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", chars)
 
     return [process_transliteration(ch) for ch in chars if ch != ""]
+
+def parse_phonologically(ipa: str) -> list[Syllable]:
+    """
+    Given an IPA transliteration, parse it into a very convenient format, from a
+    phonological point of view
+    """
+    chars = parse_ipa_characters(ipa)
+    syllables = []
+    stress = "." # assume the first syllable is unemphasised
+    sounds = []
+
+    # sometimes we need to skip characters, namely chronemes: the same sound
+    # appearing consecutively is marked as one sound, but long in length
+    skip = False
+    for i in range(0, len(chars)):
+        if skip:
+            skip = False
+            continue
+
+        crnt = chars[i]
+        next = peek(chars[i :])
+
+        # If the current character isn't a syllable (stress) mark, then that
+        # means we've encountered a sound (or a chroneme character, by accident,
+        # but that's skipped). Next, figure out if the current sound is short or
+        # long
+        if not crnt in IPA_SYLLABLES:
+            is_long_sound = False
+            if next == crnt or next in IPA_CHRONEMES:
+                is_long_sound = True
+                skip = True
+            # skip chroneme characters if we've accidentally encountered them
+            if not crnt in IPA_CHRONEMES:
+                s = Sound(crnt, is_long_sound)
+                sounds.append(s)
+
+        # If we found a syllable mark, or the transcription ended, then we know
+        # that the previous syllable ends here. Thus, add all the sounds we've
+        # encountered so far to it, and prepare for a new syllable. NOTE: if
+        # we've encountered the end, then processing ends anyways
+        if crnt in IPA_SYLLABLES or i == len(chars) - 1:
+            if len(sounds) != 0:
+                syllable = Syllable(stress, sounds)
+                syllables.append(syllable)
+            stress = crnt
+            sounds = []
+
+    return syllables
 
 def peek(xs: list):
     """
