@@ -222,6 +222,16 @@ def delimit_into_sounds(ipa: str) -> list[str]:
     sounds = [process_transliteration(s) for s in sounds if s]
     return sounds
 
+def peek(xs: list):
+    """
+    Return the second element in the list if that index exists, otherwise empty
+    string
+    """
+    if len(xs) <= 1:
+        return ""
+    else:
+        return xs[1]
+
 def process_transliteration(sound: str) -> str:
     """
     Return the given sound, except, if it's badly transliterated, modify
