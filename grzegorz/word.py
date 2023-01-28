@@ -23,7 +23,9 @@ class Word:
     def __init__(self, text: str, ipa: str) -> None:
         self.text = text
         self.ipa = ipa
-        self.sounds = []
+        self.phonemes = []
+        self.chronemes = []
+        self.syllables = []
 
     def set_sounds(self, sounds: list[str]) -> None:
         self.sounds = sounds
@@ -59,6 +61,8 @@ class Word:
             # We don't need to know about the sounds of the word; those can be
             # computed
             dict.pop('sounds')
+            dict.pop('chronemes')
+            dict.pop('syllables')
         except KeyError:
             pass
         return dict

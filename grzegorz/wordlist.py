@@ -14,7 +14,7 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 import requests
-from .word import writefile
+from word import writefile
 
 """List of languages for which word lists can be fetched"""
 VALID_LANGUAGES = [

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from .word import Word, readfile, writefile
+from word import Word, readfile, writefile
 from multiprocessing import Pool, cpu_count
 from functools import partial
 import json

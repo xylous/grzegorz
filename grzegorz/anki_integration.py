@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from .word import MinPair, readfile
+from word import MinPair, readfile
 import genanki
 from genanki import Note, Deck
 import json

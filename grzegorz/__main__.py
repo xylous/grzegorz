@@ -14,10 +14,10 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 import argparse
-from .fetcher import fetchipa
-from .generator import MinPairGenerator
-from .anki_integration import makedeck
-from .wordlist import wordlist
+from fetcher import fetchipa
+from generator import MinPairGenerator
+from anki_integration import makedeck
+from wordlist import wordlist
 from os import remove
 
 # Why does it have to be this complicated?
