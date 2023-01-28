@@ -218,6 +218,7 @@ def delimit_into_sounds(ipa: str) -> list[str]:
     # Also: remove semivowel tie, as that can break things.
     sounds = sounds.replace(":", "ː")
     sounds = sounds.replace('̯', '')
+    IPA_CHARACTERS = IPA_SOUNDS + IPA_CHRONEMES + IPA_SYLLABLES
     sounds = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", sounds)
     sounds = [process_transliteration(s) for s in sounds if s]
     return sounds
@@ -264,10 +265,9 @@ def flatten(lst: list[list]) -> set[list]:
 ### CONSTANTS ###
 
 """
-The list of unicode characters that are used in IPA text and should be delimited
-correctly
+The list of unicode characters that denote sounds in IPA text
 """
-IPA_CHARACTERS = [
+IPA_SOUNDS = [
     # Consonants
     't͡ɕ', 'tɕ',
     't͡ʂ', 'tʂ',
@@ -324,13 +324,24 @@ IPA_CHARACTERS = [
 
     # Semi-vowels
     'ɥ',
+    # diphthong tie
+    '̯',
+]
 
-    # Punctuation-related
+"""
+The list of unicode characters that denote syllables (and stress) in IPA text
+"""
+IPA_SYLLABLES = [
     '.',
     'ˈ',
     'ˌ',
+]
+
+"""
+The list of unicode characters that denote sound length in IPA text
+"""
+IPA_CHRONEMES = [
     'ː',
-    '̯',
 ]
 
 """
