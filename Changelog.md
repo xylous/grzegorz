@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.9 - 2023-02-13
+
+- generator:
+    - parse every word's IPA phonologically, delimiting it into syllables and
+        sounds
+    - increase performance when generating minimal pairs based on syllable
+        stress and chronemes (due to the above)
+    - add a few unit tests
+    - fix: update relative imports, removing starting dots
+
 ## v0.4.8 - 2022-08-11
 
 - Anki flashcards:
