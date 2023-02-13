@@ -78,7 +78,29 @@ class MinPairGenerator:
 ### Helper functions ###
 
 def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
-    return False
+    first = pair.first.phonology
+    last = pair.last.phonology
+
+    # we have to work with same number of syllables
+    if len(first) != len(last):
+        return False
+
+    syl_diffs = differences(first, last)
+    # abort if more (or less) than one syllable is different
+    if len(syl_diffs) != 1:
+        return False
+    syl_diffs = syl_diffs[0]
+
+    # get the number of phones different in the matched syllable
+    phones_diffs = differences(syl_diffs[0].contents, syl_diffs[1].contents)
+    if len(phones_diffs) != 1 or len(syl_diffs[0].contents) != len(syl_diffs[1].contents):
+        return False
+
+    # make sure that the differences between sounds are based on phonemes, and
+    # not chronemes
+    diff = phones_diffs[0]
+    return diff[0].long == diff[1].long and \
+            (not optimise or are_interestingly_different(diff[0], diff[1]))
 
 def has_chroneme_contrast(pair: MinPair) -> bool:
     return False
@@ -98,10 +120,9 @@ def word_with_delimited_ipa(word: Word) -> Word:
     word.phonology = parse_phonologically(word.ipa)
     return word
 
-def differences(A: list, B: list) -> int:
-    """Return the number of differences between two word's sounds"""
-    count = sum(1 for a, b in zip(A, B) if a != b)
-    return count
+def differences(A: list, B: list) -> list:
+    """Given two lists, return pairs of elements that differ at the same index"""
+    return [(a, b) for a, b in zip(A, B) if a != b]
 
 def are_interestingly_different(s1: Sound, s2: Sound) -> bool:
     """
@@ -109,7 +130,8 @@ def are_interestingly_different(s1: Sound, s2: Sound) -> bool:
     confused
     """
     for diff in INTERESTING_DIFFERENCES:
-        if s1.sound in diff and s2.sound in diff and s1.sound != s2.sound:
+        if s1.sound in diff and s2.sound in diff \
+                and s1.sound != s2.sound and s1.long == s2.long:
             return True
     return False
 
