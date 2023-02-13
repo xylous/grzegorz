@@ -32,5 +32,40 @@ class GeneratorTests(unittest.TestCase):
         s2 = Syllable("ˈ", [Sound("b", False), Sound("a", False), Sound("z", False)])
         self.assertListEqual(sounds, [s1, s2])
 
+    def test_phoneme_contrast_r_and_m_not_optimised(self):
+        w1 = Word("", "")
+        w1.phonology = parse_phonologically("/barˈbaz/")
+        w2 = Word("", "")
+        w2.phonology = parse_phonologically("/bamˈbaz/")
+        self.assertTrue(has_phoneme_contrast(MinPair(w1, w2), False))
+
+    def test_phoneme_contrast_with_chroneme_difference(self):
+        w1 = Word("", "")
+        w1.phonology = parse_phonologically("/barˈbaz/")
+        w2 = Word("", "")
+        w2.phonology = parse_phonologically("/bar:ˈbaz/")
+        self.assertFalse(has_phoneme_contrast(MinPair(w1, w2), False))
+
+    def test_chroneme_contrast(self):
+        w1 = Word("", "")
+        w1.phonology = parse_phonologically("/barˈbaz/")
+        w2 = Word("", "")
+        w2.phonology = parse_phonologically("/bar:ˈbaz/")
+        self.assertTrue(has_chroneme_contrast(MinPair(w1, w2)))
+
+    def test_chroneme_contrast_two_diffs(self):
+        w1 = Word("", "")
+        w1.phonology = parse_phonologically("/barˈbaz/")
+        w2 = Word("", "")
+        w2.phonology = parse_phonologically("/bar:ˈba:z/")
+        self.assertFalse(has_chroneme_contrast(MinPair(w1, w2)))
+
+    def test_syllable_stress_contrast(self):
+        w1 = Word("", "")
+        w1.phonology = parse_phonologically("/barˈbaz/")
+        w2 = Word("", "")
+        w2.phonology = parse_phonologically("/bar.baz/")
+        self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
+
 if __name__ == '__main__':
     unittest.main()
