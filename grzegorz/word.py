@@ -22,6 +22,16 @@ class Sound:
         self.sound = sound
         self.long = long
 
+    def __eq__(self, other) -> bool:
+        return self.sound == other.sound and \
+                self.long == other.long
+
+    def __str__(self) -> str:
+        long = ""
+        if self.long:
+            long = ":"
+        return '"' + self.sound + long + '"'
+
 class Syllable:
     """
     A syllable is composed of one or several sounds and can have various types
@@ -30,6 +40,13 @@ class Syllable:
     def __init__(self, stress: str, sounds: list[Sound]):
         self.stress = stress
         self.contents = sounds
+
+    def __eq__(self, other) -> bool:
+        return self.stress == other.stress and \
+                self.contents == other.contents
+
+    def __str__(self) -> str:
+        return "(" + repr(self.contents) + "; " + self.stress + ")"
 
 class Word:
     """
