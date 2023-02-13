@@ -103,7 +103,27 @@ def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
             (not optimise or are_interestingly_different(diff[0], diff[1]))
 
 def has_chroneme_contrast(pair: MinPair) -> bool:
-    return False
+    first = pair.first.phonology
+    last = pair.last.phonology
+
+    # we have to work with same number of syllables
+    if len(first) != len(last):
+        return False
+
+    syl_diffs = differences(first, last)
+    # abort if more (or less) than one syllable is different
+    if len(syl_diffs) != 1:
+        return False
+    syl_diffs = syl_diffs[0]
+
+    # get the number of phones different in the matched syllable
+    phones_diffs = differences(syl_diffs[0].contents, syl_diffs[1].contents)
+    if len(phones_diffs) != 1 or len(syl_diffs[0].contents) != len(syl_diffs[1].contents):
+        return False
+
+    # make sure that the differences between sounds is based on sound length
+    diff = phones_diffs[0]
+    return diff[0].long != diff[1].long and diff[0].sound == diff[1].sound
 
 def has_stress_contrast(pair: MinPair) -> bool:
     return False
