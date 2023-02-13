@@ -16,6 +16,21 @@
 from wiktionaryparser import WiktionaryParser
 import re
 
+class Sound:
+    """ Aside from a mere noise, a sound can also be long or short """
+    def __init__(self, sound: str, long: bool):
+        self.sound = sound
+        self.long = long
+
+class Syllable:
+    """
+    A syllable is composed of one or several sounds and can have various types
+    of stress
+    """
+    def __init__(self, stress: str, sounds: list[Sound]):
+        self.stress = stress
+        self.contents = sounds
+
 class Word:
     """
     All we care about is the word's text and its IPA
@@ -23,12 +38,7 @@ class Word:
     def __init__(self, text: str, ipa: str) -> None:
         self.text = text
         self.ipa = ipa
-        self.phonemes = []
-        self.chronemes = []
-        self.syllables = []
-
-    def set_sounds(self, sounds: list[str]) -> None:
-        self.sounds = sounds
+        self.phonology = []
 
     def get_ipa(self, language: str):
         """
@@ -39,7 +49,7 @@ class Word:
         parser.set_default_language(language)
         # If we get no result, skip.
         try:
-            ipa = parse_ipa_pronunciation(parser.fetch(self.text)[0]['pronunciations']['text'][0])
+            ipa = first_ipa_pronunciation(parser.fetch(self.text)[0]['pronunciations']['text'][0])
             # Remove leading and trailing `/`, `[` and `]`
             ipa = re.sub(r"[/\[\]]", "", ipa)
             # Not all words have their IPAs on wiktionary, but they might have a
@@ -60,9 +70,7 @@ class Word:
         try:
             # We don't need to know about the sounds of the word; those can be
             # computed
-            dict.pop('sounds')
-            dict.pop('chronemes')
-            dict.pop('syllables')
+            dict.pop('phonology')
         except KeyError:
             pass
         return dict
@@ -93,24 +101,9 @@ class MinPair:
         word2 = Word.from_dict(dict['last'])
         return MinPair(word1, word2)
 
-class Sound:
-    """ Aside from a mere noise, a sound can also be long or short """
-    def __init__(self, sound: str, long: bool):
-        self.sound = sound
-        self.long = long
-
-class Syllable:
-    """
-    A syllable is composed of one or several sounds and can have various types
-    of stress
-    """
-    def __init__(self, stress: str, sounds: list[Sound]):
-        self.stress = stress
-        self.contents = sounds
-
 ### Helper functions ###
 
-def parse_ipa_pronunciation(ipa_str: str) -> str:
+def first_ipa_pronunciation(ipa_str: str) -> str:
     """Find the first IPA spelling in the given string"""
     return re.findall(r"[/\[].*?[/\]]", ipa_str)[0]
 
