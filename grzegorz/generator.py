@@ -68,7 +68,7 @@ class MinPairGenerator:
         and False otherwise
         """
         # Skip empty entries
-        if not pair.first.sounds or not pair.last.sounds:
+        if not pair.first.phonology or not pair.last.phonology:
             return False
         # A minimal pair is kept if it has an interesting difference.
         return ((self.keep_phonemes and has_phoneme_contrast(pair, self.optimise))
@@ -78,92 +78,12 @@ class MinPairGenerator:
 ### Helper functions ###
 
 def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
-    """
-    A phoneme contrast occurs when the words in a pair are of equal length and
-    have at least one difference. If `nooptimise` is False, then, additionally, it
-    must have an interesting difference. If the above conditions are met, return
-    True, otherwise False.
-    """
-    first = pair.first
-    last = pair.last
-
-    if len(first.sounds) != len(last.sounds):
-        return False
-
-    return (differences(first, last) == 1
-            and (not optimise or is_interesting_pair(pair)))
+    return False
 
 def has_chroneme_contrast(pair: MinPair) -> bool:
-    """
-    A chroneme is a (theoretical) unit of sound that can distinguish the same
-    sound by their duration. In other words, check if the given pair has a
-    short-long sound length contrast, such as `pala` and `palla` in Italian
-    """
-    first = pair.first
-    last = pair.last
-    sounds1 = strip_stress(first.sounds)
-    sounds2 = strip_stress(last.sounds)
-
-    # Not a chroneme if they're the same length, or if the length differs by
-    # more than one sound: it's not a minimal pair
-    if len(sounds1) == len(sounds2) or abs(len(sounds1) - len(sounds2)) > 1:
-        return False
-
-    # Swap, as to have the longer string in sounds1
-    if len(sounds2) > len(sounds1):
-        sounds1, sounds2 = sounds2, sounds1
-
-    num_same_sounds = 0
-    seen_chroneme = False
-    i = 0
-    j = 0
-    while(i < len(sounds1) and j < len(sounds2)):
-        s1 = sounds1[i]
-        s2 = sounds2[j]
-        try:
-            sn1 = sounds1[i+1]
-            sn2 = sounds2[j+1]
-        except IndexError:
-            sn1 = ''
-            sn2 = ''
-        # If we encounter a `ː`, or some characters are doubled, then we've
-        # encountered a chroneme
-        if s1 == s2 == sn1 != sn2 or (sn1 == s2 and sn1 == 'ː'):
-            seen_chroneme = True
-        elif s1 != s2:
-            i += 1
-            num_same_sounds -= 1
-        i += 1
-        j += 1
-        num_same_sounds += 1
-
-    # We need the words to differ only by one single sound and to know that
-    # there's a chroneme contrast between the words
-    return seen_chroneme and num_same_sounds == len(sounds2)
+    return False
 
 def has_stress_contrast(pair: MinPair) -> bool:
-    """
-    Multiple words have almost the same IPA transcription, but the stress falls
-    on different syllables.
-
-    If the stressless sounds of both words are the same and the words' IPAs are
-    different, then return True (i.e., it is a stress contrast)
-
-    Concretely: /poˈte/ and /ˈpote/ (Greek) both get de-stressed to /pote/, and so
-    they form a minimal pair based on a stress contrast
-    """
-    sounds1 = pair.first.sounds
-    sounds2 = pair.last.sounds
-
-    try:
-        stress1 = sounds1.index("ˈ")
-        stress2 = sounds2.index("ˈ")
-        if (stress1 != stress2
-                and strip_stress(sounds1) == strip_stress(sounds2)):
-            return True
-    except ValueError:
-        pass
-
     return False
 
 def strip_stress(sounds: list[str]) -> list[str]:
@@ -175,37 +95,21 @@ def word_with_delimited_ipa(word: Word) -> Word:
     Return the same word, except its `sounds` property is filled with all the
     sounds of the IPA
     """
-    word.sounds = parse_ipa(word.ipa)
+    word.phonology = parse_phonologically(word.ipa)
     return word
 
-def differences(word1: Word, word2: Word) -> int:
+def differences(A: list, B: list) -> int:
     """Return the number of differences between two word's sounds"""
-    sound1 = word1.sounds
-    sound2 = word2.sounds
-    if len(sound1) != len(sound2):
-        return 0
-    count = sum(1 for a, b in zip(sound1, sound2) if a != b)
+    count = sum(1 for a, b in zip(A, B) if a != b)
     return count
 
-def are_interestingly_different(s1: str, s2: str) -> bool:
+def are_interestingly_different(s1: Sound, s2: Sound) -> bool:
     """
     Two sounds are interestingly different if they are likely to be
     confused
     """
     for diff in INTERESTING_DIFFERENCES:
-        if s1 in diff and s2 in diff and s1 != s2:
-            return True
-    return False
-
-def is_interesting_pair(minpair: MinPair) -> bool:
-    """
-    If the given pair has an interesting difference, return True, otherwise
-    False
-    """
-    sounds1 = minpair.first.sounds
-    sounds2 = minpair.last.sounds
-    for a, b in zip(sounds1, sounds2):
-        if are_interestingly_different(a, b):
+        if s1.sound in diff and s2.sound in diff and s1.sound != s2.sound:
             return True
     return False
 
