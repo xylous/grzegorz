@@ -13,8 +13,9 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
+from grzegorz.word import writefile
+
 import requests
-from word import writefile
 
 """List of languages for which word lists can be fetched"""
 VALID_LANGUAGES = [

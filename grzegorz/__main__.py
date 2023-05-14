@@ -13,12 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-import argparse
-from fetcher import fetchipa
-from generator import MinPairGenerator
-from anki_integration import makedeck
-from wordlist import wordlist
+from grzegorz.fetcher import fetchipa
+from grzegorz.generator import MinPairGenerator
+from grzegorz.anki_integration import makedeck
+from grzegorz.wordlist import wordlist
+
 from os import remove
+import argparse
 
 # Why does it have to be this complicated?
 def create_argparser() -> argparse.ArgumentParser:

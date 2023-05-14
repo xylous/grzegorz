@@ -13,7 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from word import Word, MinPair, Sound, Syllable, readfile, writefile
+from grzegorz.word import Word, MinPair, Sound, Syllable, readfile, writefile
+
 import json
 from tqdm import tqdm
 from itertools import chain, combinations
