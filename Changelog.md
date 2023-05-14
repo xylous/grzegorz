@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.10 - 2023-05-14
+
+- fix ModuleNotFound error where `grzegorz` wouldn't run at all because import
+    weren't prefixed with the module name
+
 ## v0.4.9 - 2023-02-13
 
 - generator:
