@@ -67,14 +67,12 @@ class Word:
         # If we get no result, skip.
         try:
             ipa = first_ipa_pronunciation(parser.fetch(self.text)[0]['pronunciations']['text'][0])
-            # Remove leading and trailing `/`, `[` and `]`
-            ipa = re.sub(r"[/\[\]]", "", ipa)
             # Not all words have their IPAs on wiktionary, but they might have a
             # "Rhymes" section (try German wordlists). If we did fetch a rhyme,
             # don't add it as a valid IPA
             if ipa[0] != '-':
                 self.ipa = ipa
-        except (IndexError, AttributeError) as _:
+        except (IndexError, AttributeError, KeyError) as _:
             pass
         return self
 

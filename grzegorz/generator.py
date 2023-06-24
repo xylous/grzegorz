@@ -172,13 +172,14 @@ def are_interestingly_different(s1: Sound, s2: Sound) -> bool:
 
 def parse_ipa_characters(ipa: str) -> list[str]:
     """ Given an IPA transliteration, return all the IPA characters in it """
-    # Remove starting and ending '/'
-    chars = ipa.replace("/", "")
+    # Remove any any forward slashes, square brackets or round parentheses that
+    # may be used to indicate the type of pronunciation (rough, precise or
+    # imprecise respectively)
+    chars = re.sub(r"[\\/\[\]\(\)]", "", ipa)
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
     chars = chars.replace(":", "ː")
 
-    # Do the actual splitting
     IPA_CHARACTERS = IPA_SOUNDS + IPA_CHRONEMES + IPA_SYLLABLES
     chars = re.split("([" + ''.join(IPA_CHARACTERS) # unicode IPA characters
                             + "abcdefghijklmnopqrstuvxyz" # any other alphabet character
@@ -310,6 +311,8 @@ IPA_SOUNDS = [
     'ʎ',
     'ç',
     'ɣ',
+
+    'ʔ', # glottal stop
 
     # Oral vowels
     'ɔ',
