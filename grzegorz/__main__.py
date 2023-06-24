@@ -119,6 +119,9 @@ def create_argparser() -> argparse.ArgumentParser:
     parser_makedeck.add_argument('infile',
             type=str,
             help="Output file of 'generate'")
+    parser_makedeck.add_argument('outfile',
+            type=str,
+            help="Output file; note that it should ideally have the .apkg extension")
 
     return parser
 
@@ -135,6 +138,7 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
     minpairs_file = language + "-minpairs.json"
+    makedeck_file = "grzegorz-" + language + "-minpairs.apkg"
 
     wordlist(language, numwords, wordlist_file)
     fetchipa(wordlist_file, ipa_json)
@@ -145,7 +149,7 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
         keep_stress,
     )
     g.generate(ipa_json, minpairs_file)
-    makedeck(minpairs_file)
+    makedeck(minpairs_file, makedeck_file)
 
     if clean:
         print("Removing temporary files...")
@@ -190,7 +194,8 @@ def main() -> None:
             g.generate(infile, outfile)
         case 'makedeck':
             infile = args.infile
-            makedeck(infile)
+            outfile = args.outfile
+            makedeck(infile, outfile)
         case 'analyse':
             Word("", args.ipa).print_human_readable()
         case 'check':
