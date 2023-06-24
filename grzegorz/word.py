@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from wiktionaryparser import WiktionaryParser
 import re
 
 PHONEME_MINPAIR = 1
@@ -61,25 +60,6 @@ class Word:
         self.text = text
         self.ipa = ipa
         self.phonology = self.parse_phonologically()
-
-    def get_ipa(self, language: str):
-        """
-        Look on the English Wiktionary for the IPA of the current word; if it
-        has one, then fill its `ipa` property, otherwise don't
-        """
-        parser = WiktionaryParser()
-        parser.set_default_language(language)
-        # If we get no result, skip.
-        try:
-            ipa = first_ipa_pronunciation(parser.fetch(self.text)[0]['pronunciations']['text'][0])
-            # Not all words have their IPAs on wiktionary, but they might have a
-            # "Rhymes" section (try German wordlists). If we did fetch a rhyme,
-            # don't add it as a valid IPA
-            if ipa[0] != '-':
-                self.ipa = ipa
-        except (IndexError, AttributeError, KeyError) as _:
-            pass
-        return self
 
     def print_human_readable(self) -> None:
         print(self.ipa, self.text)
@@ -187,10 +167,6 @@ class MinPair:
         return MinPair(word1, word2)
 
 ### Helper functions ###
-
-def first_ipa_pronunciation(ipa_str: str) -> str:
-    """Find the first IPA spelling in the given string"""
-    return re.findall(r"[/\[].*?[/\]]", ipa_str)[0]
 
 def readfile(path: str) -> str:
     """Return the contents of a file"""
