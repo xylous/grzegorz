@@ -28,10 +28,20 @@ class GeneratorTests(unittest.TestCase):
         self.assertEqual(peek(["foo", "bar", "baz"]), "bar")
 
     def test_sounds_parser(self):
-        sounds = parse_phonologically("/barˈbaz/")
+        actual= parse_phonologically("/barˈbaz/")
         s1 = Syllable(".", [Sound("b", False), Sound("a", False), Sound("r", False)])
         s2 = Syllable("ˈ", [Sound("b", False), Sound("a", False), Sound("z", False)])
-        self.assertListEqual(sounds, [s1, s2])
+        self.assertListEqual(actual, [s1, s2])
+
+    def test_long_sound_on_syllable_end(self):
+        expected = Syllable(".", [Sound("f", False), Sound("o", True)])
+        actual = parse_phonologically("/foː/")
+        self.assertListEqual(actual, [expected])
+
+    def test_für_german(self):
+        expected = Syllable(".",[Sound("f", False), Sound("y", True), Sound("ɐ", False)])
+        actual = parse_phonologically("/fyːɐ/")
+        self.assertListEqual(actual, [expected])
 
     def test_phoneme_contrast_r_and_m_not_optimised(self):
         w1 = Word("", "")
