@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
+from grzegorz.word import *
 from grzegorz.generator import *
 
 import unittest
@@ -28,54 +29,69 @@ class GeneratorTests(unittest.TestCase):
         self.assertEqual(peek(["foo", "bar", "baz"]), "bar")
 
     def test_sounds_parser(self):
-        actual= parse_phonologically("/barˈbaz/")
-        s1 = Syllable(".", [Sound("b", False), Sound("a", False), Sound("r", False)])
-        s2 = Syllable("ˈ", [Sound("b", False), Sound("a", False), Sound("z", False)])
-        self.assertListEqual(actual, [s1, s2])
+        actual = Word("", "/barˈbaz/")
+        s1 = Syllable(".", [Phone("b", False), Phone("a", False), Phone("r", False)])
+        s2 = Syllable("ˈ", [Phone("b", False), Phone("a", False), Phone("z", False)])
+        self.assertListEqual(actual.phonology, [s1, s2])
 
     def test_long_sound_on_syllable_end(self):
-        expected = Syllable(".", [Sound("f", False), Sound("o", True)])
-        actual = parse_phonologically("/foː/")
-        self.assertListEqual(actual, [expected])
+        expected = Syllable(".", [Phone("f", False), Phone("o", True)])
+        actual = Word("", "/foː/")
+        self.assertListEqual(actual.phonology, [expected])
 
     def test_für_german(self):
-        expected = Syllable(".",[Sound("f", False), Sound("y", True), Sound("ɐ", False)])
-        actual = parse_phonologically("/fyːɐ/")
-        self.assertListEqual(actual, [expected])
+        expected = Syllable(".",[Phone("f", False), Phone("y", True), Phone("ɐ", False)])
+        actual = Word("", "/fyːɐ/")
+        self.assertListEqual(actual.phonology, [expected])
 
     def test_phoneme_contrast_r_and_m_not_optimised(self):
-        w1 = Word("", "")
-        w1.phonology = parse_phonologically("/barˈbaz/")
-        w2 = Word("", "")
-        w2.phonology = parse_phonologically("/bamˈbaz/")
+        w1 = Word("", "/barˈbaz/")
+        w2 = Word("", "/bamˈbaz/")
         self.assertTrue(has_phoneme_contrast(MinPair(w1, w2), False))
 
     def test_phoneme_contrast_with_chroneme_difference(self):
-        w1 = Word("", "")
-        w1.phonology = parse_phonologically("/barˈbaz/")
-        w2 = Word("", "")
-        w2.phonology = parse_phonologically("/bar:ˈbaz/")
+        w1 = Word("", "/barˈbaz/")
+        w2 = Word("", "/bar:ˈbaz/")
         self.assertFalse(has_phoneme_contrast(MinPair(w1, w2), False))
 
     def test_chroneme_contrast(self):
-        w1 = Word("", "")
-        w1.phonology = parse_phonologically("/barˈbaz/")
-        w2 = Word("", "")
-        w2.phonology = parse_phonologically("/bar:ˈbaz/")
+        w1 = Word("", "/barˈbaz/")
+        w2 = Word("", "/bar:ˈbaz/")
         self.assertTrue(has_chroneme_contrast(MinPair(w1, w2)))
 
     def test_chroneme_contrast_two_diffs(self):
-        w1 = Word("", "")
-        w1.phonology = parse_phonologically("/barˈbaz/")
-        w2 = Word("", "")
-        w2.phonology = parse_phonologically("/bar:ˈba:z/")
+        w1 = Word("", "/barˈbaz/")
+        w2 = Word("", "/bar:ˈba:z/")
         self.assertFalse(has_chroneme_contrast(MinPair(w1, w2)))
 
-    def test_syllable_stress_contrast(self):
-        w1 = Word("", "")
-        w1.phonology = parse_phonologically("/barˈbaz/")
-        w2 = Word("", "")
-        w2.phonology = parse_phonologically("/bar.baz/")
+    def test_syllable_stress_contrast_two_syllable(self):
+        w1 = Word("", "/barˈbaz/")
+        w2 = Word("", "/bar.baz/")
+        self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
+
+    def test_syllable_stress_contrast_three_syllables_1(self):
+        w1 = Word("", "/barˈbaz.do/")
+        w2 = Word("", "/bar.baz.do/")
+        self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
+
+    def test_syllable_stress_contrast_three_syllables_2(self):
+        w1 = Word("", "/barˈbaz.do/")
+        w2 = Word("", "/bar.bazˈdo/")
+        self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
+
+    def test_syllable_stress_contrast_three_syllables_3(self):
+        w1 = Word("", "/barˈbaz.do/")
+        w2 = Word("", "/barˌbazˈdo/")
+        self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
+
+    def test_syllable_stress_contrast_three_syllables_4(self):
+        w1 = Word("", "/bar.baz.do/")
+        w2 = Word("", "/barˌbazˈdo/")
+        self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
+
+    def test_syllable_stress_contrast_four_syllables_1(self):
+        w1 = Word("", "/bar.baz.do.man/")
+        w2 = Word("", "/barˌbazˈdo.man/")
         self.assertTrue(has_stress_contrast(MinPair(w1, w2)))
 
 if __name__ == '__main__':
