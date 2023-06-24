@@ -14,7 +14,8 @@
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
 from grzegorz.fetcher import fetchipa
-from grzegorz.generator import (MinPairGenerator, parse_phonologically)
+from grzegorz.generator import (MinPairGenerator)
+from grzegorz.word import (Word)
 from grzegorz.anki_integration import makedeck
 from grzegorz.wordlist import wordlist
 
@@ -181,21 +182,7 @@ def main() -> None:
             infile = args.infile
             makedeck(infile)
         case 'analyse':
-            ipa = args.ipa
-            result = parse_phonologically(ipa)
-            for syllable in result:
-                match syllable.stress:
-                    case 'ˈ':
-                        stress = "primary"
-                    case 'ˌ':
-                        stress = "secondary"
-                    case _:
-                        stress = "none"
-                print("stress type:", stress)
-                print("  [ ", end="")
-                for sound in syllable.contents:
-                    print(sound, " ", sep="", end="")
-                print("]")
+            Word("", args.ipa).print_human_readable()
         case _:
             parser.print_help()
 

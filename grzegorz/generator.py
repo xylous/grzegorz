@@ -13,12 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import Word, MinPair, Sound, Syllable, readfile, writefile
+from grzegorz.word import (Word, MinPair, Phone, readfile, writefile,
+                           PHONEME_MINPAIR, CHRONEME_MINPAIR, STRESS_MINPAIR,
+                           NOT_MINPAIR)
 
 import json
 from tqdm import tqdm
 from itertools import chain, combinations
-import re
 
 class MinPairGenerator:
     def __init__(
@@ -40,7 +41,6 @@ class MinPairGenerator:
         """
         jsonstr = readfile(infile)
         words = json.loads(jsonstr, object_hook=Word.from_dict)
-        words = list(map(word_with_delimited_ipa, words))
         minpairs = []
 
         if not self.keep_phonemes and not self.keep_chronemes and not self.keep_stress:
@@ -63,18 +63,23 @@ class MinPairGenerator:
         writefile(outfile, json_out)
         print('Done! Generated', len(minpairs), 'minimal pairs')
 
-    def check_minpair(self, pair: MinPair) -> bool:
+    def check_minpair(self, pair: MinPair) -> int:
         """
-        Return True if the given pair is a minimal pair as per our options/rules,
-        and False otherwise
+        If the given pair si not a minpair, return NOT_MINPAIR; otherwise,
+        return, per case, PHONEME_MINPAIR, CHRONEME_MINPAIR and STRESS_MINPAIR
         """
         # Skip empty entries
         if not pair.first.phonology or not pair.last.phonology:
             return False
         # A minimal pair is kept if it has an interesting difference.
-        return ((self.keep_phonemes and has_phoneme_contrast(pair, self.optimise))
-                or (self.keep_chronemes and has_chroneme_contrast(pair))
-                or (self.keep_stress and has_stress_contrast(pair)))
+        if self.keep_phonemes and has_phoneme_contrast(pair, self.optimise):
+            return PHONEME_MINPAIR
+        elif self.keep_chronemes and has_chroneme_contrast(pair):
+            return CHRONEME_MINPAIR
+        elif self.keep_stress and has_stress_contrast(pair):
+            return STRESS_MINPAIR
+        else:
+            return NOT_MINPAIR
 
 ### Helper functions ###
 
@@ -147,119 +152,19 @@ def strip_stress(sounds: list[str]) -> list[str]:
     """Remove stress marks from a list of sounds"""
     return [x for x in sounds if not x in ['.', 'ˈ', 'ˌ', '̯', '']]
 
-def word_with_delimited_ipa(word: Word) -> Word:
-    """
-    Return the same word, except its `sounds` property is filled with all the
-    sounds of the IPA
-    """
-    word.phonology = parse_phonologically(word.ipa)
-    return word
-
 def differences(A: list, B: list) -> list:
     """Given two lists, return pairs of elements that differ at the same index"""
     return [(a, b) for a, b in zip(A, B) if a != b]
 
-def are_interestingly_different(s1: Sound, s2: Sound) -> bool:
+def are_interestingly_different(s1: Phone, s2: Phone) -> bool:
     """
-    Two sounds are interestingly different if they are likely to be
-    confused
+    Two sounds are interestingly different if they are likely to be confused
     """
     for diff in INTERESTING_DIFFERENCES:
         if s1.sound in diff and s2.sound in diff \
                 and s1.sound != s2.sound and s1.long == s2.long:
             return True
     return False
-
-def parse_ipa_characters(ipa: str) -> list[str]:
-    """ Given an IPA transliteration, return all the IPA characters in it """
-    # Remove any any forward slashes, square brackets or round parentheses that
-    # may be used to indicate the type of pronunciation (rough, precise or
-    # imprecise respectively)
-    chars = re.sub(r"[\\/\[\]\(\)]", "", ipa)
-    # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
-    # fooled: they're not the same character! We use `ː`.
-    chars = chars.replace(":", "ː")
-
-    IPA_CHARACTERS = IPA_SOUNDS + IPA_CHRONEMES + IPA_SYLLABLES
-    chars = re.split("([" + ''.join(IPA_CHARACTERS) # unicode IPA characters
-                            + "abcdefghijklmnopqrstuvxyz" # any other alphabet character
-                            + "]"
-                            # they may be folllowed by a diacritic character
-                            + "["
-                            + ''.join(IPA_DIACRITICS)
-                            + "]?)", chars)
-
-    return [process_transliteration(ch) for ch in chars if ch != ""]
-
-def parse_phonologically(ipa: str) -> list[Syllable]:
-    """
-    Given an IPA transliteration, parse it into a very convenient format, from a
-    phonological point of view
-    """
-    chars = parse_ipa_characters(ipa)
-    syllables = []
-    stress = "." # assume the first syllable is unemphasised
-    sounds = []
-
-    # sometimes we need to skip characters, namely chronemes: the same sound
-    # appearing consecutively is marked as one sound, but long in length
-    skip = False
-    for i in range(0, len(chars)):
-        # don't skip if the last sound was long and we're on the last character,
-        # since we need to add the sounds to a new syllable
-        if skip and not (sounds[-1].long and i == len(chars) - 1):
-            skip = False
-            continue
-
-        crnt = chars[i]
-        next = peek(chars[i :])
-
-        # If the current character isn't a syllable (stress) mark, then that
-        # means we've encountered a sound (or a chroneme character, by accident,
-        # but that's skipped). Next, figure out if the current sound is short or
-        # long
-        if not skip and crnt not in IPA_SYLLABLES:
-            is_long_sound = False
-            if next == crnt or next in IPA_CHRONEMES:
-                is_long_sound = True
-                skip = True
-            # skip chroneme characters if we've accidentally encountered them
-            if not crnt in IPA_CHRONEMES:
-                s = Sound(crnt, is_long_sound)
-                sounds.append(s)
-
-        # If we found a syllable mark, or the transcription ended, then we know
-        # that the previous syllable ends here. Thus, add all the sounds we've
-        # encountered so far to it, and prepare for a new syllable. NOTE: if
-        # we've encountered the end, then processing ends anyways
-        if crnt in IPA_SYLLABLES or i == len(chars) - 1:
-            if len(sounds) != 0:
-                syllable = Syllable(stress, sounds)
-                syllables.append(syllable)
-            stress = crnt
-            sounds = []
-
-    return syllables
-
-def peek(xs: list):
-    """
-    Return the second element in the list if that index exists, otherwise empty
-    string
-    """
-    if len(xs) <= 1:
-        return ""
-    else:
-        return xs[1]
-
-def process_transliteration(sound: str) -> str:
-    """
-    Return the given sound, except, if it's badly transliterated, modify
-    it
-    """
-    if sound in BAD_TRANSLITERATIONS:
-        # evil unicode hack
-        sound = sound[0] + 't͡ɕ'[1] + sound[1]
-    return sound
 
 def parse_differences_chain(diffs_chain: list[str]) -> list[tuple[str]]:
     """
@@ -283,105 +188,6 @@ def flatten(lst: list[list]) -> set[list]:
 ### CONSTANTS ###
 
 """
-The list of unicode characters that denote sounds in IPA text
-"""
-IPA_SOUNDS = [
-    # Consonants
-    't͡ɕ', 'tɕ',
-    't͡ʂ', 'tʂ',
-    't͡s', 'ts',
-    't͡ʃ', 'tʃ',
-    'd͡ʐ', 'dʐ',
-    'd͡ʑ', 'dʑ',
-    'd͡z', 'dz',
-    'd͡ʒ', 'dʒ',
-    'ʂ',
-    'ɕ',
-    'ɲ',
-    'ŋ',
-    'ʐ',
-    'ʑ',
-    'ś',
-    'ɡ',
-    'ʁ',
-    'ʃ',
-    'ʒ',
-    'ɟ',
-    'ɫ',
-    'ʎ',
-    'ç',
-    'ɣ',
-
-    'ʔ', # glottal stop
-
-    # Oral vowels
-    'ɔ',
-    'ɛ',
-    'ɪ',
-    'ɨ',
-    'ø',
-    'ə',
-    'ɑ',
-    'œ',
-    'æ',
-    'ʌ',
-    'ɐ',
-    'ɤ',
-    'ɒ',
-    'ʊ',
-    'ʉ',
-    'ɵ',
-
-    # Nasal vowels
-    'ɑ̃',
-    'ɛ̃',
-    'œ̃',
-    'ɔ̃',
-
-    # Semi-vowels
-    'ɥ',
-]
-
-"""
-The list of unicode characters that denote syllables (and stress) in IPA text
-"""
-IPA_SYLLABLES = [
-    '.',
-    'ˈ',
-    'ˌ',
-]
-
-"""
-The list of unicode characters that denote sound length in IPA text
-"""
-IPA_CHRONEMES = [
-    'ː',
-]
-
-"""
-A(n) (incomplete) list of unicode characters used as diacritics in IPA transcriptions
-"""
-IPA_DIACRITICS = [
-    # non-combining characters
-    'ʰ', # aspirated
-    'ˣ', # voiceless velar fricative
-    'ⁿ', # nasal releaase
-    'ʲ', # palatized
-    'ʷ', # labialized
-    'ˠ', # velarized
-
-    # combining characters
-    '̩', '̍ ̍', # syllabic consonant
-    '̯', # non-syllabic vowel
-]
-
-"""
-We only want to deal with transliterations of these sounds that *don't* have a
-tie above them. This is the proper way to represent affricates.
-"""
-BAD_TRANSLITERATIONS = ['tɕ', 'tʂ', 'ts', 'tʃ', 'dʐ', 'dʑ', 'dz', 'dʒ']
-
-"""
 All sounds in a particular chain are hard to be distinguished from each other.
 
 Therefore, they form pairs of "interesting differences", which are used to
@@ -397,15 +203,18 @@ INTERESTING_DIFFERENCES_CHAINS = [
     ['x', 'h', 'xʲ', 'ç'],
     ['z', 'ʑ', 'ʐ', 's', 'ś', 'ʂ'],
     ['ʎ', 'ɫ', 'l'],
-    ['ɟ', 'j', 'g', 'ɡʲ', 'g'],
+    ['ɟ', 'j', 'g', 'ɡʲ', 'g', 'ç'],
+    [ 'tʲ', 'tʰ', 't' ,'d', 'dʲ', 'dʰ'],
+    ['r', 'ʁ'],
 
     # Oral vowels (and semi-vowels)
-    ['ɑ', 'a', 'ɐ', 'ə', 'ʌ', 'æ'],
+    ['ɑ', 'a', 'ɐ', 'ə', 'ʌ', 'æ', 'ä', 'ɐ̯'],
+    ['ɑ', 'ə', 'œ'],
     ['e', 'ɛ', 'ɪ', 'æ'],
     ['ɨ', 'i', 'j', 'ɪ'],
     ['ɔ', 'o', 'ø', 'œ', 'ɵ'],
     ['ɥ', 'j'],
-    ['ɥ', 'u', 'ɤ', 'y', 'w', 'ɒ', 'ʊ', 'ʉ'],
+    ['ɥ', 'u', 'ɤ', 'y', 'w', 'ɒ', 'ʊ', 'ʉ', 'ʊ̯'],
     ['i', 'e'],
 
     # Nasal vowels
