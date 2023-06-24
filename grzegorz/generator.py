@@ -155,14 +155,15 @@ def has_stress_contrast(pair: MinPair) -> bool:
     if len(first) != len(last):
         return False
 
-    syl_diffs = differences(first, last)
-    # abort if more (or less) than one syllable is different
-    if len(syl_diffs) != 1:
-        return False
-    diff = syl_diffs[0]
+    fst_stress = []
+    snd_stress = []
+    for i in range(0, len(first)):
+        if first[i].contents != last[i].contents:
+            return False
+        fst_stress += first[i].stress
+        snd_stress += last[i].stress
 
-    return diff[0].stress != diff[1].stress \
-            and diff[0].contents == diff[1].contents
+    return fst_stress != snd_stress
 
 def strip_stress(sounds: list[str]) -> list[str]:
     """Remove stress marks from a list of sounds"""
