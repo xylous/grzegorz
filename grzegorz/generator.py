@@ -200,7 +200,9 @@ def parse_phonologically(ipa: str) -> list[Syllable]:
     # appearing consecutively is marked as one sound, but long in length
     skip = False
     for i in range(0, len(chars)):
-        if skip:
+        # don't skip if the last sound was long and we're on the last character,
+        # since we need to add the sounds to a new syllable
+        if skip and not (sounds[-1].long and i == len(chars) - 1):
             skip = False
             continue
 
@@ -211,7 +213,7 @@ def parse_phonologically(ipa: str) -> list[Syllable]:
         # means we've encountered a sound (or a chroneme character, by accident,
         # but that's skipped). Next, figure out if the current sound is short or
         # long
-        if not crnt in IPA_SYLLABLES:
+        if not skip and crnt not in IPA_SYLLABLES:
             is_long_sound = False
             if next == crnt or next in IPA_CHRONEMES:
                 is_long_sound = True
