@@ -177,12 +177,16 @@ def parse_ipa_characters(ipa: str) -> list[str]:
     # Some scripts use `ː` to denote vowel length, some use `:`. Don't be
     # fooled: they're not the same character! We use `ː`.
     chars = chars.replace(":", "ː")
-    # Also, remove the diphthong tie, as that can break things.
-    chars = chars.replace('̯', '')
 
     # Do the actual splitting
     IPA_CHARACTERS = IPA_SOUNDS + IPA_CHRONEMES + IPA_SYLLABLES
-    chars = re.split("(" + '|'.join(IPA_CHARACTERS) + "|[a-z])", chars)
+    chars = re.split("([" + ''.join(IPA_CHARACTERS) # unicode IPA characters
+                            + "abcdefghijklmnopqrstuvxyz" # any other alphabet character
+                            + "]"
+                            # they may be folllowed by a diacritic character
+                            + "["
+                            + ''.join(IPA_DIACRITICS)
+                            + "]?)", chars)
 
     return [process_transliteration(ch) for ch in chars if ch != ""]
 
@@ -294,8 +298,6 @@ IPA_SOUNDS = [
     'ɕ',
     'ɲ',
     'ŋ',
-    'ɡʲ',
-    'xʲ',
     'ʐ',
     'ʑ',
     'ś',
@@ -308,8 +310,6 @@ IPA_SOUNDS = [
     'ʎ',
     'ç',
     'ɣ',
-    'sʲ',
-    'zʲ',
 
     # Oral vowels
     'ɔ',
@@ -337,8 +337,6 @@ IPA_SOUNDS = [
 
     # Semi-vowels
     'ɥ',
-    # diphthong tie
-    '̯',
 ]
 
 """
@@ -355,6 +353,23 @@ The list of unicode characters that denote sound length in IPA text
 """
 IPA_CHRONEMES = [
     'ː',
+]
+
+"""
+A(n) (incomplete) list of unicode characters used as diacritics in IPA transcriptions
+"""
+IPA_DIACRITICS = [
+    # non-combining characters
+    'ʰ', # aspirated
+    'ˣ', # voiceless velar fricative
+    'ⁿ', # nasal releaase
+    'ʲ', # palatized
+    'ʷ', # labialized
+    'ˠ', # velarized
+
+    # combining characters
+    '̩', '̍ ̍', # syllabic consonant
+    '̯', # non-syllabic vowel
 ]
 
 """
