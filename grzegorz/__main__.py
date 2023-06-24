@@ -36,6 +36,16 @@ def create_argparser() -> argparse.ArgumentParser:
             type=str,
             help="IPA transcription")
 
+    # 'check' subcommand
+    parser_check = subparsers.add_parser('check',
+            help='Check if the two given IPAs can form minimal pair')
+    parser_check .add_argument('ipa_first',
+            type=str,
+            help="first IPA transcription")
+    parser_check .add_argument('ipa_second',
+            type=str,
+            help="second IPA transcription")
+
     # 'fullmake' command
     parser_fullmake = subparsers.add_parser('fullmake',
             help='Build an Anki deck for a language automatically')
@@ -183,6 +193,12 @@ def main() -> None:
             makedeck(infile)
         case 'analyse':
             Word("", args.ipa).print_human_readable()
+        case 'check':
+            word1 = Word("", args.ipa_first)
+            word2 = Word("", args.ipa_second)
+            generator = MinPairGenerator(False, True, True, True)
+            if not generator.print_human_readable_check(word1, word2):
+                exit(1)
         case _:
             parser.print_help()
 

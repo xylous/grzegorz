@@ -81,6 +81,22 @@ class MinPairGenerator:
         else:
             return NOT_MINPAIR
 
+    def print_human_readable_check(self, word1: Word, word2: Word) -> int:
+        word1.print_human_readable()
+        print("")
+        word2.print_human_readable()
+        print("")
+        verdict = self.check_minpair(MinPair(word1, word2))
+        if verdict == PHONEME_MINPAIR:
+            print("minimal pair based on phoneme difference")
+        elif verdict == CHRONEME_MINPAIR:
+            print("minimal pair based on chroneme difference")
+        elif verdict == STRESS_MINPAIR:
+            print("minimal pair based on syllable stress difference")
+        else:
+            print("not minimal pair")
+        return verdict
+
 ### Helper functions ###
 
 def has_phoneme_contrast(pair: MinPair, optimise: bool) -> bool:
