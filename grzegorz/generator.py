@@ -93,13 +93,12 @@ class MinPairGenerator:
         else:
             return NOT_MINPAIR
 
-    def check_optimised_phone_pair(self, s1: Phone, s2: Phone) -> bool:
+    def check_optimised_phone_pair(self, s1: str, s2: str) -> bool:
         """
         Two sounds are interestingly different if they are likely to be confused
         """
         for diff in self.filter_pairs:
-            if s1.sound in diff and s2.sound in diff \
-                    and s1.sound != s2.sound and s1.long == s2.long:
+            if s1 in diff and s2 in diff and s1 != s2:
                 return True
         return False
 
@@ -127,22 +126,20 @@ class MinPairGenerator:
         if len(first) != len(last):
             return False
 
-        syl_diffs = differences(first, last)
-        # abort if more (or less) than one syllable is different
-        if len(syl_diffs) != 1:
-            return False
-        syl_diffs = syl_diffs[0]
+        diffs = []
+        for i in range(0, len(first)):
+            syl1 = first[i].contents
+            syl2 = last[i].contents
+            if len(syl1) != len(syl2):
+                return False
+            for j in range(0, len(syl1)):
+                if syl1[j].sound != syl2[j].sound:
+                    diffs.append((syl1[j].sound, syl2[j].sound))
 
-        # get the number of phones different in the matched syllable
-        phones_diffs = differences(syl_diffs[0].contents, syl_diffs[1].contents)
-        if len(phones_diffs) != 1 or len(syl_diffs[0].contents) != len(syl_diffs[1].contents):
+        if len(diffs) != 1:
             return False
 
-        # make sure that the differences between sounds are based on phonemes, and
-        # not chronemes
-        diff = phones_diffs[0]
-        return diff[0].long == diff[1].long and \
-                (not optimise or self.check_optimised_phone_pair(diff[0], diff[1]))
+        return (not optimise or self.check_optimised_phone_pair(diffs[0][0], diffs[0][1]))
 
     def check_chroneme_contrast(self, pair: MinPair) -> bool:
         first = pair.first.phonology
