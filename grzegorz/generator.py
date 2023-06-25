@@ -30,10 +30,21 @@ class MinPairGenerator:
         keep_stress: bool,
     ) -> None:
         self.optimise = optimise
-        self.optimised_phone_pairs = INTERESTING_DIFFERENCES
+        # used for phonemes only; maybe rename?
+        self.filter_pairs = DEFAULT_FILTER_PAIRS
         self.keep_phonemes = keep_phonemes
         self.keep_chronemes = keep_chronemes
         self.keep_stress = keep_stress
+
+    def set_filter_pairs_from_file(self, path: str) -> None:
+        """NOTE: the file must have comma-separated values, with the phones that
+        form chains together on the same line"""
+        contents = readfile(path).split("\n")
+        lists_of_phonemes = []
+        for line in contents:
+            if line != "":
+                lists_of_phonemes.append(line.replace(" ", "").split(","))
+        self.filter_pairs = phoneme_lists_to_phoneme_pairs(lists_of_phonemes)
 
     def generate(self, infile: str, outfile: str) -> None:
         """
@@ -86,7 +97,7 @@ class MinPairGenerator:
         """
         Two sounds are interestingly different if they are likely to be confused
         """
-        for diff in self.optimised_phone_pairs:
+        for diff in self.filter_pairs:
             if s1.sound in diff and s2.sound in diff \
                     and s1.sound != s2.sound and s1.long == s2.long:
                 return True
@@ -180,16 +191,17 @@ def differences(A: list, B: list) -> list:
     """Given two lists, return pairs of elements that differ at the same index"""
     return [(a, b) for a, b in zip(A, B) if a != b]
 
-def parse_differences_chain(diffs_chain: list[str]) -> list[tuple[str]]:
+def phoneme_list_to_pairs(phoneme_list: list[str]) -> list[tuple[str]]:
     """
     Hardcoding is a bad practice. And tiresome as well. Especially when you add a
     new sound: you have to manually add so many pairs!
 
-    Thus, we use chains of sounds: ['a', 'e', 'o'] returns the list of
-    interesting differences `('a', 'e')`, `('a', 'o')`, `('e', 'o')` so
-    basically all powersets of range two.
+    Thus, we use lists of phonemes to group similar sounds together. For
+    example, ['a', 'e', 'o'] gets turned into the following pairs of phonemes:
+    `('a', 'e')`, `('a', 'o')`, `('e', 'o')`. Practically, this functions
+    returns  all powersets of range two.
     """
-    s = list(diffs_chain)
+    s = list(phoneme_list)
     # range(2, 2+1) returns all tuples that are exactly 2 in length - exactly
     # what we need
     pairs = chain.from_iterable(combinations(s, r) for r in range(2, 2+1))
@@ -198,6 +210,13 @@ def parse_differences_chain(diffs_chain: list[str]) -> list[tuple[str]]:
 def flatten(lst: list[list]) -> set[list]:
     """Return the set of all elements belonging to the sublists of the list"""
     return set(chain(*lst))
+
+def phoneme_lists_to_phoneme_pairs(phoneme_lists: list[list[str]]) -> set[list]:
+    """
+    Given a list of lists of phonemes, return the combined set of all phoneme
+    pairs made from every individual list.
+    """
+    return flatten(list(map(phoneme_list_to_pairs, phoneme_lists)))
 
 ### CONSTANTS ###
 
@@ -208,7 +227,7 @@ Therefore, they form pairs of "interesting differences", which are used to
 filter out all other "boring" minimal pairs: for example, "i" and "l" are so
 far away phonetically they're easily distinguishable by anyone!
 """
-INTERESTING_DIFFERENCES_CHAINS = [
+DEFAULT_FILTER_PAIRS_PHONEME_LISTS = [
     # Consonants
     ['t͡ɕ', 't͡ʂ', 't͡s', 't͡ʃ', 'd͡ʐ', 'd͡ʑ', 'd͡z', 'd͡ʒ',
         'ʂ', 'ʒ', 'ʃ', 'ɕ', 'zʲ', 'sʲ'],
@@ -240,6 +259,4 @@ INTERESTING_DIFFERENCES_CHAINS = [
 ]
 
 """Precomputed constant, to avoid hardcoding everything."""
-INTERESTING_DIFFERENCES = flatten(list(
-                            map(parse_differences_chain,
-                                INTERESTING_DIFFERENCES_CHAINS)))
+DEFAULT_FILTER_PAIRS = phoneme_lists_to_phoneme_pairs(DEFAULT_FILTER_PAIRS_PHONEME_LISTS)

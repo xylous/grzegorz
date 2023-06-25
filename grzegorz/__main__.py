@@ -121,6 +121,10 @@ def create_argparser() -> argparse.ArgumentParser:
             default=False,
             dest="keep_stress",
             help="keep minimal pairs with a difference in syllable stress (default: don't)")
+    parser_generate.add_argument('-f', '--filter-file',
+            type=str,
+            dest="path",
+            help="path to the file whose contents determine the phones to keep when optimising")
 
     # 'makedeck' subcommand
     parser_makedeck = subparsers.add_parser('makedeck',
@@ -194,12 +198,15 @@ def main() -> None:
             no_phonemes = args.no_phonemes;
             keep_chronemes = args.keep_chronemes;
             keep_stress = args.keep_stress;
+            filter_file_path = args.path
             g = MinPairGenerator(
                 not nooptimise,
                 not no_phonemes,
                 keep_chronemes,
                 keep_stress
             )
+            if filter_file_path is not None:
+                g.set_filter_pairs_from_file(filter_file_path)
             g.generate(infile, outfile)
         case 'makedeck':
             infile = args.infile
