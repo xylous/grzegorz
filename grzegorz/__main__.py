@@ -59,8 +59,8 @@ def create_argparser() -> argparse.ArgumentParser:
             type=int,
             help='number of words to sample')
     parser_fullmake.add_argument('--clean',
-            dest="clean",
-            action="store_true",
+            dest='clean',
+            action='store_true',
             default=False,
             help='remove temporary files after building the deck')
 
@@ -86,6 +86,11 @@ def create_argparser() -> argparse.ArgumentParser:
     parser_fetchipa.add_argument('outfile',
             type=str,
             help='output file (JSON)')
+    parser_fetchipa.add_argument('--keep-failed',
+            dest='keep_failed',
+            action='store_true',
+            default=False,
+            help='Save the words for which no IPA was found in the output file (default: don\'t)')
 
     # 'generate' subcommand
     parser_generate = subparsers.add_parser('generate',
@@ -146,7 +151,7 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
 
     if wordlist(language, numwords, wordlist_file) == 1:
         exit(1)
-    fetchipa(wordlist_file, ipa_json)
+    fetchipa(wordlist_file, ipa_json, False)
     g = MinPairGenerator(
         optimise,
         keep_phonemes,
@@ -181,9 +186,7 @@ def main() -> None:
             status = wordlist(language, numwords, outfile)
             exit(status)
         case 'fetchipa':
-            infile = args.infile
-            outfile = args.outfile
-            fetchipa(infile, outfile)
+            fetchipa(args.infile, args.outfile, args.keep_failed)
         case 'generate':
             infile = args.infile
             outfile = args.outfile

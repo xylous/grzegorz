@@ -22,7 +22,7 @@ from tqdm import tqdm
 import json
 import re
 
-def fetchipa(infile: str, outfile: str) -> None:
+def fetchipa(infile: str, outfile: str, keep_failed: bool) -> None:
     """
     Given an input file containing a list of words separated, fetch the IPAs and
     create a JSON file with their IPA spellings matched to their text
@@ -46,7 +46,8 @@ def fetchipa(infile: str, outfile: str) -> None:
             wds.append(x)
 
     # Don't keep entries with no IPA pronunciation
-    wds = [w for w in wds if w.ipa]
+    if not keep_failed:
+        wds = [w for w in wds if w.ipa]
 
     jsonlog = json.dumps([Word.obj_dict(word) for word in wds])
     writefile(outfile, jsonlog)
