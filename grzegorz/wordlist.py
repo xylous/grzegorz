@@ -86,7 +86,7 @@ def wordlist(lang, numwords, outfile) -> int:
     return 0
 
 def print_languages_list() -> None:
-    for (lang, code) in VALID_LANGUAGES:
+    for (lang, code) in sorted(VALID_LANGUAGES, key=lambda pair: pair[1]):
         print(code, ", ", lang, sep="")
 
 ### HELPER FUNCTIONS ###
