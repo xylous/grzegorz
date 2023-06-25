@@ -85,6 +85,10 @@ def wordlist(lang, numwords, outfile) -> int:
     print("Fetched", numwords, language, "words into", outfile)
     return 0
 
+def print_languages_list() -> None:
+    for (lang, code) in VALID_LANGUAGES:
+        print(code, ", ", lang, sep="")
+
 ### HELPER FUNCTIONS ###
 
 def valid_lang(lang):

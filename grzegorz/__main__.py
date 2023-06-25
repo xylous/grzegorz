@@ -17,7 +17,7 @@ from grzegorz.fetcher import fetchipa
 from grzegorz.generator import (MinPairGenerator)
 from grzegorz.word import (Word)
 from grzegorz.anki_integration import makedeck
-from grzegorz.wordlist import wordlist
+from grzegorz.wordlist import (wordlist, print_languages_list)
 
 from os import remove
 import argparse
@@ -45,6 +45,10 @@ def create_argparser() -> argparse.ArgumentParser:
     parser_check .add_argument('ipa_second',
             type=str,
             help="second IPA transcription")
+
+    # 'list-languages' subcommand
+    parser_list_languages = subparsers.add_parser('list-languages',
+            help='List all languages for which you can fetch a wordlist')
 
     # 'fullmake' command
     parser_fullmake = subparsers.add_parser('fullmake',
@@ -206,6 +210,8 @@ def main() -> None:
             generator = MinPairGenerator(False, True, True, True)
             if not generator.print_human_readable_check(word1, word2):
                 exit(1)
+        case 'list-languages':
+            print_languages_list()
         case _:
             parser.print_help()
 
