@@ -132,15 +132,16 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
     """
     optimise = True
     keep_phonemes = True
-    keep_chronemes = False
-    keep_stress = False
+    keep_chronemes = True
+    keep_stress = True
 
     wordlist_file = language + "-wordlist.txt"
     ipa_json = language + "-ipa.json"
     minpairs_file = language + "-minpairs.json"
     makedeck_file = "grzegorz-" + language + "-minpairs.apkg"
 
-    wordlist(language, numwords, wordlist_file)
+    if wordlist(language, numwords, wordlist_file) == 1:
+        exit(1)
     fetchipa(wordlist_file, ipa_json)
     g = MinPairGenerator(
         optimise,
@@ -173,7 +174,8 @@ def main() -> None:
             outfile = args.outfile
             numwords = args.numwords
             language = args.language.lower()
-            wordlist(language, numwords, outfile)
+            status = wordlist(language, numwords, outfile)
+            exit(status)
         case 'fetchipa':
             infile = args.infile
             outfile = args.outfile

@@ -51,6 +51,8 @@ def fetchipa(infile: str, outfile: str) -> None:
     jsonlog = json.dumps([Word.obj_dict(word) for word in wds])
     writefile(outfile, jsonlog)
 
+### HELPER FUNCTIONS ###
+
 def get_ipa_for_word(word: str, language: str) -> Word:
     """
     Look on the English Wiktionary for the IPA of the given word
