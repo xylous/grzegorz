@@ -143,7 +143,7 @@ class Word:
     @staticmethod
     def from_dict(dict) -> 'Word':
         """Deserialise this class from JSON"""
-        return Word(dict['text'], '/' + dict['ipa'] + '/')
+        return Word(dict['text'], dict['ipa'])
 
 class MinPair:
     """Two words in a pair. Voilà c'est tout."""
