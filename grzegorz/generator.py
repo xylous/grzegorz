@@ -152,20 +152,22 @@ class MinPairGenerator:
         if len(first) != len(last):
             return False
 
-        syl_diffs = differences(first, last)
-        # abort if more (or less) than one syllable is different
-        if len(syl_diffs) != 1:
-            return False
-        syl_diffs = syl_diffs[0]
+        # find the number of chroneme differences; if, at any point, we
+        # encounter a differnt sound, then we know the words are too different
+        # apart, and so return False
+        chroneme_diffs = 0
+        for i in range(0, len(first)):
+            syl1 = first[i].contents
+            syl2 = last[i].contents
+            if len(syl1) != len(syl2):
+                return False
+            for j in range(0, len(syl1)):
+                if syl1[j].sound != syl2[j].sound:
+                    return False
+                elif syl1[j].long != syl2[j].long:
+                    chroneme_diffs += 1
 
-        # get the number of phones different in the matched syllable
-        phones_diffs = differences(syl_diffs[0].contents, syl_diffs[1].contents)
-        if len(phones_diffs) != 1 or len(syl_diffs[0].contents) != len(syl_diffs[1].contents):
-            return False
-
-        # make sure that the differences between sounds is based on sound length
-        diff = phones_diffs[0]
-        return diff[0].long != diff[1].long and diff[0].sound == diff[1].sound
+        return chroneme_diffs >= 1
 
     def check_stress_contrast(self, pair: MinPair) -> bool:
         first = pair.first.phonology
