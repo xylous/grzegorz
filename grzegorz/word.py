@@ -189,9 +189,9 @@ def parse_ipa_characters(ipa: str) -> list[str]:
     chars = chars.replace(":", "ː")
 
     IPA_CHARACTERS = IPA_SOUNDS + IPA_CHRONEMES + IPA_SYLLABLES
-    chars = re.split("([" + ''.join(IPA_CHARACTERS) # unicode IPA characters
+    chars = re.split("((?:" + '|'.join(IPA_CHARACTERS) # unicode IPA characters
                             + "abcdefghijklmnopqrstuvxyz" # any other alphabet character
-                            + "]"
+                            + ")"
                             # they may be folllowed by a diacritic character
                             + "["
                             + ''.join(IPA_DIACRITICS)
