@@ -47,7 +47,7 @@ def create_argparser() -> argparse.ArgumentParser:
             help="second IPA transcription")
 
     # 'list-languages' subcommand
-    parser_list_languages = subparsers.add_parser('list-languages',
+    subparsers.add_parser('list-languages',
             help='List all languages for which you can fetch a wordlist')
 
     # 'fullmake' command
@@ -111,16 +111,16 @@ def create_argparser() -> argparse.ArgumentParser:
             default=False,
             dest="no_phonemes",
             help="ignore minimal pairs containing a phoneme contrast")
-    parser_generate.add_argument('--keep-chronemes',
+    parser_generate.add_argument('--no-chronemes',
             action='store_true',
             default=False,
-            dest="keep_chronemes",
-            help="keep minimal pairs containing a chroneme contrast (default: don't)")
-    parser_generate.add_argument('--keep-stress',
+            dest="no_chronemes",
+            help="ignore minimal pairs containing a chroneme contrast")
+    parser_generate.add_argument('--no-stress',
             action='store_true',
             default=False,
-            dest="keep_stress",
-            help="keep minimal pairs with a difference in syllable stress (default: don't)")
+            dest="no_stress",
+            help="ignore minimal pairs with a difference in syllable stress")
     parser_generate.add_argument('-f', '--filter-file',
             type=str,
             dest="path",
@@ -196,14 +196,14 @@ def main() -> None:
             outfile = args.outfile
             nooptimise = args.nooptimise;
             no_phonemes = args.no_phonemes;
-            keep_chronemes = args.keep_chronemes;
-            keep_stress = args.keep_stress;
+            no_chronemes = args.no_chronemes;
+            no_stress = args.no_stress;
             filter_file_path = args.path
             g = MinPairGenerator(
                 not nooptimise,
                 not no_phonemes,
-                keep_chronemes,
-                keep_stress
+                not no_chronemes,
+                not no_stress
             )
             if filter_file_path is not None:
                 g.set_filter_pairs_from_file(filter_file_path)

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import (Word, MinPair, Phone, readfile, writefile,
+from grzegorz.word import (Word, MinPair, readfile, writefile,
                            PHONEME_MINPAIR, CHRONEME_MINPAIR, STRESS_MINPAIR,
                            NOT_MINPAIR)
 
@@ -60,10 +60,10 @@ class MinPairGenerator:
             return
         if not self.keep_phonemes:
             print("Generator: phoneme contrasts will be ignored")
-        if self.keep_chronemes:
-            print("Generator: chroneme contrasts will be kept")
-        if self.keep_stress:
-            print("Generator: syllable stress contrasts will be kept")
+        if not self.keep_chronemes:
+            print("Generator: chroneme contrasts will be ignored")
+        if not self.keep_stress:
+            print("Generator: syllable stress contrasts will be ignored")
 
         for i in tqdm(range(0,len(words))):
             for j in range(i+1,len(words)):
