@@ -13,9 +13,10 @@ makedeck minpairs.json anki-minpairs.apkg
 
 Unfortunately, **the flashcards have no audio**. This is not because I haven't
 gotten to doing it, but because there is a complete lack of free (as in beer)
-APIs or libraries that can (legally) furnish audio pronunciations. Forvo, which
-is in my opinion one of the best platforms for audio pronunciations, has an API,
-but it is paid. You must, therefore, add the audio yourself.
+APIs or libraries that can (legally) furnish audio pronunciations.
+[Forvo](https://forvo.com), which is in my opinion one of the best platforms for
+audio pronunciations, has an API, but it is paid. You must, therefore, add the
+audio yourself.
 
 ### Importing the deck into Anki
 
@@ -38,3 +39,13 @@ Here's an example with a flashcard's front side:
 And the back side:
 
 ![](anki-minimal-pair-back.png)
+
+Every flashcard has six fields, namely `Word 1 text`, `Word 1 audio`, `Word 1
+IPA`, `Word 2 text`, `Word 2 audio` and `Word 2 IPA`. Therefore, the field
+contents of the flashcard in the above images look like this:
+
+![](anki-minimal-pair-fields.png)
+
+**Keep in mind that the flashcards, when imported, have no audio.** I added the
+audio pronunciation to the flashcards myself, by hand, from
+[Forvo](https://forvo.com).
