@@ -84,7 +84,7 @@ class MinPairGenerator:
         if not pair.first.phonology or not pair.last.phonology:
             return False
         # A minimal pair is kept if it has an interesting difference.
-        if self.keep_phonemes and self.check_phoneme_contrast(pair, self.optimise):
+        if self.keep_phonemes and self.check_phoneme_contrast(pair):
             return PHONEME_MINPAIR
         elif self.keep_chronemes and self.check_chroneme_contrast(pair):
             return CHRONEME_MINPAIR
@@ -118,7 +118,7 @@ class MinPairGenerator:
             print("not minimal pair")
         return verdict
 
-    def check_phoneme_contrast(self, pair: MinPair, optimise: bool) -> bool:
+    def check_phoneme_contrast(self, pair: MinPair) -> bool:
         first = pair.first.phonology
         last = pair.last.phonology
 
@@ -139,7 +139,7 @@ class MinPairGenerator:
         if len(diffs) != 1:
             return False
 
-        return (not optimise or self.check_optimised_phone_pair(diffs[0][0], diffs[0][1]))
+        return (not self.optimise or self.check_optimised_phone_pair(diffs[0][0], diffs[0][1]))
 
     def check_chroneme_contrast(self, pair: MinPair) -> bool:
         first = pair.first.phonology
@@ -236,7 +236,7 @@ DEFAULT_FILTER_PAIRS_PHONEME_LISTS = [
     ['z', 'ʑ', 'ʐ', 's', 'ś', 'ʂ'],
     ['ʎ', 'ɫ', 'l'],
     ['ɟ', 'j', 'g', 'ɡʲ', 'g', 'ç'],
-    [ 'tʲ', 'tʰ', 't' ,'d', 'dʲ', 'dʰ'],
+    ['tʲ', 'tʰ', 't' ,'d', 'dʲ', 'dʰ'],
     ['r', 'ʁ'],
 
     # Oral vowels (and semi-vowels)
