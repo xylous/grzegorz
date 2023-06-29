@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.5.0 - 2023-06-29
+
+- add diacritics parsing
+- add `analyse` command, for phonologically analysing a given IPA transcription
+- add `check` command, for determining whether two IPA transcriptions form a
+    minimal pair
+- add `list-languages` command, for printing out all languages (and their codes)
+    for which a wordlist can be fetched
+- add `--keep-failed` option to `fetchipa`
+- add `--filter-file` (`-f`) option to `generate`; this way, you can specify
+    which phonemes may form a minimal pair instead of always relying on a
+    default
+- improve minimal pair generation performance
+- fix bugs related to `fullmake` trying to generate even if the given language
+    is invalid
+- fix bug where long sounds at the end of a syllable would make the entire
+    syllable not be registered
+- fix chroneme and stress contrast checkers, which weren't very reliable for any
+    words larger than one syllable
+- improve phoneme contrast checker by allowing phonemes to have different
+    lengths; ergo, more minimal pairs found
+- change: specify the output file of the `makedeck` command instead of always
+    using the same name (`grzegorz-anki-deck.apkg`)
+- change: keep chroneme and stress contrasts by default during minimal pair
+    generation; replace `--keep-chronemes` with `--no-chronemes` and
+    `--keep-stress` with `--no-stress`
+- refactor to remove redundancies + add unit tests
+- completely change the documentation structure
+
 ## v0.4.10 - 2023-05-14
 
 - fix ModuleNotFound error where `grzegorz` wouldn't run at all because import
