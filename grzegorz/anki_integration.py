@@ -44,7 +44,7 @@ grzegorz_minpair_model = genanki.Model(
 <br>
 
 <div class="minpair">
-<div id="corret-word" class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
+<div id="correct-word" class="word">{{Word 1 text}}<br>{{Word 1 IPA}}</div>
 <div class="center"><i>or</i></div>
 <div class="word">{{Word 2 text}}<br>{{Word 2 IPA}}</div>
 </div>""",
