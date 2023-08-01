@@ -18,8 +18,8 @@ from grzegorz.generator import (MinPairGenerator)
 from grzegorz.word import (Word)
 from grzegorz.anki_integration import makedeck
 from grzegorz.wordlist import (wordlist, print_languages_list)
+from grzegorz.subcommands import (fullmake)
 
-from os import remove
 import argparse
 
 # Why does it have to be this complicated?
@@ -137,39 +137,6 @@ def create_argparser() -> argparse.ArgumentParser:
             help="Output file; note that it should ideally have the .apkg extension")
 
     return parser
-
-def fullmake(language: str, numwords: int, clean: bool) -> None:
-    """
-    Practically: wrap all commands into one. If `clean` is True, then
-    temporary files created by this function are removed.
-    """
-    optimise = True
-    keep_phonemes = True
-    keep_chronemes = True
-    keep_stress = True
-
-    wordlist_file = language + "-wordlist.txt"
-    ipa_json = language + "-ipa.json"
-    minpairs_file = language + "-minpairs.json"
-    makedeck_file = "grzegorz-" + language + "-minpairs.apkg"
-
-    if wordlist(language, numwords, wordlist_file) == 1:
-        exit(1)
-    fetchipa(wordlist_file, ipa_json, False)
-    g = MinPairGenerator(
-        optimise,
-        keep_phonemes,
-        keep_chronemes,
-        keep_stress,
-    )
-    g.generate(ipa_json, minpairs_file)
-    makedeck(minpairs_file, makedeck_file)
-
-    if clean:
-        print("Removing temporary files...")
-        remove(wordlist_file)
-        remove(ipa_json)
-        remove(minpairs_file)
 
 def main() -> None:
     parser = create_argparser()
