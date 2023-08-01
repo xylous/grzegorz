@@ -13,16 +13,15 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import Word, readfile, writefile
+from grzegorz.word import Word
 
 from wiktionaryparser import WiktionaryParser
 from multiprocessing import Pool, cpu_count
 from functools import partial
 from tqdm import tqdm
-import json
 import re
 
-def fetchipa(infile: str, outfile: str, keep_failed: bool) -> None:
+def fetchipa(wordlist: list[str], keep_failed: bool) -> list[Word]:
     """
     Given an input file containing a list of words separated, fetch the IPAs and
     create a JSON file with their IPA spellings matched to their text
@@ -31,9 +30,8 @@ def fetchipa(infile: str, outfile: str, keep_failed: bool) -> None:
     # For speed reasons, we use parallelism
     numproc = 10 * cpu_count()
 
-    contents = readfile(infile).splitlines()
-    language = contents.pop(0)
-    words = [line for line in contents if line]
+    language = wordlist.pop(0)
+    words = [line for line in wordlist if line]
     wds = []
     numwords = len(words)
 
@@ -49,8 +47,7 @@ def fetchipa(infile: str, outfile: str, keep_failed: bool) -> None:
     if not keep_failed:
         wds = [w for w in wds if w.ipa]
 
-    jsonlog = json.dumps([Word.obj_dict(word) for word in wds])
-    writefile(outfile, jsonlog)
+    return wds
 
 ### HELPER FUNCTIONS ###
 

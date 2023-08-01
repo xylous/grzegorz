@@ -121,16 +121,9 @@ You heard: <div class="word">{{Word 2 text}}</div>
 }""",
 )
 
-def makedeck(infile: str, outfile: str) -> None:
-    """Create an Anki deck given a file full of minimal pairs"""
-    json_str = readfile(infile)
-    dict = json.loads(json_str)
-    minpairs = list(map(MinPair.from_dict, dict))
+def minpairs_to_deck(minpairs: list[MinPair]) -> Deck:
     notes = list(map(minpair_to_anki_note, minpairs))
-    deck = notes_to_deck(notes)
-    export_deck(deck, outfile)
-
-### HELPER FUNCTIONS ###
+    return notes_to_deck(notes)
 
 def minpair_to_anki_note(minpair: MinPair) -> Note:
     """
@@ -167,4 +160,3 @@ def notes_to_deck(notes: list[Note]) -> Deck:
 def export_deck(deck: Deck, outfile: str) -> None:
     """Package the given deck and write it to a file"""
     genanki.Package(deck).write_to_file(outfile)
-    print('Done! Now import', outfile, 'in your Anki')

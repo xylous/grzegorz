@@ -13,12 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.fetcher import fetchipa
-from grzegorz.generator import (MinPairGenerator)
-from grzegorz.word import (Word)
-from grzegorz.anki_integration import makedeck
-from grzegorz.wordlist import (wordlist, print_languages_list)
-from grzegorz.subcommands import (fullmake)
+from grzegorz.subcommands import *
 
 import argparse
 
@@ -151,13 +146,10 @@ def main() -> None:
             language = args.language.lower()
             fullmake(language, numwords, clean)
         case 'wordlist':
-            outfile = args.outfile
-            numwords = args.numwords
-            language = args.language.lower()
-            status = wordlist(language, numwords, outfile)
+            status = wordlist_command(args.language.lower(), args.numwords, args.outfile)
             exit(status)
         case 'fetchipa':
-            fetchipa(args.infile, args.outfile, args.keep_failed)
+            fetchipa_command(args.infile, args.outfile, args.keep_failed)
         case 'generate':
             infile = args.infile
             outfile = args.outfile
@@ -166,29 +158,16 @@ def main() -> None:
             no_chronemes = args.no_chronemes;
             no_stress = args.no_stress;
             filter_file_path = args.path
-            g = MinPairGenerator(
-                not nooptimise,
-                not no_phonemes,
-                not no_chronemes,
-                not no_stress
-            )
-            if filter_file_path is not None:
-                g.set_filter_pairs_from_file(filter_file_path)
-            g.generate(infile, outfile)
+            generate_command(infile, outfile, nooptimise, no_phonemes, no_chronemes,
+                     no_stress, filter_file_path)
         case 'makedeck':
-            infile = args.infile
-            outfile = args.outfile
-            makedeck(infile, outfile)
+            makedeck(args.infile, args.outfile)
         case 'analyse':
-            Word("", args.ipa).print_human_readable()
+            print_analysis(args.ipa)
         case 'check':
-            word1 = Word("", args.ipa_first)
-            word2 = Word("", args.ipa_second)
-            generator = MinPairGenerator(False, True, True, True)
-            if not generator.print_human_readable_check(word1, word2):
-                exit(1)
+            print_minpair_check(args.ipa_first, args.ipa_second)
         case 'list-languages':
-            print_languages_list()
+            list_languages()
         case _:
             parser.print_help()
 

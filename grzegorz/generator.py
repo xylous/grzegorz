@@ -46,24 +46,11 @@ class MinPairGenerator:
                 lists_of_phonemes.append(line.replace(" ", "").split(","))
         self.filter_pairs = phoneme_lists_to_phoneme_pairs(lists_of_phonemes)
 
-    def generate(self, infile: str, outfile: str) -> None:
+    def generate(self, words: list[Word]) -> list[MinPair]:
         """
-        Given the path to a file containing JSON data about serialised `Word`s, create
-        a file `outfile` with all the minimal pairs found, in JSON format
+        Generate minimal pairs from the given parameters
         """
-        jsonstr = readfile(infile)
-        words = json.loads(jsonstr, object_hook=Word.from_dict)
         minpairs = []
-
-        if not self.keep_phonemes and not self.keep_chronemes and not self.keep_stress:
-            print("Generator: skipping all contrasts means no minimal pairs will be generated; abort")
-            return
-        if not self.keep_phonemes:
-            print("Generator: phoneme contrasts will be ignored")
-        if not self.keep_chronemes:
-            print("Generator: chroneme contrasts will be ignored")
-        if not self.keep_stress:
-            print("Generator: syllable stress contrasts will be ignored")
 
         for i in tqdm(range(0,len(words))):
             for j in range(i+1,len(words)):
@@ -71,9 +58,7 @@ class MinPairGenerator:
                 if self.check_minpair(pair):
                     minpairs.append(pair)
 
-        json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
-        writefile(outfile, json_out)
-        print('Done! Generated', len(minpairs), 'minimal pairs')
+        return minpairs
 
     def check_minpair(self, pair: MinPair) -> int:
         """

@@ -13,8 +13,6 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import writefile
-
 import requests
 
 """List of languages for which word lists can be fetched"""
@@ -66,24 +64,21 @@ VALID_LANGUAGES = [
 """This is where all the lists are fetched from"""
 RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2016'
 
-def wordlist(lang, numwords, outfile) -> int:
+def wordlist(lang, numwords) -> list[str]:
     """
-    Fetch a word list of `numwords` and put it into `outfile` for the given
-    language, if it's valid
-    If the operation failed, then return 1, otherwise return 0
+    Fetch the `numwords` most common words in the given language. Return them as
+    a list of strings, with the first element always being the language name.
     """
     language = lang_name(lang)
     if not valid_lang(lang):
         print(lang, "? I can't fetch a wordlist for that", sep='')
-        return 1
+        return []
     link = wordlist_link_for_lang(lang)
     words_kept_slice = slice(0, numwords)
     raw_words = fetch_contents(link).splitlines()[words_kept_slice]
     raw_words = list(map(format_line, raw_words))
     raw_words.insert(0, language)
-    writefile(outfile, '\n'.join(raw_words))
-    print("Fetched", numwords, language, "words into", outfile)
-    return 0
+    return raw_words
 
 def print_languages_list() -> None:
     for (lang, code) in sorted(VALID_LANGUAGES, key=lambda pair: pair[1]):
