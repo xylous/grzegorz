@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
+from grzegorz.word import (Word, MinPair)
+
 def readfile(path: str) -> str:
     """Return the contents of a file"""
     with open(path, 'r', encoding='utf-8') as f:
@@ -22,3 +24,32 @@ def writefile(path: str, text: str) -> None:
     """Write `text` to the given path"""
     with open(path, 'w', encoding='utf-8') as f:
         f.write(text)
+
+
+# JSON has several disadvantages, alongside being too verbose for our purposes.
+# Running multiple threads, like `fetchipa()` does, would make it tricky to
+# add new data to the file. On the other hand, using plain text and a thread
+# mutex allows us to directly append new lines.
+
+GRZEGORZ_WORD_FORMAT_SEPARATOR = ", "
+GRZEGORZ_MINPAIR_FORMAT_SEPARATOR = " -- "
+
+def encode_word(word: Word) -> str:
+    return word.text + GRZEGORZ_WORD_FORMAT_SEPARATOR + word.ipa
+
+def encode_minpair(pair: MinPair) -> str:
+    return encode_word(pair.first) + GRZEGORZ_MINPAIR_FORMAT_SEPARATOR + encode_word(pair.last)
+
+def decode_word(s: str) -> Word:
+    spl = s.split(GRZEGORZ_WORD_FORMAT_SEPARATOR)
+    return Word(spl[0], spl[1])
+
+def decode_minpair(s: str) -> MinPair:
+    spl = s.split(GRZEGORZ_MINPAIR_FORMAT_SEPARATOR)
+    return MinPair(decode_word(spl[0]), decode_word(spl[1]))
+
+def encode_format(hook, input: list) -> str:
+    return "\n".join([hook(elem) for elem in input])
+
+def decode_format(hook, input: str) -> list:
+    return [hook(line) for line in input.splitlines()]
