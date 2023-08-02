@@ -27,19 +27,22 @@ def get_ipa_for_word(word: str, language: str) -> Word:
     parser = WiktionaryParser()
     parser.set_default_language(language)
     ipa = ""
-    # If we get no result, skip.
-    try:
-        ipa = first_ipa_pronunciation(parser.fetch(word)[0]['pronunciations']['text'][0])
-        # Not all words have their IPAs on wiktionary, but they might have a
-        # "Rhymes" section (try German wordlists). If we did fetch a rhyme,
-        # don't add it as a valid IPA
-        if ipa[0] == '-':
-            ipa = ""
-    except (IndexError, AttributeError, KeyError) as _:
-        pass
+    fetched = parser.fetch(word)
+    if len(fetched):
+        first_entry = fetched[0]
+        pronunciations = first_entry.get('pronunciations')
+        text = pronunciations.get('text')
+        if len(text):
+            ipa = first_ipa_pronunciation(text[0])
+    # Not all words have their IPAs on wiktionary, but they might have a
+    # "Rhymes" section (cf. German wordlists). If we did fetch a rhyme,
+    # don't add it as a valid IPA
+    if len(ipa) and ipa[0] == '-':
+        ipa = ""
 
     return Word(word, ipa)
 
 def first_ipa_pronunciation(ipa_str: str) -> str:
     """Find the first IPA spelling in the given string"""
-    return re.findall(r"[/\[].*?[/\]]", ipa_str)[0]
+    result = re.findall(r"[/\[].*?[/\]]", ipa_str)
+    return result[0] if len(result) else ""
