@@ -15,14 +15,12 @@
 
 from grzegorz.fetcher import get_ipa_for_word
 from grzegorz.generator import (MinPairGenerator)
-from grzegorz.word import (Word)
 from grzegorz.anki_integration import (minpairs_to_deck, export_deck)
 from grzegorz.wordlist import (wordlist, print_languages_list)
-from grzegorz.word import (Word, MinPair)
+from grzegorz.word import Word
 from grzegorz.io import *
-import json
 
-from os import remove
+from os import (remove, linesep)
 from multiprocessing import Pool
 from threading import Lock
 from functools import partial
@@ -94,12 +92,12 @@ def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 10) ->
     words = [line for line in wordlist if line]
     numwords = len(words)
 
+    print("NOTE:",
+            "  Words are appended progressively to the file, so progress won't be lost.",
+            "  However, you won't be able to read the file while the program is running.",
+            sep=linesep)
+
     print("Fetching IPA spellings for", numwords, language, "words...")
-    if numwords > 500:
-        print("Words are appended progressively to the file, so progress won't be lost.")
-        print("In case of interruption, if you want to pick up where you last started, you")
-        print("could remove all the words in the input file up until the last successful ")
-        print("one in the output file and then re-run the command.")
     with open(outfile, "a", encoding='utf-8') as handle:
         with Pool(numproc) as p:
             for fetched_word in tqdm(p.imap_unordered(partial(get_ipa_for_word, language=language),
