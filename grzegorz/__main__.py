@@ -86,6 +86,11 @@ def create_argparser() -> argparse.ArgumentParser:
             action='store_true',
             default=False,
             help='Save the words for which no IPA was found in the output file (default: don\'t)')
+    parser_fetchipa.add_argument('--numproc',
+            type=int,
+            dest='numproc',
+            default=20,
+            help='Number of concurrent processes to handle the wordlist; default: 20')
 
     # 'generate' subcommand
     parser_generate = subparsers.add_parser('generate',
@@ -149,7 +154,7 @@ def main() -> None:
             status = wordlist_command(args.language.lower(), args.bounds, args.outfile)
             exit(status)
         case 'fetchipa':
-            fetchipa(args.infile, args.outfile, args.keep_failed, 20)
+            fetchipa(args.infile, args.outfile, args.keep_failed, args.numproc)
         case 'generate':
             infile = args.infile
             outfile = args.outfile
