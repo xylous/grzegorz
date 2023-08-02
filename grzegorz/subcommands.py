@@ -16,7 +16,7 @@
 from grzegorz.fetcher import get_ipa_for_word
 from grzegorz.generator import (MinPairGenerator)
 from grzegorz.anki_integration import (minpairs_to_deck, export_deck)
-from grzegorz.wordlist import (wordlist, print_languages_list)
+from grzegorz.wordlist import (wordlist, print_languages_list, valid_lang)
 from grzegorz.word import Word
 from grzegorz.io import *
 
@@ -26,7 +26,7 @@ from threading import Lock
 from functools import partial
 from tqdm import tqdm
 
-def fullmake(language: str, numwords: int, clean: bool) -> None:
+def fullmake(language: str, bounds: str, clean: bool) -> None:
     """
     Practically: wrap all commands into one. If `clean` is True, then
     temporary files created by this function are removed.
@@ -37,7 +37,7 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
     minpairs_file = language + "-minpairs.txt"
     makedeck_file = "grzegorz-" + language + "-minpairs.apkg"
 
-    if wordlist_command(language, numwords, wordlist_file) == 1:
+    if wordlist_command(language, bounds, wordlist_file) == 1:
         exit(1)
     fetchipa(wordlist_file, ipa_file, False, 20)
     generate_command(ipa_file, minpairs_file, False, False, False, False)
@@ -62,16 +62,35 @@ def print_minpair_check(ipa1: str, ipa2: str) -> None:
     if not generator.print_human_readable_check(word1, word2):
         exit(1)
 
-def wordlist_command(language, numwords, outfile) -> int:
+def wordlist_command(language: str, bounds: str, outfile: str) -> int:
     """
     Fetch a word list of `numwords` and put it into `outfile` for the given
     language, if it's valid
     If the operation failed, then return 1, otherwise return 0
     """
-    raw_words = wordlist(language, numwords)
+    spl = bounds.split(":")
+    if bounds.isnumeric():
+        lowerbound = 0
+        upperbound = int(bounds)
+    elif spl[0].isnumeric() and spl[1].isnumeric():
+        lowerbound = int(spl[0])
+        upperbound = int(spl[1])
+    else:
+        print("Error: can't recognise bounds. Only positive integers are allowed before and after the ':'")
+        return 1
+
+    if lowerbound > upperbound:
+        print("Error: lower bound is bigger than upper bound; abort")
+        return 1
+
+    if not valid_lang(language):
+        print(language, "Error: that is not a language for which a wordlist can be fetched", sep='')
+        return 1
+
+    raw_words = wordlist(language, upperbound, lowerbound)
     if raw_words:
         writefile(outfile, '\n'.join(raw_words))
-        print("Fetched", numwords, language, "words into", outfile)
+        print("Fetched", upperbound - lowerbound, language, "words into", outfile)
         return 0
     else:
         return 1

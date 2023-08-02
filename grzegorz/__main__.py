@@ -50,9 +50,9 @@ def create_argparser() -> argparse.ArgumentParser:
             help='Build an Anki deck for a language automatically')
     parser_fullmake.add_argument('language',
             type=str)
-    parser_fullmake.add_argument('numwords',
-            type=int,
-            help='number of words to sample')
+    parser_fullmake.add_argument('bounds',
+            type=str,
+            help='number of words to keep; alternatively, the range of words to keep, e.g. "1500:3000"')
     parser_fullmake.add_argument('--clean',
             dest='clean',
             action='store_true',
@@ -65,9 +65,9 @@ def create_argparser() -> argparse.ArgumentParser:
     parser_wordlist.add_argument('language',
             type=str,
             help='language of the wordlist')
-    parser_wordlist.add_argument('numwords',
-            type=int,
-            help='number of words to keep')
+    parser_wordlist.add_argument('bounds',
+            type=str,
+            help='number of words to keep; alternatively, the range of words to keep, e.g. "1500:3000"')
     parser_wordlist.add_argument('outfile',
             type=str,
             help='path where the wordlist should be stored')
@@ -142,11 +142,11 @@ def main() -> None:
     match cmd:
         case 'fullmake':
             clean = args.clean
-            numwords = args.numwords
+            bounds = args.bounds
             language = args.language.lower()
-            fullmake(language, numwords, clean)
+            fullmake(language, bounds, clean)
         case 'wordlist':
-            status = wordlist_command(args.language.lower(), args.numwords, args.outfile)
+            status = wordlist_command(args.language.lower(), args.bounds, args.outfile)
             exit(status)
         case 'fetchipa':
             fetchipa(args.infile, args.outfile, args.keep_failed, 20)

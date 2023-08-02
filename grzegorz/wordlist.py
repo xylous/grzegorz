@@ -64,17 +64,18 @@ VALID_LANGUAGES = [
 """This is where all the lists are fetched from"""
 RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2016'
 
-def wordlist(lang, numwords) -> list[str]:
+def wordlist(lang: str, upperbound: int, lowerbound: int = 0) -> list[str]:
     """
-    Fetch the `numwords` most common words in the given language. Return them as
-    a list of strings, with the first element always being the language name.
+    Return the most common words that are between index `lowerbound` and
+    `upperbound` in the given language. Note that the first element is always
+    the language name. If it isn't present, then the language is invalid.
     """
-    language = lang_name(lang)
     if not valid_lang(lang):
-        print(lang, "? I can't fetch a wordlist for that", sep='')
         return []
+
+    language = lang_name(lang)
     link = wordlist_link_for_lang(lang)
-    words_kept_slice = slice(0, numwords)
+    words_kept_slice = slice(lowerbound, upperbound)
     raw_words = fetch_contents(link).splitlines()[words_kept_slice]
     raw_words = list(map(format_line, raw_words))
     raw_words.insert(0, language)
