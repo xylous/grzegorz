@@ -15,6 +15,10 @@
 
 from grzegorz.word import (Word, MinPair)
 
+from typing import Callable, TypeVar
+
+T = TypeVar('T')
+
 def readfile(path: str) -> str:
     """Return the contents of a file"""
     with open(path, 'r', encoding='utf-8') as f:
@@ -48,8 +52,8 @@ def decode_minpair(s: str) -> MinPair:
     spl = s.split(GRZEGORZ_MINPAIR_FORMAT_SEPARATOR)
     return MinPair(decode_word(spl[0]), decode_word(spl[1]))
 
-def encode_format(hook, input: list) -> str:
+def encode_format(hook: Callable[[T], str], input: list[T]) -> str:
     return "\n".join([hook(elem) for elem in input])
 
-def decode_format(hook, input: str) -> list:
+def decode_format(hook: Callable[[str], T], input: str) -> list[T]:
     return [hook(line) for line in input.splitlines()]
