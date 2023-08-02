@@ -126,45 +126,7 @@ class Word:
 
         return syllables
 
-    @staticmethod
-    def obj_dict(word):
-        """Return this class as a dictionary"""
-        dict = word.__dict__
-        # this might fail since the dictionary is mutated, and the same Word
-        # might be converted more than one time
-        try:
-            # We don't need to know about the sounds of the word; those can be
-            # computed
-            dict.pop('phonology')
-        except KeyError:
-            pass
-        return dict
-
-    @staticmethod
-    def from_dict(dict) -> 'Word':
-        """Deserialise this class from JSON"""
-        return Word(dict['text'], dict['ipa'])
-
-class MinPair:
-    """Two words in a pair. Voilà c'est tout."""
-    def __init__(self, first: Word, last: Word) -> None:
-        self.first = first;
-        self.last = last;
-
-    @staticmethod
-    def obj_dict(obj: 'MinPair'):
-        """Return this class as a dictionary"""
-        dict = obj.__dict__;
-        dict['first'] = Word.obj_dict(dict['first']);
-        dict['last'] = Word.obj_dict(dict['last']);
-        return dict
-
-    @staticmethod
-    def from_dict(dict) -> 'MinPair':
-        """Construct this class from a dictionary"""
-        word1 = Word.from_dict(dict['first'])
-        word2 = Word.from_dict(dict['last'])
-        return MinPair(word1, word2)
+MinPair = tuple[Word, Word]
 
 ### Helper functions ###
 

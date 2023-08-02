@@ -42,7 +42,7 @@ def encode_word(word: Word) -> str:
     return word.text + GRZEGORZ_WORD_FORMAT_SEPARATOR + word.ipa
 
 def encode_minpair(pair: MinPair) -> str:
-    return encode_word(pair.first) + GRZEGORZ_MINPAIR_FORMAT_SEPARATOR + encode_word(pair.last)
+    return encode_word(pair[0]) + GRZEGORZ_MINPAIR_FORMAT_SEPARATOR + encode_word(pair[1])
 
 def decode_word(s: str) -> Word:
     spl = s.split(GRZEGORZ_WORD_FORMAT_SEPARATOR)
@@ -50,7 +50,7 @@ def decode_word(s: str) -> Word:
 
 def decode_minpair(s: str) -> MinPair:
     spl = s.split(GRZEGORZ_MINPAIR_FORMAT_SEPARATOR)
-    return MinPair(decode_word(spl[0]), decode_word(spl[1]))
+    return (decode_word(spl[0]), decode_word(spl[1]))
 
 def encode_format(hook: Callable[[T], str], input: list[T]) -> str:
     return "\n".join([hook(elem) for elem in input])

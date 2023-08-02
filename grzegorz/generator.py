@@ -54,7 +54,7 @@ class MinPairGenerator:
 
         for i in tqdm(range(0,len(words))):
             for j in range(i+1,len(words)):
-                pair = MinPair(words[i], words[j])
+                pair = (words[i], words[j])
                 if self.check_minpair(pair):
                     minpairs.append(pair)
 
@@ -66,7 +66,7 @@ class MinPairGenerator:
         return, per case, PHONEME_MINPAIR, CHRONEME_MINPAIR and STRESS_MINPAIR
         """
         # Skip empty entries
-        if not pair.first.phonology or not pair.last.phonology:
+        if not pair[0].phonology or not pair[1].phonology:
             return False
         # A minimal pair is kept if it has an interesting difference.
         if self.keep_phonemes and self.check_phoneme_contrast(pair):
@@ -92,7 +92,7 @@ class MinPairGenerator:
         print("")
         word2.print_human_readable()
         print("")
-        verdict = self.check_minpair(MinPair(word1, word2))
+        verdict = self.check_minpair((word1, word2))
         if verdict == PHONEME_MINPAIR:
             print("minimal pair based on phoneme difference")
         elif verdict == CHRONEME_MINPAIR:
@@ -104,8 +104,8 @@ class MinPairGenerator:
         return verdict
 
     def check_phoneme_contrast(self, pair: MinPair) -> bool:
-        first = pair.first.phonology
-        last = pair.last.phonology
+        first = pair[0].phonology
+        last = pair[0].phonology
 
         # we have to work with same number of syllables
         if len(first) != len(last):
@@ -127,8 +127,8 @@ class MinPairGenerator:
         return (not self.optimise or self.check_optimised_phone_pair(diffs[0][0], diffs[0][1]))
 
     def check_chroneme_contrast(self, pair: MinPair) -> bool:
-        first = pair.first.phonology
-        last = pair.last.phonology
+        first = pair[0].phonology
+        last = pair[1].phonology
 
         # we have to work with same number of syllables
         if len(first) != len(last):
@@ -152,8 +152,8 @@ class MinPairGenerator:
         return chroneme_diffs >= 1
 
     def check_stress_contrast(self, pair: MinPair) -> bool:
-        first = pair.first.phonology
-        last = pair.last.phonology
+        first = pair[0].phonology
+        last = pair[1].phonology
 
         # we have to work with same number of syllables
         if len(first) != len(last):
