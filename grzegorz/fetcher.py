@@ -16,39 +16,7 @@
 from grzegorz.word import Word
 
 from wiktionaryparser import WiktionaryParser
-from multiprocessing import Pool
-from functools import partial
-from tqdm import tqdm
 import re
-
-def fetchipa(wordlist: list[str], keep_failed: bool, numproc: int = 10) -> list[Word]:
-    """
-    Given an input file containing a list of words separated, fetch the IPAs and
-    create a JSON file with their IPA spellings matched to their text
-    """
-
-    # For speed reasons, we use parallelism
-    if numproc < 1:
-        numproc = 1
-
-    language = wordlist.pop(0)
-    words = [line for line in wordlist if line]
-    wds = []
-    numwords = len(words)
-
-    print("Fetching IPA spellings for", numwords, language, "words...")
-    if numwords > 500:
-        print("If you cancel, all progress will be lost!")
-    with Pool(numproc) as p:
-        for x in tqdm(p.imap_unordered(partial(get_ipa_for_word, language=language),
-            words), total=numwords):
-            wds.append(x)
-
-    # Don't keep entries with no IPA pronunciation
-    if not keep_failed:
-        wds = [w for w in wds if w.ipa]
-
-    return wds
 
 ### HELPER FUNCTIONS ###
 

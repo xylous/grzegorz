@@ -149,7 +149,7 @@ def main() -> None:
             status = wordlist_command(args.language.lower(), args.numwords, args.outfile)
             exit(status)
         case 'fetchipa':
-            fetchipa_command(args.infile, args.outfile, args.keep_failed)
+            fetchipa(args.infile, args.outfile, args.keep_failed, 20)
         case 'generate':
             infile = args.infile
             outfile = args.outfile

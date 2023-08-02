@@ -13,16 +13,20 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.fetcher import fetchipa
+from grzegorz.fetcher import get_ipa_for_word
 from grzegorz.generator import (MinPairGenerator)
 from grzegorz.word import (Word)
 from grzegorz.anki_integration import (minpairs_to_deck, export_deck)
 from grzegorz.wordlist import (wordlist, print_languages_list)
 from grzegorz.word import (Word, MinPair)
-from grzegorz.io import (readfile, writefile)
+from grzegorz.io import *
 import json
 
 from os import remove
+from multiprocessing import Pool
+from threading import Lock
+from functools import partial
+from tqdm import tqdm
 
 def fullmake(language: str, numwords: int, clean: bool) -> None:
     """
@@ -37,7 +41,7 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
 
     if wordlist_command(language, numwords, wordlist_file) == 1:
         exit(1)
-    fetchipa_command(wordlist_file, ipa_json, False)
+    fetchipa(wordlist_file, ipa_json, False)
     generate_command(ipa_json, minpairs_file, True, True, True, True, "")
     makedeck(minpairs_file, makedeck_file)
 
@@ -74,11 +78,36 @@ def wordlist_command(language, numwords, outfile) -> int:
     else:
         return 1
 
-def fetchipa_command(infile: str, outfile: str, keep_failed: bool) -> None:
+def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 10) -> None:
+    """
+    Given an input file containing a list of words separated, fetch the IPAs and
+    create a JSON file with their IPA spellings matched to their text
+    """
+
+    # For speed reasons, we use parallelism
+    if numproc < 1:
+        numproc = 1
+
     wordlist = readfile(infile).splitlines()
-    results = fetchipa(wordlist, keep_failed)
-    jsonlog = json.dumps([Word.obj_dict(word) for word in results])
-    writefile(outfile, jsonlog)
+
+    language = wordlist.pop(0)
+    words = [line for line in wordlist if line]
+    numwords = len(words)
+
+    print("Fetching IPA spellings for", numwords, language, "words...")
+    if numwords > 500:
+        print("Words are appended progressively to the file, so progress won't be lost.")
+        print("In case of interruption, if you want to pick up where you last started, you")
+        print("could remove all the words in the input file up until the last successful ")
+        print("one in the output file and then re-run the command.")
+    with open(outfile, "a", encoding='utf-8') as handle:
+        with Pool(numproc) as p:
+            for fetched_word in tqdm(p.imap_unordered(partial(get_ipa_for_word, language=language),
+                words), total=numwords):
+                if keep_failed or fetched_word.ipa != "":
+                    encoded = encode_word(fetched_word) + "\n"
+                    with Lock():
+                        handle.write(encoded)
 
 def generate_command(infile, outfile, nooptimise, no_phonemes, no_chronemes,
                      no_stress, filter_file_path) -> None:
