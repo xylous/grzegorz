@@ -35,20 +35,20 @@ def fullmake(language: str, numwords: int, clean: bool) -> None:
     """
 
     wordlist_file = language + "-wordlist.txt"
-    ipa_json = language + "-ipa.json"
-    minpairs_file = language + "-minpairs.json"
+    ipa_file = language + "-ipa.txt"
+    minpairs_file = language + "-minpairs.txt"
     makedeck_file = "grzegorz-" + language + "-minpairs.apkg"
 
     if wordlist_command(language, numwords, wordlist_file) == 1:
         exit(1)
-    fetchipa(wordlist_file, ipa_json, False)
-    generate_command(ipa_json, minpairs_file, True, True, True, True, "")
+    fetchipa(wordlist_file, ipa_file, False, 20)
+    generate_command(ipa_file, minpairs_file, False, False, False, False)
     makedeck(minpairs_file, makedeck_file)
 
     if clean:
         print("Removing temporary files...")
         remove(wordlist_file)
-        remove(ipa_json)
+        remove(ipa_file)
         remove(minpairs_file)
 
 def list_languages() -> None:
@@ -81,7 +81,7 @@ def wordlist_command(language, numwords, outfile) -> int:
 def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 10) -> None:
     """
     Given an input file containing a list of words separated, fetch the IPAs and
-    create a JSON file with their IPA spellings matched to their text
+    create a text file with their IPA spellings matched to their text
     """
 
     # For speed reasons, we use parallelism
@@ -110,9 +110,8 @@ def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 10) ->
                         handle.write(encoded)
 
 def generate_command(infile, outfile, nooptimise, no_phonemes, no_chronemes,
-                     no_stress, filter_file_path) -> None:
-    jsonstr = readfile(infile)
-    words = json.loads(jsonstr, object_hook=Word.from_dict)
+                     no_stress, filter_file_path=None) -> None:
+    words = decode_format(decode_word, readfile(infile))
     g = MinPairGenerator(
         not nooptimise,
         not no_phonemes,
@@ -133,14 +132,12 @@ def generate_command(infile, outfile, nooptimise, no_phonemes, no_chronemes,
         print("Generator: syllable stress contrasts will be ignored")
 
     minpairs = g.generate(words)
-    json_out = json.dumps([MinPair.obj_dict(pair) for pair in minpairs])
-    writefile(outfile, json_out)
+    writefile(outfile, encode_format(encode_minpair, minpairs))
     print('Done! Generated', len(minpairs), 'minimal pairs')
 
 def makedeck(infile: str, outfile: str) -> None:
     """Create an Anki deck given a file full of minimal pairs"""
-    jsonstr = readfile(infile)
-    minpairs = json.loads(jsonstr, object_hook=MinPair.from_dict)
+    minpairs = decode_format(decode_minpair, readfile(infile))
     deck = minpairs_to_deck(minpairs)
     export_deck(deck, outfile)
     print('Done! Now import', outfile, 'in your Anki')
