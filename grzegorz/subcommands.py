@@ -18,7 +18,8 @@ from grzegorz.generator import (MinPairGenerator)
 from grzegorz.word import (Word)
 from grzegorz.anki_integration import (minpairs_to_deck, export_deck)
 from grzegorz.wordlist import (wordlist, print_languages_list)
-from grzegorz.word import (Word, MinPair, readfile, writefile)
+from grzegorz.word import (Word, MinPair)
+from grzegorz.io import (readfile, writefile)
 import json
 
 from os import remove

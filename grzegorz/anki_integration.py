@@ -13,11 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import MinPair, readfile
+from grzegorz.word import MinPair
 
 import genanki
 from genanki import Note, Deck
-import json
 
 """The model used for the flashcards is rather simple"""
 grzegorz_minpair_model = genanki.Model(

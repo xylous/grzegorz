@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import (Word, MinPair, readfile, writefile,
+from grzegorz.word import (Word, MinPair,
                            PHONEME_MINPAIR, CHRONEME_MINPAIR, STRESS_MINPAIR,
                            NOT_MINPAIR)
+from grzegorz.io import readfile
 
-import json
 from tqdm import tqdm
 from itertools import chain, combinations
 

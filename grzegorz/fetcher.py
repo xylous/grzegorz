@@ -16,19 +16,20 @@
 from grzegorz.word import Word
 
 from wiktionaryparser import WiktionaryParser
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool
 from functools import partial
 from tqdm import tqdm
 import re
 
-def fetchipa(wordlist: list[str], keep_failed: bool) -> list[Word]:
+def fetchipa(wordlist: list[str], keep_failed: bool, numproc: int = 10) -> list[Word]:
     """
     Given an input file containing a list of words separated, fetch the IPAs and
     create a JSON file with their IPA spellings matched to their text
     """
 
     # For speed reasons, we use parallelism
-    numproc = 10 * cpu_count()
+    if numproc < 1:
+        numproc = 1
 
     language = wordlist.pop(0)
     words = [line for line in wordlist if line]

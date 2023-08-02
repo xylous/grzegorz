@@ -168,16 +168,6 @@ class MinPair:
 
 ### Helper functions ###
 
-def readfile(path: str) -> str:
-    """Return the contents of a file"""
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
-
-def writefile(path: str, text: str) -> None:
-    """Write `text` to the given path"""
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(text)
-
 def parse_ipa_characters(ipa: str) -> list[str]:
     """ Given an IPA transliteration, return all the IPA characters in it """
     # Remove any any forward slashes, square brackets or round parentheses that
