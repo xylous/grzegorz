@@ -49,52 +49,54 @@ class GeneratorTests(unittest.TestCase):
     def test_phoneme_contrast_r_and_m_not_optimised(self):
         w1 = Word("", "/barˈbaz/")
         w2 = Word("", "/bamˈbaz/")
-        self.assertTrue(g.check_phoneme_contrast(MinPair(w1, w2), False))
+        w1.print_human_readable()
+        w2.print_human_readable()
+        self.assertTrue(g.check_phoneme_contrast((w1, w2)))
 
     def test_phoneme_contrast_with_chroneme_difference(self):
         w1 = Word("", "/barˈbaz/")
         w2 = Word("", "/bar:ˈbaz/")
-        self.assertFalse(g.check_phoneme_contrast(MinPair(w1, w2), False))
+        self.assertFalse(g.check_phoneme_contrast((w1, w2)))
 
     def test_chroneme_contrast(self):
         w1 = Word("", "/barˈbaz/")
         w2 = Word("", "/bar:ˈbaz/")
-        self.assertTrue(g.check_chroneme_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_chroneme_contrast((w1, w2)))
 
     def test_chroneme_contrast_two_diffs(self):
         w1 = Word("", "/barˈbaz/")
         w2 = Word("", "/bar:ˈba:z/")
-        self.assertTrue(g.check_chroneme_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_chroneme_contrast((w1, w2)))
 
     def test_syllable_stress_contrast_two_syllable(self):
         w1 = Word("", "/barˈbaz/")
         w2 = Word("", "/bar.baz/")
-        self.assertTrue(g.check_stress_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_stress_contrast((w1, w2)))
 
     def test_syllable_stress_contrast_three_syllables_1(self):
         w1 = Word("", "/barˈbaz.do/")
         w2 = Word("", "/bar.baz.do/")
-        self.assertTrue(g.check_stress_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_stress_contrast((w1, w2)))
 
     def test_syllable_stress_contrast_three_syllables_2(self):
         w1 = Word("", "/barˈbaz.do/")
         w2 = Word("", "/bar.bazˈdo/")
-        self.assertTrue(g.check_stress_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_stress_contrast((w1, w2)))
 
     def test_syllable_stress_contrast_three_syllables_3(self):
         w1 = Word("", "/barˈbaz.do/")
         w2 = Word("", "/barˌbazˈdo/")
-        self.assertTrue(g.check_stress_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_stress_contrast((w1, w2)))
 
     def test_syllable_stress_contrast_three_syllables_4(self):
         w1 = Word("", "/bar.baz.do/")
         w2 = Word("", "/barˌbazˈdo/")
-        self.assertTrue(g.check_stress_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_stress_contrast((w1, w2)))
 
     def test_syllable_stress_contrast_four_syllables_1(self):
         w1 = Word("", "/bar.baz.do.man/")
         w2 = Word("", "/barˌbazˈdo.man/")
-        self.assertTrue(g.check_stress_contrast(MinPair(w1, w2)))
+        self.assertTrue(g.check_stress_contrast((w1, w2)))
 
 if __name__ == '__main__':
     unittest.main()
