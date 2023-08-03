@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import MinPair
+from grzegorz.word import WordPair
 
 import genanki
 from genanki import Note, Deck
@@ -120,7 +120,7 @@ You heard: <div class="word">{{Word 2 text}}</div>
 }""",
 )
 
-def minpairs_to_deck(minpairs: list[MinPair]) -> Deck:
+def minpairs_to_deck(minpairs: list[WordPair]) -> Deck:
     """Turn a list of minimal pairs into an Anki deck"""
     notes = [minpair_to_anki_note(mp) for mp in minpairs]
     return notes_to_deck(notes)
@@ -129,7 +129,7 @@ def export_deck(deck: Deck, outfile: str) -> None:
     """Package the given deck and write it to a file"""
     genanki.Package(deck).write_to_file(outfile)
 
-def minpair_to_anki_note(minpair: MinPair) -> Note:
+def minpair_to_anki_note(minpair: WordPair) -> Note:
     """
     Given a minimal pair, create an Anki note from it, with `grzegorz_minpair_model`
     as its template.

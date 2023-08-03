@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import (Word, MinPair)
+from grzegorz.word import (Word, WordPair)
 
 from typing import Callable, TypeVar
 
@@ -41,14 +41,14 @@ GRZEGORZ_MINPAIR_FORMAT_SEPARATOR = " -- "
 def encode_word(word: Word) -> str:
     return word.text + GRZEGORZ_WORD_FORMAT_SEPARATOR + word.ipa
 
-def encode_minpair(pair: MinPair) -> str:
+def encode_minpair(pair: WordPair) -> str:
     return encode_word(pair[0]) + GRZEGORZ_MINPAIR_FORMAT_SEPARATOR + encode_word(pair[1])
 
 def decode_word(s: str) -> Word:
     spl = s.split(GRZEGORZ_WORD_FORMAT_SEPARATOR)
     return Word(spl[0], spl[1])
 
-def decode_minpair(s: str) -> MinPair:
+def decode_minpair(s: str) -> WordPair:
     spl = s.split(GRZEGORZ_MINPAIR_FORMAT_SEPARATOR)
     return (decode_word(spl[0]), decode_word(spl[1]))
 

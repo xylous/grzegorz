@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # grzegorz.  If not, see <https://www.gnu.org/licenses/>.
 
-from grzegorz.word import (Word, MinPair,
+from grzegorz.word import (Word, WordPair,
                            PHONEME_MINPAIR, CHRONEME_MINPAIR, STRESS_MINPAIR,
                            NOT_MINPAIR)
 from grzegorz.io import readfile
@@ -46,7 +46,7 @@ class MinPairGenerator:
                 lists_of_phonemes.append(line.replace(" ", "").split(","))
         self.filter_pairs = phoneme_lists_to_phoneme_pairs(lists_of_phonemes)
 
-    def generate(self, words: list[Word]) -> list[MinPair]:
+    def generate(self, words: list[Word]) -> list[WordPair]:
         """
         Generate minimal pairs from the given parameters
         """
@@ -60,7 +60,7 @@ class MinPairGenerator:
 
         return minpairs
 
-    def check_minpair(self, pair: MinPair) -> int:
+    def check_minpair(self, pair: WordPair) -> int:
         """
         If the given pair is not a minpair, return NOT_MINPAIR; otherwise,
         return, per case, PHONEME_MINPAIR, CHRONEME_MINPAIR or STRESS_MINPAIR
@@ -103,7 +103,7 @@ class MinPairGenerator:
             print("not minimal pair")
         return verdict
 
-    def check_phoneme_contrast(self, pair: MinPair) -> bool:
+    def check_phoneme_contrast(self, pair: WordPair) -> bool:
         """Check if the two Words form a minimal pair based on a phoneme
         difference"""
         first = pair[0].phonology
@@ -128,7 +128,7 @@ class MinPairGenerator:
 
         return (not self.optimise or self.check_optimised_phone_pair(diffs[0][0], diffs[0][1]))
 
-    def check_chroneme_contrast(self, pair: MinPair) -> bool:
+    def check_chroneme_contrast(self, pair: WordPair) -> bool:
         """Check if the two `Word`s form a minimal pair based on a sound length
         difference (i.e. a different chroneme)"""
         first = pair[0].phonology
@@ -155,7 +155,7 @@ class MinPairGenerator:
 
         return chroneme_diffs >= 1
 
-    def check_stress_contrast(self, pair: MinPair) -> bool:
+    def check_stress_contrast(self, pair: WordPair) -> bool:
         """Check if the two `Word`s form a minimal pair based on different
         placcing of syllable stress, all sounds being the same"""
         first = pair[0].phonology

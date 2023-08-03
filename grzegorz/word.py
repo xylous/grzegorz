@@ -126,7 +126,7 @@ class Word:
 
         return syllables
 
-MinPair = tuple[Word, Word]
+WordPair = tuple[Word, Word]
 
 ### Helper functions ###
 
