@@ -49,8 +49,6 @@ class GeneratorTests(unittest.TestCase):
     def test_phoneme_contrast_r_and_m_not_optimised(self):
         w1 = Word("", "/barˈbaz/")
         w2 = Word("", "/bamˈbaz/")
-        w1.print_human_readable()
-        w2.print_human_readable()
         self.assertTrue(g.check_phoneme_contrast((w1, w2)))
 
     def test_phoneme_contrast_with_chroneme_difference(self):

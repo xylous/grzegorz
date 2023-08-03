@@ -105,7 +105,7 @@ class MinPairGenerator:
 
     def check_phoneme_contrast(self, pair: MinPair) -> bool:
         first = pair[0].phonology
-        last = pair[0].phonology
+        last = pair[1].phonology
 
         # we have to work with same number of syllables
         if len(first) != len(last):
