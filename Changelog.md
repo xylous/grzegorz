@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.6.0 - 2023-08-03
+
+- improve `wordlist`: accept ranges, e.g. `3000:5000`, which returns only the
+    3000th up to the 5000th most common words
+- add `--numproc` option to `fetchipa`, to explicitly set the number of
+    concurrent processes that should handle the wordlist
+- fix Anki flashcard template: highlight the correct word in Card 1, as it is
+    highlighted in Card 2
+- optimise `fetchipa` by removing time-expensive code
+- change: replace JSON with a custom place-text format
+- change: make `fetchipa` not lose progress whenever it is cancelled, by writing
+    (appending) progressively to the output file
+
 ## v0.5.0 - 2023-06-29
 
 - add diacritics parsing
