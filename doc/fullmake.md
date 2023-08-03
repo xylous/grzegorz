@@ -1,7 +1,7 @@
 # The handy `fullmake` command
 
-If you want to skip using `wordlist`, `fetchipa`, `generate` and `makedeck`
-commands, you can chain them automatically by using `fullmake`.
+If you want to skip using the `wordlist`, `fetchipa`, `generate` and `makedeck`
+commands manually, you can chain them automatically by using `fullmake`.
 
 Its only parameters are the language name/code (remember that you may find
 available languages by running `grzegorz list-languages`) and the number of

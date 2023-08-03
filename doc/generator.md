@@ -3,9 +3,10 @@
 Having [fetched IPA transliterations for your wordlist](./ipa-fetch.md), you may
 now finally find minimal pairs.
 
-This is done with the `generate` command; you give it the JSON output of
-`fetchipa` which contains words bound to IPAs and it gives you yet more JSON,
-this time with all the minimal pairs it found.
+This is done with the `generate` command; you give it the output of
+`fetchipa` which contains IPA transliterations bound to words and it spews out
+another file, this time with all the minimal pairs it found, in a [custom file
+format](./formats.md).
 
 By default, the `generate` command keeps minimal pairs based on phoneme
 contrasts, chroneme contrasts and differences in syllable stress. You can

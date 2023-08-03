@@ -17,10 +17,18 @@ called `polish-wordlist.txt`. In your terminal, you would run:
 grzegorz wordlist polish 20000 polish-wordlist.txt
 ```
 
-Or, alternatively:
+Alternatively, using the language code:
 
 ```
 grzegorz wordlist pl 20000 polish-wordlist.txt
+```
+
+You may also specify a lower and an upper bound instead of the absolute upper
+bound, such as `25000:50000`, which takes only the words from index 25000 in the
+word list up until index 50000. Here's an example of what that would look like:
+
+```
+grzegorz wordlist romanian 25000:50000 romanian-wordlilst.txt
 ```
 
 But a wordlist on its own is rather underwhelming. There's one more step before
