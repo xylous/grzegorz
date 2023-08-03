@@ -22,7 +22,9 @@ import re
 
 def get_ipa_for_word(word: str, language: str) -> Word:
     """
-    Look on the English Wiktionary for the IPA of the given word
+    Look for the IPA transliteration of the given word in the specified language
+    and return a `Word` binding it to the letters. If no transcription was
+    found, then the `ipa` field of the result is empty.
     """
     parser = WiktionaryParser()
     parser.set_default_language(language)
@@ -35,8 +37,8 @@ def get_ipa_for_word(word: str, language: str) -> Word:
         if len(text):
             ipa = first_ipa_pronunciation(text[0])
     # Not all words have their IPAs on wiktionary, but they might have a
-    # "Rhymes" section (cf. German wordlists). If we did fetch a rhyme,
-    # don't add it as a valid IPA
+    # "Rhymes" section (many German words do, for example). If we did fetch a
+    # rhyme, don't add it as a valid IPA
     if len(ipa) and ipa[0] == '-':
         ipa = ""
 

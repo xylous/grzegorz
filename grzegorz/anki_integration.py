@@ -121,41 +121,40 @@ You heard: <div class="word">{{Word 2 text}}</div>
 )
 
 def minpairs_to_deck(minpairs: list[MinPair]) -> Deck:
-    notes = list(map(minpair_to_anki_note, minpairs))
+    """Turn a list of minimal pairs into an Anki deck"""
+    notes = [minpair_to_anki_note(mp) for mp in minpairs]
     return notes_to_deck(notes)
+
+def export_deck(deck: Deck, outfile: str) -> None:
+    """Package the given deck and write it to a file"""
+    genanki.Package(deck).write_to_file(outfile)
 
 def minpair_to_anki_note(minpair: MinPair) -> Note:
     """
-    Given a minimal pair, create an Anki note from it, with grzegorz_minpair_model
-    as its model.
+    Given a minimal pair, create an Anki note from it, with `grzegorz_minpair_model`
+    as its template.
     """
-    first = minpair.first
-    last = minpair.last
     note = genanki.Note(
         model=grzegorz_minpair_model,
         fields=[
-            first.text,
+            minpair[0].text,
             '',
-            first.ipa,
-            last.text,
+            minpair[0].ipa,
+            minpair[1].text,
             '',
-            last.ipa,
+            minpair[1].ipa,
         ]
     )
     return note
 
 def notes_to_deck(notes: list[Note]) -> Deck:
     """
-    Add a list of notes into a deck called "grzegorz's minimal pairs"
+    Put the `Note`s into a `Deck` called "grzegorz's minimal pairs"
     """
     deck = genanki.Deck(
-        1597757363,
+        1597757363, # deck ID, randomly generated but hardcoded
         "grzegorz's minimal pairs",
     )
     for note in notes:
         deck.add_note(note)
     return deck
-
-def export_deck(deck: Deck, outfile: str) -> None:
-    """Package the given deck and write it to a file"""
-    genanki.Package(deck).write_to_file(outfile)

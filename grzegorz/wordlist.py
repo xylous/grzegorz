@@ -15,7 +15,6 @@
 
 import requests
 
-"""List of languages for which word lists can be fetched"""
 VALID_LANGUAGES = [
     # Germanic languages
     ('english', 'en'),
@@ -60,9 +59,15 @@ VALID_LANGUAGES = [
     ('chinese', 'zh'),
     ('japanese', 'ja'),
 ]
+"""
+List of languages for which word lists can be fetched, in tuple format, with the
+first element being the language full name and the second element being the
+language code
+"""
 
-"""This is where all the lists are fetched from"""
 RESOURCES_REPO_LINK = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2016'
+"""All the wordlists are fetched from here"""
+
 
 def wordlist(lang: str, upperbound: int, lowerbound: int = 0) -> list[str]:
     """
@@ -77,7 +82,7 @@ def wordlist(lang: str, upperbound: int, lowerbound: int = 0) -> list[str]:
     link = wordlist_link_for_lang(lang)
     words_kept_slice = slice(lowerbound, upperbound)
     raw_words = fetch_contents(link).splitlines()[words_kept_slice]
-    raw_words = list(map(format_line, raw_words))
+    raw_words = [line.split()[0] for line in raw_words]
     raw_words.insert(0, language)
     return raw_words
 
@@ -87,44 +92,40 @@ def print_languages_list() -> None:
 
 ### HELPER FUNCTIONS ###
 
-def valid_lang(lang):
-    """We only accept languages that are on the list"""
+def valid_lang(lang: str) -> bool:
+    """Check if `wordlist()` can fetch a wordlist for the given language or
+    language code"""
     for pair in VALID_LANGUAGES:
         if lang in pair:
             return True
     return False
 
-def lang_code(lang):
-    """Given a language, return its language code"""
+def lang_code(lang: str) -> str:
+    """Given a language, return its language code, provided it's in the
+    `VALID_LANGUAGES` property"""
     for pair in VALID_LANGUAGES:
         if lang in pair:
             _, code = pair
             return code
     return ''
 
-def lang_name(lang):
-    """Given a language, return its language fullname"""
+def lang_name(lang: str) -> str:
+    """Given a language, return its language fullname, provided it's in the
+    `VALID_LANGUAGES` property"""
     for pair in VALID_LANGUAGES:
         if lang in pair:
             name, _ = pair
             return name
     return ''
 
-def wordlist_link_for_lang(lang):
-    """Return the link to the wordlist for the given language"""
+def wordlist_link_for_lang(lang: str):
+    """Return the link to the wordlist for the given language, provided it is
+    valid"""
     code = lang_code(lang)
     link = RESOURCES_REPO_LINK + "/" + code + "/" + code + "_50k.txt"
     return link
 
-def fetch_contents(link):
+def fetch_contents(link: str):
     """Return the string containing the webpage at `link`"""
     res = requests.get(link)
     return res.text
-
-def format_line(line):
-    """
-    The format of the list we fetched is not perfect: we need to keep only the
-    first word on every line
-    """
-    first_word = line.split()[0]
-    return first_word

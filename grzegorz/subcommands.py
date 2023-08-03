@@ -101,7 +101,7 @@ def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 10) ->
     create a text file with their IPA spellings matched to their text
     """
 
-    # For speed reasons, we use parallelism
+    # Ensure that we're processing the data with at least one thread
     if numproc < 1:
         numproc = 1
 

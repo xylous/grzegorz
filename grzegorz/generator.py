@@ -62,8 +62,8 @@ class MinPairGenerator:
 
     def check_minpair(self, pair: MinPair) -> int:
         """
-        If the given pair si not a minpair, return NOT_MINPAIR; otherwise,
-        return, per case, PHONEME_MINPAIR, CHRONEME_MINPAIR and STRESS_MINPAIR
+        If the given pair is not a minpair, return NOT_MINPAIR; otherwise,
+        return, per case, PHONEME_MINPAIR, CHRONEME_MINPAIR or STRESS_MINPAIR
         """
         # Skip empty entries
         if not pair[0].phonology or not pair[1].phonology:
@@ -104,6 +104,8 @@ class MinPairGenerator:
         return verdict
 
     def check_phoneme_contrast(self, pair: MinPair) -> bool:
+        """Check if the two Words form a minimal pair based on a phoneme
+        difference"""
         first = pair[0].phonology
         last = pair[1].phonology
 
@@ -127,6 +129,8 @@ class MinPairGenerator:
         return (not self.optimise or self.check_optimised_phone_pair(diffs[0][0], diffs[0][1]))
 
     def check_chroneme_contrast(self, pair: MinPair) -> bool:
+        """Check if the two `Word`s form a minimal pair based on a sound length
+        difference (i.e. a different chroneme)"""
         first = pair[0].phonology
         last = pair[1].phonology
 
@@ -152,6 +156,8 @@ class MinPairGenerator:
         return chroneme_diffs >= 1
 
     def check_stress_contrast(self, pair: MinPair) -> bool:
+        """Check if the two `Word`s form a minimal pair based on different
+        placcing of syllable stress, all sounds being the same"""
         first = pair[0].phonology
         last = pair[1].phonology
 
@@ -171,9 +177,9 @@ class MinPairGenerator:
 
 ### Helper functions ###
 
-def differences(A: list, B: list) -> list:
-    """Given two lists, return pairs of elements that differ at the same index"""
-    return [(a, b) for a, b in zip(A, B) if a != b]
+def flatten(lst: list[list]) -> set[list]:
+    """Return the set of all elements belonging to the sublists of the list"""
+    return set(chain(*lst))
 
 def phoneme_list_to_pairs(phoneme_list: list[str]) -> list[tuple[str]]:
     """
@@ -191,16 +197,12 @@ def phoneme_list_to_pairs(phoneme_list: list[str]) -> list[tuple[str]]:
     pairs = chain.from_iterable(combinations(s, r) for r in range(2, 2+1))
     return list(pairs)
 
-def flatten(lst: list[list]) -> set[list]:
-    """Return the set of all elements belonging to the sublists of the list"""
-    return set(chain(*lst))
-
 def phoneme_lists_to_phoneme_pairs(phoneme_lists: list[list[str]]) -> set[list]:
     """
     Given a list of lists of phonemes, return the combined set of all phoneme
     pairs made from every individual list.
     """
-    return flatten(list(map(phoneme_list_to_pairs, phoneme_lists)))
+    return flatten([phoneme_list_to_pairs(list) for list in phoneme_lists])
 
 ### CONSTANTS ###
 
