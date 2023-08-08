@@ -46,13 +46,13 @@ class MinPairGenerator:
                 lists_of_phonemes.append(line.replace(" ", "").split(","))
         self.filter_pairs = phoneme_lists_to_phoneme_pairs(lists_of_phonemes)
 
-    def generate(self, words: list[Word]) -> list[WordPair]:
+    def generate(self, words: list[Word], silent: bool = True) -> list[WordPair]:
         """
         Generate minimal pairs from the given parameters
         """
         minpairs = []
 
-        for i in tqdm(range(0,len(words))):
+        for i in tqdm(range(0,len(words)), disable=silent):
             for j in range(i+1,len(words)):
                 pair = (words[i], words[j])
                 if self.check_minpair(pair):

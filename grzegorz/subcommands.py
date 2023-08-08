@@ -95,7 +95,7 @@ def wordlist_command(language: str, bounds: str, outfile: str) -> int:
     else:
         return 1
 
-def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 10) -> None:
+def fetchipa(infile: str, outfile: str, keep_failed: bool, numproc: int = 20) -> None:
     """
     Given an input file containing a list of words separated, fetch the IPAs and
     create a text file with their IPA spellings matched to their text
@@ -148,7 +148,7 @@ def generate_command(infile, outfile, nooptimise, no_phonemes, no_chronemes,
     if no_stress:
         print("Generator: syllable stress contrasts will be ignored")
 
-    minpairs = g.generate(words)
+    minpairs = g.generate(words, False)
     writefile(outfile, encode_format(encode_minpair, minpairs))
     print('Done! Generated', len(minpairs), 'minimal pairs')
 
