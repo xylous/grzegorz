@@ -148,6 +148,7 @@ def generate_command(infile, outfile, nooptimise, no_phonemes, no_chronemes,
     if no_stress:
         print("Generator: syllable stress contrasts will be ignored")
 
+    print('Generating minimal pairs from:', len(words), 'words')
     minpairs = g.generate(words, False)
     writefile(outfile, encode_format(encode_minpair, minpairs))
     print('Done! Generated', len(minpairs), 'minimal pairs')

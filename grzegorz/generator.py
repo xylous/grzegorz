@@ -52,11 +52,15 @@ class MinPairGenerator:
         """
         minpairs = []
 
-        for i in tqdm(range(0,len(words)), disable=silent):
-            for j in range(i+1,len(words)):
+        progress_bar = tqdm(total=int(len(words) * (len(words) - 1) / 2), disable=silent)
+        for i in range(0, len(words)):
+            words_after = range(i+1, len(words))
+            for j in words_after:
                 pair = (words[i], words[j])
                 if self.check_minpair(pair):
                     minpairs.append(pair)
+            progress_bar.update(len(words_after))
+        progress_bar.close()
 
         return minpairs
 
