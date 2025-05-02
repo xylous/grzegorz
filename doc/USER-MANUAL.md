@@ -8,7 +8,7 @@ NOTE:
     - arguments whose placeholders are between `<` and `>` are mandatory, and
         those whose placeholders are between `[` and `]` are optional.
     - The extension added to placeholders indicate the filetype, e.g.
-        `<WORDS_WITH_IPA.json>` is supposed to be a JSON file.
+        `<WORDS_WITH_IPA.txt>` is supposed to be a txt file.
 
 That being said, these are the commands and what they do:
 
@@ -19,8 +19,8 @@ That being said, these are the commands and what they do:
 - `list-languaegs` -  list all languages for which you can get a wordlist
 - `wordlist <LANGUAGE> <NUMWORDS> <WORDLIST_FILE.txt>` - get a frequency list
     of `<NUMWORDS>` length and output it to `<WORDLIST_FILE.txt>`.
-- `fetchipa <WORDLIST_FILE.txt> <WORDS_WITH_IPA.json> [--keep-failed]` - take
-    the output of `wordlist` and create a JSON file where every word is
+- `fetchipa <WORDLIST_FILE.txt> <WORDS_WITH_IPA.txt> [--keep-failed]` - take
+    the output of `wordlist` and create a txt file where every word is
     associated with its IPA transcription, fetched from the English Wiktionary.
     - `--keep-failed` - keep entries for the words whose IPA was not found
         (default: don't)
@@ -28,9 +28,9 @@ That being said, these are the commands and what they do:
         because fewer and fewer of them have their IPA spelling on Wiktionary,
         so a sample size of around 20,000 or 30,000 words would be ideal.
     - NOTE: running this may take a while, especially with larger samples
-- `generate <WORDS_WITH_IPA.json> <MINIMAL_PAIRS.json> [--no-optimise] [--no-phonemes]
+- `generate <WORDS_WITH_IPA.txt> <MINIMAL_PAIRS.txt> [--no-optimise] [--no-phonemes]
     [--keep-chronemes] [--keep-stress] [-f | --filter-file <FILTER.txt>]` -
-    takes the output of `fetchipa` and creates a JSON file with all the minimal
+    takes the output of `fetchipa` and creates a txt file with all the minimal
     pairs it found
     - `--no-optimise` - by default, only pairs with ["interesting
         differences"](#"interesting-differences") are kept, i.e. those that have
@@ -45,7 +45,7 @@ That being said, these are the commands and what they do:
         syllable stress/articulation (default: don't)
     - `-f  | --filter-file <FILTER.txt>` - set custom minimal pair filters for
         ["interesting differences"](#"interestind-differences")
-- `makedeck <MINIMAL_PAIRS.json> <ANKI_DECK.apkg>` - takes the output of
+- `makedeck <MINIMAL_PAIRS.txt> <ANKI_DECK.apkg>` - takes the output of
     `generate` and creates an Anki deck with flashcards containing them. NOTE:
     they don't have audio pronunciation.
 - `fullmake <LANGUAGE> <NUMWORDS> [--clean]` - chain the `wordlist`, `fetchipa`,

@@ -29,24 +29,24 @@ app](./anki-integration.md)
 
 ### Concrete examples
 
-If your file containing the JSON output of `fetchipa` is at `german-ipa.json`
-and you want to put the default output of `generate` in a file called
-`german-minpairs.json`, then you would run:
+If your file containing the output of `fetchipa` is at `german-ipa.txt` and you
+want to put the default output of `generate` in a file called
+`german-minpairs.txt`, then you would run:
 
 ```
-grzegorz generate german-ipa.json german-minpairs.json
+grzegorz generate german-ipa.txt german-minpairs.txt
 ```
 
 If you wanted to keep *all* minimal pairs, except those based on syllable stress
 differences, then you could run:
 
 ```
-grzegorz generate ipa.json minpairs.json --no-stress --no-optimise
+grzegorz generate ipa.txt minpairs.txt --no-stress --no-optimise
 ```
 
 If you wanted to use your own filters for minimal pairs when optimising, and put
 the file at `filters.txt`, then you would run:
 
 ```
-grzegorz generate ipa.json minpairs.json --filter-file "filters.txt"
+grzegorz generate ipa.txt minpairs.txt --filter-file "filters.txt"
 ```

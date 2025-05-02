@@ -4,11 +4,11 @@ After you've [found a satisfying number of minimal pairs](./minimal-pairs.md),
 you may create [an Anki](https//apps.ankiweb.net) deck with them as flashcards.
 
 You can use the `makedeck` subcommand to do just that. If your minimal pairs
-file is called `minpairs.json`, and you wanted to put the Anki deck package file
+file is called `minpairs.txt`, and you wanted to put the Anki deck package file
 at `anki-minpairs.apkg`, then you'd simply run:
 
 ```
-makedeck minpairs.json anki-minpairs.apkg
+makedeck minpairs.txt anki-minpairs.apkg
 ```
 
 Unfortunately, **the flashcards have no audio**. This is not because I haven't

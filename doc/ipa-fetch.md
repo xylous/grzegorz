@@ -16,7 +16,7 @@ If you have a French wordlist at `french-words.txt`, and you'd wanted to store
 the output in `french-words-with-ipa.txt`, you would simply run:
 
 ```
-grzegorz fetchipa french-words.txt french-words-with-ipa.json
+grzegorz fetchipa french-words.txt french-words-with-ipa.txt
 ```
 
 The output file is updated constantly while the program is running. The main
