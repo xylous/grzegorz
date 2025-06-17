@@ -26,20 +26,17 @@ def create_argparser() -> argparse.ArgumentParser:
 
     # 'analyse' subcommand
     parser_analyse = subparsers.add_parser('analyse',
-            help='Print the result of phonologically parsing of the given IPA transcription')
+            help='Parse the given IPA transcription')
     parser_analyse.add_argument('ipa',
-            type=str,
-            help="IPA transcription")
+            type=str)
 
     # 'check' subcommand
     parser_check = subparsers.add_parser('check',
-            help='Check if the two given IPAs can form minimal pair')
-    parser_check .add_argument('ipa_first',
-            type=str,
-            help="first IPA transcription")
-    parser_check .add_argument('ipa_second',
-            type=str,
-            help="second IPA transcription")
+            help='Check if the two given IPAs can form a minimal pair')
+    parser_check.add_argument('ipa_first',
+            type=str)
+    parser_check.add_argument('ipa_second',
+            type=str)
 
     # 'list-languages' subcommand
     subparsers.add_parser('list-languages',
@@ -47,12 +44,12 @@ def create_argparser() -> argparse.ArgumentParser:
 
     # 'fullmake' command
     parser_fullmake = subparsers.add_parser('fullmake',
-            help='Build an Anki deck for a language automatically')
+            help=f'Build an Anki deck for a language (equivalent of \'wordlist\', \'fetchipa\', \'generate\', \'makedeck\')')
     parser_fullmake.add_argument('language',
             type=str)
     parser_fullmake.add_argument('bounds',
             type=str,
-            help='number of words to keep; alternatively, the range of words to keep, e.g. "1500:3000"')
+            help='number of words to keep, e.g. "5000"; alternatively, the range of words to keep, e.g. "1500:3000"')
     parser_fullmake.add_argument('--clean',
             dest='clean',
             action='store_true',
@@ -61,31 +58,30 @@ def create_argparser() -> argparse.ArgumentParser:
 
     # 'wordlist' command
     parser_wordlist = subparsers.add_parser('wordlist',
-            help='Fetch the word list for a given language, containing a certain number of words')
+            help='Get the specified number of words from a frequency wordlist in the given language')
     parser_wordlist.add_argument('language',
             type=str,
             help='language of the wordlist')
     parser_wordlist.add_argument('bounds',
             type=str,
-            help='number of words to keep; alternatively, the range of words to keep, e.g. "1500:3000"')
+            help='number of words to keep, e.g. "5000"; alternatively, the range of words to keep, e.g. "1500:3000"')
     parser_wordlist.add_argument('outfile',
             type=str,
             help='path where the wordlist should be stored')
 
     # 'fetchipa' subcommand
     parser_fetchipa = subparsers.add_parser('fetchipa',
-            help='Fetch all IPA pronunciations for the words into a JSON file')
+            help='Fetch IPA pronunciations for words in a wordlist')
     parser_fetchipa.add_argument('infile',
             type=str,
-            help='file containing the list of words')
+            help='wordlist output file')
     parser_fetchipa.add_argument('outfile',
-            type=str,
-            help='output file (JSON)')
+            type=str)
     parser_fetchipa.add_argument('--keep-failed',
             dest='keep_failed',
             action='store_true',
             default=False,
-            help='Save the words for which no IPA was found in the output file (default: don\'t)')
+            help='In the output file, keep the words with no found IPA (default: don\'t)')
     parser_fetchipa.add_argument('--numproc',
             type=int,
             dest='numproc',
@@ -94,10 +90,10 @@ def create_argparser() -> argparse.ArgumentParser:
 
     # 'generate' subcommand
     parser_generate = subparsers.add_parser('generate',
-            help='Create minimal pairs, given a JSON input file')
+            help='Find minimal pairs based on the output file of \'fetchipa\'')
     parser_generate.add_argument('infile',
             type=str,
-            help='JSON file created by fetchipa')
+            help='file created by fetchipa')
     parser_generate.add_argument('outfile',
             type=str,
             help='path where the created minimal pairs will be stored')
@@ -105,7 +101,7 @@ def create_argparser() -> argparse.ArgumentParser:
             action='store_true',
             default=False,
             dest="nooptimise",
-            help="generate all possible minimal pairs (default: optimise)")
+            help="generate all possible minimal pairs (default: similar sounds)")
     parser_generate.add_argument('--no-phonemes',
             action='store_true',
             default=False,
@@ -124,17 +120,17 @@ def create_argparser() -> argparse.ArgumentParser:
     parser_generate.add_argument('-f', '--filter-file',
             type=str,
             dest="path",
-            help="path to the file whose contents determine the phones to keep when optimising")
+            help="path to file with rules for desired phoneme differences")
 
     # 'makedeck' subcommand
     parser_makedeck = subparsers.add_parser('makedeck',
-            help='Create an Anki deck package containing all minimal pairs')
+            help='Create an Anki deck package file from the output of the \'generate\' command')
     parser_makedeck.add_argument('infile',
             type=str,
-            help="Output file of 'generate'")
+            help="output file of 'generate'")
     parser_makedeck.add_argument('outfile',
             type=str,
-            help="Output file; note that it should ideally have the .apkg extension")
+            help="(.apkg extension)")
 
     return parser
 
