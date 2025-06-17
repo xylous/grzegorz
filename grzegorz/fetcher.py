@@ -41,6 +41,12 @@ def get_ipa_for_word(word: str, language: str) -> Word:
         if first_entry is not None:
             ipa = first_entry.text
 
+    # in German, nouns are capitalized, but the wordlist we're using might not
+    # respect that. This accounts for that, but likely reduces performance for
+    # words without any wiktionary entry.
+    if language == "German" and ipa == "" and word != word.capitalize():
+        return get_ipa_for_word(word.capitalize(), language)
+
     return Word(word, ipa)
 
 def first_ipa_pronunciation(ipa_str: str) -> str:
