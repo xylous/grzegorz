@@ -17,10 +17,10 @@ from grzegorz.word import Word
 
 import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 import re
 
 ### HELPER FUNCTIONS ###
-
 def get_ipa_for_word(word: str, language: str) -> Word:
     """
     Look for the IPA transliteration of the given word in the specified language
@@ -29,8 +29,14 @@ def get_ipa_for_word(word: str, language: str) -> Word:
     """
     language = language.capitalize()
     url = f"https://en.wiktionary.org/wiki/{word}"
-    webpage = requests.get(url)
-    soup= BeautifulSoup(webpage.text, "html.parser")
+
+    # wiktionary blocks requests with no/standard user-agent
+    # use a random one to bypass that
+    ua = UserAgent()
+    headers = {"User-Agent": ua.random}
+
+    webpage = requests.get(url, headers=headers)
+    soup = BeautifulSoup(webpage.text, "html.parser")
     pronunciations= soup.select(f'li:has(sup:has(a[href="/wiki/Appendix:{language}_pronunciation"]))' )
 
     ipa = ""
@@ -48,6 +54,7 @@ def get_ipa_for_word(word: str, language: str) -> Word:
         return get_ipa_for_word(word.capitalize(), language)
 
     return Word(word, ipa)
+
 
 def first_ipa_pronunciation(ipa_str: str) -> str:
     """Find the first IPA spelling in the given string"""
