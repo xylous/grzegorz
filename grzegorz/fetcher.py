@@ -28,6 +28,7 @@ def get_ipa_for_word(word: str, language: str) -> Word:
     found, then the `ipa` field of the result is empty.
     """
     language = language.capitalize()
+    language = "Serbo-Croatian" if language in ["Croatian", "Serbian"] else language
     url = f"https://en.wiktionary.org/wiki/{word}"
 
     # wiktionary blocks requests with no/standard user-agent
