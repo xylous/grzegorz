@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.6.2 - 2026-02-05
+
+- fix: fetch German nouns properly, even if they appear with lowercase in the
+    wordlist
+- fix: add user-agent header to prevent 403 errors when fetching Wiktionary
+    files ([PR #1](https://github.com/xylous/grzegorz/pull/1))
+- fix: fetch Serbo-Croatian words properly ([PR #2](https://github.com/xylous/grzegorz/pull/2))
+
+## v0.6.1 - 2025-05-02
+
+- fix: make tqdm progress scale linearly
+- fix: ditch the WiktionaryParser library, since it no longer works
+
 ## v0.6.0 - 2023-08-03
 
 - improve `wordlist`: accept ranges, e.g. `3000:5000`, which returns only the
